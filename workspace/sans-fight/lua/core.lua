@@ -580,7 +580,7 @@ CMD.HeartTeleport = function(w, x, y)
 end
 CMD.HeartMode = function(w, m) w.heart.mode = tonumber(m); w.heartModeDirty = true end
 CMD.HeartMaxFallSpeed = function(w, v) w.heart.maxFall = tonumber(v); w.heartModeDirty = true end
-CMD.SansSlam = function(w, d)   -- 【方案甲 A-2】原版语义：强制蓝魂 + 设方向 + 满速甩出
+CMD.SansSlam = function(w, d)   -- 【2026-10-06 用户口径】拖拽 = **瞬移到那一侧的边界**
   d = tonumber(d) or 0
   if d < 0 or d > 3 then return end
   local s = w.heart.maxFall
@@ -588,10 +588,17 @@ CMD.SansSlam = function(w, d)   -- 【方案甲 A-2】原版语义：强制蓝�
   w.heart.mode = 1
   w.heart.slammed = true
   w.heart.dir = d
-  w.heart.vx = (d == 0) and s or ((d == 2) and -s or 0)
-  w.heart.vy = (d == 1) and s or ((d == 3) and -s or 0)
+  -- 直接把心搬到重力方向那一侧的框边（内缩 SOUL_CLAMP=8，与钳位/碰撞同口径）；
+  -- 不再给初速 —— 用户要的是「瞬移到边界」，不是被推着滑过去。
+  local z = w.zone
+  local m = 8
+  if d == 0 then w.heart.x = z.r - m
+  elseif d == 2 then w.heart.x = z.l + m
+  elseif d == 1 then w.heart.y = z.b - m
+  else w.heart.y = z.t + m end
+  w.heart.vx, w.heart.vy = 0, 0
+  w.heartPosDirty = true
   w.heartModeDirty = true
-  w.heartVelDirty = true
   say(w, 'slam ' .. tostring(d))
 end
 CMD.SansSlamDamage = function(w, b)
