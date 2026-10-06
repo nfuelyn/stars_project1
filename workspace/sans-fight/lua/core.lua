@@ -590,7 +590,15 @@ CMD.CombatZonePos = function(w, l, t)          -- 扩展（原版无此命令）
 end
 
 -- 灵魂
-CMD.HeartTeleport = function(w, x, y)
+CMD.HeartTeleport = function(w, x, y, dur)
+  -- 【2026-10-06 用户口径】第 4 个参数 dur（秒）> 0 时改成**滑动**过去，不再硬瞬移：
+  --   终盘长框段开局那一下 HeartTeleport,40,$HeartY 原本是可见的硬跳（前面还有 0.9s 停顿）。
+  --   不传 dur = 老行为（瞬移），其它回合/其它脚本完全不受影响。
+  local d = tonumber(dur)
+  if d and d > 0 then
+    w.heart.slide = { x0 = w.heart.x, y0 = w.heart.y, x1 = tonumber(x), y1 = tonumber(y), t = 0, dur = d }
+    return
+  end
   w.heart.x, w.heart.y, w.heart.vx, w.heart.vy = tonumber(x), tonumber(y), 0, 0
   w.heartPosDirty = true          -- 只有 HeartTeleport 会挪灵魂（HeartMode 不该顺带搬位置）
 end
@@ -918,7 +926,12 @@ function World:stepScript(dt)
   self.wait = self.wait - dt
   while (not self.paused) and (not self.ended) and self.wait <= 0 do
     guard = guard + 1
-    if guard > 5000 then break end
+    -- 【2026-10-06 用户口径】每帧最多推进 40 行脚本：终盘长框段有 3 个零延时循环
+    --   （44+12+24 组，一帧生成 ~172 根骨头 = ~860 个控件）会把这一帧拖卡。
+    --   超出的部分自然顺延到下一帧（循环退出后 self.wait 仍为 0，下一帧继续），
+    --   整段时长几乎不变（~0.4s 摊开），但每帧控件增量从 860 降到 ~200。
+    --   原来的 5000 只是防死循环，起不到限流作用。
+    if guard > 40 then break end
     if self.pc < 0 or self.pc >= #self.prog then self.pc = #self.prog; return end
     local line = self.prog[self.pc + 1]
     local jumped = self:exec(line)
@@ -1035,6 +1048,16 @@ end
 function World:update(dt)
   if self.ended then return end
   self.time = self.time + dt
+  -- 【2026-10-06】HeartTeleport 的滑动（dur 秒内线性插值到目标点）
+  if self.heart.slide then
+    local sl = self.heart.slide
+    sl.t = sl.t + dt
+    local k = math.min(1, sl.t / sl.dur)
+    self.heart.x = sl.x0 + (sl.x1 - sl.x0) * k
+    self.heart.y = sl.y0 + (sl.y1 - sl.y0) * k
+    self.heartPosDirty = true
+    if k >= 1 then self.heart.slide = nil end
+  end
   if (self.shakeI or 0) > 0 then   -- 【A-7】SansShake：每 1/30s 随机跳一次偏移
     self.shakeT = (self.shakeT or 0) + dt
     while self.shakeT >= 1 / 30 do

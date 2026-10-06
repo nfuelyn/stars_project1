@@ -75,7 +75,9 @@ local M = {
 0.3,CombatZoneSpeed,30
 0,CombatZoneResize,-10,264,650,369
 0.9,GetHeartPos,HeartX,HeartY
-0,HeartTeleport,40,$HeartY
+# 【2026-10-06 用户口径·优化】长框段开局这一下原来是无提示的**硬瞬移**（前面还有 0.9s 停顿），
+#   改成 0.35s 滑动过去（HeartTeleport 第 4 个参数 = 时长；不传仍是瞬移）。
+0,HeartTeleport,40,$HeartY,0.35
 0,HeartMaxFallSpeed,0
 0,SansSlam,0
 0,DIV,Deg,180,3.141592653589793
