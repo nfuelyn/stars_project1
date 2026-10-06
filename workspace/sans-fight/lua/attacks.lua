@@ -148,16 +148,20 @@ local M = {
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
+# 【2026-10-06 用户口径】这一段是「两条边一起出骨刺」的躲避段，
+#   应当是**红心移动方式**（四向自由、无重力）——原来这里跟着 `SansSlam,3`（强制切蓝 + 重力向上）
+#   会让玩家在躲整排骨刺时被重力拽着走。改成 HeartMode,0。
 0,HeartTeleport,262,240
-0,SansSlam,3
+0,HeartMode,0
 0.03333,BoneStab,2,48,0.6,1
 0,BoneStab,3,48,0.6,1
 0.9,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
+# 【2026-10-06 用户口径】同上：这一段也是「两条边一起」，改回红心移动。
 0,HeartTeleport,391,376
-0,SansSlam,0
+0,HeartMode,0
 0.03333,BoneStab,0,48,0.6,1
 0,BoneStab,1,48,0.6,1
 0.9,BlackScreen,1
