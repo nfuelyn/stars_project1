@@ -481,16 +481,11 @@ $Wait2,SET,LastDir,$Direction
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,320,376
-# 【2026-10-06 用户口径·round22】降低骨头伸出密度与粗细，段长 +1s：
-#   4 根 × 间距 16（太密）→ 3 根 × 30；高 45→35、高 100→70；0.9s → 1.9s。
-# 【2026-10-06 用户口径·round22 二次确认】骨墙「粗细和密度还是太高」→ 再削一档，
-#   每一侧只留 1 根高骨 + 2 根矮骨（原来是 1 + 3），矮骨间距 30→80、高 35→28，高骨 70→60。
-#   这样整面骨墙在横扫过程中**留出 2~3 条能钻过去的通道**（原来 3 根矮骨间距 30 基本连成一片）。
-0,BoneVRepeat,128,341,28,0,240,2,80
-0,BoneV,64,286,60,0,240
-0,BoneVRepeat,512,341,28,2,240,2,80
-0,BoneV,576,286,60,2,240
-1.9,JMPABS,RndAttack
+0,BoneVRepeat,128,341,45,0,240,4,16
+0,BoneV,64,286,100,0,240
+0,BoneVRepeat,512,341,45,2,240,4,16
+0,BoneV,576,286,100,2,240
+0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
@@ -556,29 +551,26 @@ $Wait2,SET,LastDir,$Direction
 0,RND,Side,2
 0,JMPZ,Attack4Other,$Side
 0,HeartTeleport,506,376
-# 【2026-10-06 用户口径·round22】骨流降密度：11/10 根 × 间距 24 → 7 根 × 40，高 55→45 / 15→12，1.2s → 2.2s。
-0,BoneVRepeat,200,331,45,0,360,7,40
-0,BoneVRepeat,-64,371,12,0,360,7,40
-2.2,JMPABS,RndAttack
+0,BoneVRepeat,200,331,55,0,360,11,24
+0,BoneVRepeat,-64,371,15,0,360,10,24
+1.2,JMPABS,RndAttack
 0,:Attack4Other
 0,HeartTeleport,149,376
-# 【2026-10-06 用户口径·round22】同上（镜像侧）。
-0,BoneVRepeat,440,331,45,2,360,7,40
-0,BoneVRepeat,704,371,12,2,360,7,40
-2.2,JMPABS,RndAttack
+0,BoneVRepeat,440,331,55,2,360,11,24
+0,BoneVRepeat,704,371,15,2,360,10,24
+1.2,JMPABS,RndAttack
 0,:Attack5
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-# 【2026-10-06 用户口径·round22】静止矮骨地板降密度：25 根 × 间距 16（几乎连成墙）→ 16 根 × 26，高 30→26；1.2s → 2.2s。
-0,BoneVRepeat,121,364,26,2,0,16,26
+0,BoneVRepeat,121,364,30,2,0,25,16
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
 0,BoneV,1,319,65,0,240
-2.2,JMPABS,RndAttack
+1.2,JMPABS,RndAttack
 0,:Attack5Other
 0,BoneV,119,280,35,0,240
 0,BoneV,639,319,65,2,240
