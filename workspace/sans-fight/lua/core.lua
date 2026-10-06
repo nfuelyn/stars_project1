@@ -93,7 +93,13 @@ local SOUL_R = 2                  -- 【差距文档 H-01】原版心贴图 16×
 local SOUL_CLAMP = 8              -- 框内钳位半径 = 心形视觉半宽（±8）→ 灵魂视觉宽 16
 -- 【2026-10-06 用户口径】内置骨墙：相邻两根骨头之间的缝必须能容下灵魂。
 --   灵魂视觉宽 = 2*SOUL_CLAMP = 16px，这里留 24px。
-local WALL_GAP = 24              -- 框内钳位半径 = 心形视觉半宽（±8）
+local WALL_GAP = 24
+-- 【2026-10-06 用户口径】「贴地排骨」（Game:spawnFloor：从框底边升起、占满框高的整排厚骨）的单根内缩量：
+--   骨头宽度 = 道宽 - FLOOR_BONE_INSET；道间缝宽 = 这个内缩量。
+--   灵魂视觉宽 16px，所以内缩量要 >= 16 才钻得过去。
+--   框宽 575 时 laneW≈63.9：6→w≈58（改前，截图里的粗骨）/ 24→w≈40（现在）/ 30→w≈34。
+--   ★ 只影响 spawnFloor 这一支：脚本骨仍是 BONE_W=10，骨墙仍是 laneW-WALL_GAP。
+local FLOOR_BONE_INSET = 24       -- 贴地排骨单根内缩量（越大越细；道间缝 = 本值）
 -- 【blue_soul.lua / 原作 PlayerMovement 常量】
 local HEART_JUMP = 180            -- HEART_JUMP_STRENGTH：起跳瞬时冲量 px/s
 local HEART_CUTOFF = 30           -- HEART_JUMPHOLD_CUTOFF：松键截断后保留的上冲速度
@@ -1988,7 +1994,7 @@ function Game:spawnFloor(peekSec)
     if not isSafe then
       w.bones[#w.bones + 1] = {
         kind = 'floor', wave = wave, custom = true, abs = true,
-        x = z.l + laneW * (L + 0.5), w = laneW - 6,
+        x = z.l + laneW * (L + 0.5), w = laneW - FLOOR_BONE_INSET,   -- 宽度 = 道宽 - 内缩
         y = z.b, targetH = z.b - z.t, h = TIP_H, t = 0,
         phase = 'peek', peekDur = peek, lethal = false, color = 'white',
       }
