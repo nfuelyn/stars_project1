@@ -1,0 +1,93 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 16,
+  "dt": 0.03333333333333333,
+  "frames": 480,
+  "wallSeconds": 3,
+  "startedAt": "2026-10-05T05:17:33.890Z",
+  "finishedAt": "2026-10-05T05:17:36.943Z",
+  "final": {
+    "time": 15.999999999999954,
+    "frame": 480,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 52,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-rounds20 device=Mobile touch=true mode=core pool=532 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=532 cmds=34 box=(239,226,165,165) hp=92 phase=enemy soul=320,309 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=532 cmds=12 box=(239,226,165,165) hp=82 phase=attack soul=320,309 joy=off",
+    "main: mode=core device=Mobile touch=true frame=453 pool=532 cmds=15 box=(241,226,165,165) hp=82 phase=enemy soul=320,309 joy=off"
+  ],
+  "logCount": 122,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    }
+  ],
+  "timeline": [
+    {
+      "t": 4,
+      "shot": "mobile-16-9-t4_00.png"
+    },
+    {
+      "t": 6,
+      "shot": "mobile-16-9-t6_00.png"
+    },
+    {
+      "t": 8,
+      "shot": "mobile-16-9-t8_00.png"
+    },
+    {
+      "t": 10,
+      "shot": "mobile-16-9-t10_00.png"
+    },
+    {
+      "t": 12,
+      "shot": "mobile-16-9-t12_00.png"
+    },
+    {
+      "t": 14,
+      "shot": "mobile-16-9-t14_00.png"
+    }
+  ]
+}

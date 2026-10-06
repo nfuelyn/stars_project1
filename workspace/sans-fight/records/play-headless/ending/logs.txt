@@ -1,0 +1,1139 @@
+main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0
+main: 平台 = 触摸分支（不注册键盘监听；左半屏摇杆 + 点按二次确认）
+main start: build=2026-10-05-rounds20 device=Mobile touch=true mode=core pool=531 flash=true cursor=true
+main: 阶段 nil → title (round=1 hp=9999)
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 触摸点按难度卡 1 → 选中（再点一次开局）
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 点按难度卡 1 → 开局
+main: 阶段 title → enemy (round=0 hp=9999)
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=151 pool=531 cmds=33 box=(239,226,165,165) hp=9999 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=0 hp=9989)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=0 hp=9989)
+main: mode=core device=Mobile touch=true frame=302 pool=531 cmds=11 box=(239,226,165,165) hp=9989 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=1 hp=9989)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=453 pool=531 cmds=14 box=(241,226,165,165) hp=9989 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=604 pool=531 cmds=12 box=(241,226,165,165) hp=9987 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=1 hp=9983)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=1 hp=9979)
+main: mode=core device=Mobile touch=true frame=755 pool=531 cmds=11 box=(241,226,165,165) hp=9979 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=2 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=906 pool=531 cmds=25 box=(133,251,375,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=1057 pool=531 cmds=10 box=(133,251,375,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=2 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=2 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: mode=core device=Mobile touch=true frame=1208 pool=531 cmds=11 box=(133,251,375,140) hp=9979 phase=attack soul=320,309 joy=off
+main: 阶段 attack → enemy (round=3 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=1359 pool=531 cmds=23 box=(133,251,375,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=1510 pool=531 cmds=11 box=(133,251,375,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 阶段 enemy → menu (round=3 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=3 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=4 hp=9979)
+main: mode=core device=Mobile touch=true frame=1661 pool=531 cmds=9 box=(157,251,325,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=1812 pool=531 cmds=9 box=(133,251,375,140) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=4 hp=9979)
+main: mode=core device=Mobile touch=true frame=1963 pool=531 cmds=10 box=(133,251,375,140) hp=9979 phase=menu soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=4 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=5 hp=9979)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=2114 pool=531 cmds=9 box=(241,226,165,165) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=2265 pool=531 cmds=10 box=(241,226,165,165) hp=9979 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=5 hp=9978)
+main: mode=core device=Mobile touch=true frame=2416 pool=531 cmds=10 box=(241,226,165,165) hp=9977 phase=menu soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=5 hp=9974)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=6 hp=9974)
+main: mode=core device=Mobile touch=true frame=2567 pool=531 cmds=20 box=(135,251,371,140) hp=9974 phase=enemy soul=320,351 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=2718 pool=531 cmds=16 box=(133,251,375,140) hp=9974 phase=enemy soul=320,351 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=2869 pool=531 cmds=14 box=(133,251,375,140) hp=9974 phase=enemy soul=320,351 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=6 hp=9974)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=6 hp=9974)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: mode=core device=Mobile touch=true frame=3020 pool=531 cmds=11 box=(133,251,375,140) hp=9974 phase=attack soul=320,351 joy=off
+main: 阶段 attack → enemy (round=7 hp=9974)
+main: WARN 战斗框坐标异常 (179,226) 225x165 中心偏(-29,+0) 越界0px -- 已按原样绘制，请查 core
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=3171 pool=531 cmds=14 box=(241,226,165,165) hp=9964 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=3322 pool=531 cmds=17 box=(90,244,462,147) hp=9951 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=7 hp=9942)
+main: mode=core device=Mobile touch=true frame=3473 pool=531 cmds=10 box=(33,251,575,140) hp=9939 phase=menu soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=7 hp=9939)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=8 hp=9939)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=3624 pool=531 cmds=23 box=(171,276,305,115) hp=9935 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=3775 pool=531 cmds=19 box=(121,276,405,115) hp=9934 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=8 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=8 hp=9934)
+main: mode=core device=Mobile touch=true frame=3926 pool=531 cmds=11 box=(33,251,575,140) hp=9934 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=9 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=4077 pool=531 cmds=23 box=(133,251,375,140) hp=9934 phase=enemy soul=320,318 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=4228 pool=531 cmds=33 box=(133,251,375,140) hp=9934 phase=enemy soul=320,318 joy=off
+main: 阶段 enemy → menu (round=9 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=9 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=10 hp=9934)
+main: mode=core device=Mobile touch=true frame=4379 pool=531 cmds=10 box=(241,226,165,165) hp=9934 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=4530 pool=531 cmds=9 box=(241,226,165,165) hp=9934 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=10 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=10 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: mode=core device=Mobile touch=true frame=4681 pool=531 cmds=11 box=(241,226,165,165) hp=9934 phase=attack soul=320,309 joy=off
+main: 阶段 attack → enemy (round=11 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=4832 pool=531 cmds=56 box=(113,231,435,160) hp=9934 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=11 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=11 hp=9934)
+main: mode=core device=Mobile touch=true frame=4983 pool=531 cmds=11 box=(113,231,435,160) hp=9934 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=12 hp=9934)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=5134 pool=531 cmds=25 box=(133,251,375,140) hp=9931 phase=enemy soul=320,318 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=5285 pool=531 cmds=26 box=(133,251,375,140) hp=9924 phase=enemy soul=320,318 joy=off
+main: 阶段 enemy → menu (round=12 hp=9924)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=12 hp=9924)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=13 hp=9924)
+main: mode=core device=Mobile touch=true frame=5436 pool=531 cmds=9 box=(198,198,243,193) hp=9924 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=5587 pool=531 cmds=9 box=(121,186,405,205) hp=9913 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=13 hp=9904)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=13 hp=9902)
+main: mode=core device=Mobile touch=true frame=5738 pool=531 cmds=11 box=(121,186,405,205) hp=9902 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=14 hp=9902)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=5889 pool=531 cmds=52 box=(133,251,375,140) hp=9895 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=6040 pool=531 cmds=17 box=(133,251,375,140) hp=9889 phase=enemy soul=320,309 joy=off
+main: 阶段 enemy → menu (round=14 hp=9889)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=14 hp=9889)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=15 hp=9889)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=6191 pool=531 cmds=26 box=(133,251,375,140) hp=9887 phase=enemy soul=320,318 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=6342 pool=531 cmds=26 box=(133,251,375,140) hp=9879 phase=enemy soul=320,318 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=15 hp=9879)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=15 hp=9879)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: mode=core device=Mobile touch=true frame=6493 pool=531 cmds=11 box=(133,251,375,140) hp=9879 phase=attack soul=320,318 joy=off
+main: 阶段 attack → enemy (round=16 hp=9879)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=6644 pool=531 cmds=10 box=(241,226,165,165) hp=9879 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=16 hp=9877)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=16 hp=9875)
+main: mode=core device=Mobile touch=true frame=6795 pool=531 cmds=11 box=(241,226,165,165) hp=9875 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=17 hp=9875)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=6946 pool=531 cmds=16 box=(171,226,305,165) hp=9869 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=7097 pool=531 cmds=15 box=(171,226,305,165) hp=9854 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=17 hp=9849)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=17 hp=9845)
+main: mode=core device=Mobile touch=true frame=7248 pool=531 cmds=11 box=(171,226,305,165) hp=9845 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=18 hp=9845)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=7399 pool=531 cmds=16 box=(205,226,237,165) hp=9835 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=7550 pool=531 cmds=15 box=(205,226,237,165) hp=9819 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=18 hp=9813)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=18 hp=9809)
+main: mode=core device=Mobile touch=true frame=7701 pool=531 cmds=11 box=(205,226,237,165) hp=9809 phase=attack soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: 阶段 attack → enemy (round=19 hp=9809)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=7852 pool=531 cmds=18 box=(241,226,165,165) hp=9800 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=8003 pool=531 cmds=19 box=(241,226,165,165) hp=9785 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=8154 pool=531 cmds=9 box=(241,226,165,165) hp=9775 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=8305 pool=531 cmds=9 box=(241,226,165,165) hp=9765 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: mode=core device=Mobile touch=true frame=8456 pool=531 cmds=9 box=(241,226,165,165) hp=9755 phase=enemy soul=320,309 joy=off
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=false moved=false
+main: 阶段 enemy → menu (round=19 hp=9753)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 触摸点按菜单第 1 项（攻击）→ 选中（再点一次确认）
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按菜单第 1 项（攻击）
+main: 阶段 menu → attack (round=19 hp=9751)
+main: 游标 CursorDown x=370.0 y=88.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=88.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=64.5 click=false moved=false
+main: 游标 CursorUp x=370.0 y=64.5 click=true moved=false
+main: 点按 → 攻击条结算
+main: 游标 CursorDown x=370.0 y=42.0 click=false moved=false
+main: 游标 CursorUp x=370.0 y=42.0 click=true moved=false
+main: 点按 → 攻击条结算
+main: mode=core device=Mobile touch=true frame=8607 pool=531 cmds=11 box=(241,226,165,165) hp=9751 phase=attack soul=320,309 joy=off
+main: 阶段 attack → result (round=19 hp=9751)

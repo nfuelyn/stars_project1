@@ -1,0 +1,14 @@
+interface:
+  display_name: "GLM 图像识别"
+  short_description: "Analyze images with Zhipu GLM vision"
+  default_prompt: "Use $glm-vision to describe the image at <image-path>."
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "glm"
+      description: "Local glm-mcp server providing the glm_vision tool"
+      transport: "stdio"
+
+policy:
+  allow_implicit_invocation: true

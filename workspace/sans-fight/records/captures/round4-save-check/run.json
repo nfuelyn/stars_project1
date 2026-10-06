@@ -1,0 +1,78 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 8,
+  "dt": 0.03333333333333333,
+  "frames": 240,
+  "wallSeconds": 2.9,
+  "startedAt": "2026-10-05T11:45:23.270Z",
+  "finishedAt": "2026-10-05T11:45:26.216Z",
+  "final": {
+    "time": 7.999999999999981,
+    "frame": 240,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 38,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-fairbone device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=12 box=(241,226,165,165) hp=85 phase=enemy soul=320,304 joy=off"
+  ],
+  "logCount": 88,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 2,
+      "shot": "mobile-16-9-t2_00.png"
+    },
+    {
+      "t": 4,
+      "shot": "mobile-16-9-t4_00.png"
+    },
+    {
+      "t": 6,
+      "shot": "mobile-16-9-t6_00.png"
+    },
+    {
+      "t": 8,
+      "shot": "mobile-16-9-t8_00.png"
+    }
+  ]
+}

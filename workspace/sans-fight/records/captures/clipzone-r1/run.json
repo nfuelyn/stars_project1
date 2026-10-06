@@ -1,0 +1,88 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 11,
+  "dt": 0.03333333333333333,
+  "frames": 330,
+  "wallSeconds": 1.4,
+  "startedAt": "2026-10-05T10:36:08.868Z",
+  "finishedAt": "2026-10-05T10:36:10.242Z",
+  "final": {
+    "time": 10.999999999999972,
+    "frame": 330,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 32,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-clipzone device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=34 box=(239,226,165,165) hp=88 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=692 cmds=10 box=(239,226,165,165) hp=76 phase=enemy soul=320,304 joy=off"
+  ],
+  "logCount": 96,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    }
+  ],
+  "timeline": [
+    {
+      "t": 3,
+      "shot": "mobile-16-9-t3_00.png"
+    },
+    {
+      "t": 5,
+      "shot": "mobile-16-9-t5_00.png"
+    },
+    {
+      "t": 7,
+      "shot": "mobile-16-9-t7_00.png"
+    },
+    {
+      "t": 9,
+      "shot": "mobile-16-9-t9_00.png"
+    },
+    {
+      "t": 11,
+      "shot": "mobile-16-9-t11_00.png"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+# sans_intro —— 回合 0「不意打ち」
+# 【2026-10-05 第九轮 · 用户口径】首轮（sans_intro）全部龙骨炮的「出现 → 释放」间隔 = **1.0s**：
+#   SpinTime 0.333（Size1）/ 0.666（Size2）→ **1.0**（第六轮先改 0.6，第九轮再加到 1.0）；BlastTime 按原版不变。
+#   只在 SpinTime 这一列做了改动，其余数值与下面「原版对照」逐字一致。
+# 数值（时序 / 坐标 / 参数）按参考实现逐字转写以保证保真；文件文本为本项目自行编排。
+# 坐标系：原版 640×480，Y 向下。战斗框参数为 (左, 上, 右, 下)。
+# 唯一的**有意偏离**：第 3 段龙骨炮由原版的"第 1 段重复"改成「上下」（见该段前的注释与文末原文对照）。
+# 序列：黑屏闪 → 框 165×165 → SansSlam → BoneStab(自上而下) → SineBones(20,-24,360,25)
+#       → ① 十字 → ② 交叉 → ③ 上下 → ④ 左右(Size2) → "here we go." → EndAttack
+# 注意（2026-10-05 调整）：四组龙骨炮之间的间隔各 +0.1s（用户验收「初见杀龙骨炮间隔略微延长」）——脚本全长 8.93s，回合时长必须覆盖它（core 的 startEnemy 已按脚本时长延长 enemyDur），
+#       否则回合会在 2.8s 掐断，①②③④ 一段都打不出来。
+0,SansAnimation
+0,SansHead,ClosedEyes
+0,SansText,ready?
+0,BlackScreen,1
+0,Sound,Flash
+0.06666,BlackScreen,0
+0,Sound,Flash
+0,CombatZoneResizeInstant,239,226,404,391
+0,HeartTeleport,320,304
+0,HeartMode,0
+0,SansBody,HandDown
+0,SansHead,BlueEye
+0,Sound,GasterBlaster
+0.26666,SansSlam,1
+0.5,SansBody,HandUp
+0,SansHead,NoEyes
+0,BoneStab,1,54,0.16666,1
+0.7,HeartMode,0
+0,SansBody,HandRight
+0,Sound,Ding
+0.4,Sound,GasterBlaster
+0.4,SineBones,20,-24,360,25
+1.2,SansAnimation
+0,GasterBlaster,1,0,0,189,246,0,1,0.26666
+0,GasterBlaster,1,0,0,259,166,90,1,0.26666
+0,GasterBlaster,1,640,480,449,366,180,1,0.26666
+0,GasterBlaster,1,640,480,379,446,270,1,0.26666
+1.0,GasterBlaster,1,0,0,189,176,45,1,0.26666
+0,GasterBlaster,1,640,0,449,176,135,1,0.26666
+0,GasterBlaster,1,640,480,449,436,225,1,0.26666
+0,GasterBlaster,1,0,480,189,436,315,1,0.26666
+# ↓ 第 3 段：上下（本次按用户验收描述改；BTS 原版这里是与第 1 段**逐字重复**的第 3 组"十字"，
+#   原行保留在文件末尾的注释里，数值一个没丢）。四发的参数全部取自本文件既有的原版值：
+#   起点 (0,0)/(640,0)/(0,480)/(640,480) 与第 2 段相同；落点 x=259/379、y=166/446 与第 1 段相同；
+#   角度 90=南（向下）、270=北（向上）；SpinTime/BlastTime 与 Size1 各段相同。
+#   效果：x=259 与 x=379 两条全高光柱，各自上下对射 → 中间 x≈277..361 留一条可躲的缝。
+1.0,GasterBlaster,1,0,0,259,166,90,1,0.26666
+0,GasterBlaster,1,640,0,379,166,90,1,0.26666
+0,GasterBlaster,1,0,480,259,446,270,1,0.26666
+0,GasterBlaster,1,640,480,379,446,270,1,0.26666
+0.8,GasterBlaster,2,0,240,139,306,0,1,0.5
+0,GasterBlaster,2,640,240,499,306,180,1,0.5
+3,SansHead,Default
+0,SansText,here we go.
+0,EndAttack
+# ---------------------------------------------------------------- 原版对照（BTS 逐字原文）
+# 上面第 3 段那 4 行在 BTS `Files/sans_intro.csv` 里是**与第 1 段逐字重复**的（已用
+#   https://raw.githubusercontent.com/Jcw87/c2-sans-fight/master/Files/sans_intro.csv 逐字节比对），
+# 即原版的龙骨炮是「十字 → 交叉 → 十字(重复) → 左右(Size2)」。按用户验收描述改成「十字 → 交叉 → 上下」，
+# 被替换掉的原版 4 行原样保留在这里，随时可以换回来：
+# 0.9,GasterBlaster,1,0,0,189,246,0,0.333,0.26666
+# 0,GasterBlaster,1,0,0,259,166,90,0.333,0.26666
+# 0,GasterBlaster,1,640,480,449,366,180,0.333,0.26666
+# 0,GasterBlaster,1,640,480,379,446,270,0.333,0.26666
+# 其余行（含 Size2 的「左右」收尾）与 BTS 原文逐字一致。
+# 注意：上面正文里的 SpinTime 已按用户口径改成 0.6（原版 0.333 / 0.666）。

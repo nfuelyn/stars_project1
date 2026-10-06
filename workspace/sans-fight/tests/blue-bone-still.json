@@ -1,0 +1,20 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "blue-bone-still",
+  "dt": 0.016666666666666666,
+  "desc": "蓝骨=静止安全（C6）：跳到第 3 回合（蓝骨），第一次蓝骨穿过时完全静止 → 无伤；第二次蓝骨穿过时用指针拖动灵魂 → 命中。用指针而非按键，因为 pointer 的参数（type/x/y）是已文档化的稳定形状。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestSeed", "value": 3 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestStartRound", "value": 3 } },
+    { "kind": "step", "args": { "dt": 3.0 } },
+    { "kind": "pointer", "args": { "type": "down", "x": 640, "y": 300 } },
+    { "kind": "pointer", "args": { "type": "move", "x": 720, "y": 300 } },
+    { "kind": "pointer", "args": { "type": "up", "x": 720, "y": 300 } },
+    { "kind": "step", "args": { "dt": 1.0 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "blue_pass_clean", "source": "client" },
+    { "kind": "log", "contains": "hit_blue", "source": "client" }
+  ]
+}

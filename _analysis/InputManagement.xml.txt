@@ -1,0 +1,172 @@
+===== GROUP: InputManagement  |  
+    IF System :: On start of layout
+    DO System :: Create object  (Object to create=VPad, Layer=0, X=0, Y=0)
+    DO VPad :: Set value  (Instance variable=Up, Value=1)
+    DO VPad :: Set value  (Instance variable=Down, Value=1)
+    DO VPad :: Set value  (Instance variable=Left, Value=1)
+    DO VPad :: Set value  (Instance variable=Right, Value=1)
+    DO VPad :: Set value  (Instance variable=Confirm, Value=1)
+    DO VPad :: Set value  (Instance variable=Cancel, Value=1)
+    DO VPad :: Set value  (Instance variable=Menu, Value=1)
+    IF System :: Every tick
+    DO VPad :: Set value  (Instance variable=LastUp, Value=VPad.Up)
+    DO VPad :: Set value  (Instance variable=LastDown, Value=VPad.Down)
+    DO VPad :: Set value  (Instance variable=LastLeft, Value=VPad.Left)
+    DO VPad :: Set value  (Instance variable=LastRight, Value=VPad.Right)
+    DO VPad :: Set value  (Instance variable=LastConfirm, Value=VPad.Confirm)
+    DO VPad :: Set value  (Instance variable=LastCancel, Value=VPad.Cancel)
+    DO VPad :: Set value  (Instance variable=LastMenu, Value=VPad.Menu)
+    IF System :: Every tick
+    DO VPad :: Set value  (Instance variable=Up, Value=0)
+    DO VPad :: Set value  (Instance variable=Down, Value=0)
+    DO VPad :: Set value  (Instance variable=Left, Value=0)
+    DO VPad :: Set value  (Instance variable=Right, Value=0)
+    DO VPad :: Set value  (Instance variable=Confirm, Value=0)
+    DO VPad :: Set value  (Instance variable=Cancel, Value=0)
+    DO VPad :: Set value  (Instance variable=Menu, Value=0)
+  ===== GROUP: Gamepad  |  
+    VAR DEADZONE (number) = 25 [const]
+    VAR ID (number) = 0
+      IF ANY-OF (OR):
+        IF Gamepad :: Compare axis  (Gamepad=ID, Axis=1, Comparison=2, Value=-DEADZONE)
+        IF Gamepad :: Is button down  (Gamepad=ID, Button=12)
+      DO VPad :: Set value  (Instance variable=Up, Value=1)
+      IF ANY-OF (OR):
+        IF Gamepad :: Compare axis  (Gamepad=ID, Axis=1, Comparison=4, Value=DEADZONE)
+        IF Gamepad :: Is button down  (Gamepad=ID, Button=13)
+      DO VPad :: Set value  (Instance variable=Down, Value=1)
+      IF ANY-OF (OR):
+        IF Gamepad :: Compare axis  (Gamepad=ID, Axis=0, Comparison=2, Value=-DEADZONE)
+        IF Gamepad :: Is button down  (Gamepad=ID, Button=14)
+      DO VPad :: Set value  (Instance variable=Left, Value=1)
+      IF ANY-OF (OR):
+        IF Gamepad :: Compare axis  (Gamepad=ID, Axis=0, Comparison=4, Value=DEADZONE)
+        IF Gamepad :: Is button down  (Gamepad=ID, Button=15)
+      DO VPad :: Set value  (Instance variable=Right, Value=1)
+      IF Gamepad :: Is button down  (Gamepad=ID, Button=0)
+      DO VPad :: Set value  (Instance variable=Confirm, Value=1)
+      IF Gamepad :: Is button down  (Gamepad=ID, Button=2)
+      DO VPad :: Set value  (Instance variable=Cancel, Value=1)
+      IF Gamepad :: Is button down  (Gamepad=ID, Button=9)
+      DO VPad :: Set value  (Instance variable=Menu, Value=1)
+  ===== GROUP: Keyboard  |  
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=38)
+        IF Keyboard :: Key is down  (Key=87)
+      DO VPad :: Set value  (Instance variable=Up, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=40)
+        IF Keyboard :: Key is down  (Key=83)
+      DO VPad :: Set value  (Instance variable=Down, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=37)
+        IF Keyboard :: Key is down  (Key=65)
+      DO VPad :: Set value  (Instance variable=Left, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=39)
+        IF Keyboard :: Key is down  (Key=68)
+      DO VPad :: Set value  (Instance variable=Right, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=90)
+        IF Keyboard :: Key is down  (Key=13)
+      DO VPad :: Set value  (Instance variable=Confirm, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=88)
+        IF Keyboard :: Key is down  (Key=16)
+      DO VPad :: Set value  (Instance variable=Cancel, Value=1)
+      IF ANY-OF (OR):
+        IF Keyboard :: Key is down  (Key=67)
+        IF Keyboard :: Key is down  (Key=17)
+      DO VPad :: Set value  (Instance variable=Menu, Value=1)
+  ===== GROUP: Touch  |  
+      IF System :: Is on mobile device
+        VAR MobileWarned (number) = 0
+          IF System :: On start of layout
+          DO System :: Create object  (Object to create=TouchA, Layer="Touch", X=592, Y=48)
+          DO System :: Create object  (Object to create=TouchB, Layer="Touch", X=480, Y=48)
+              IF System :: Compare variable  (Variable=MobileWarned, Comparison=0, Value=0)
+              DO System :: Create object  (Object to create=DefaultFont, Layer="Touch", X=16, Y=400)
+              DO DefaultFont :: Set value  (Instance variable=Name, Value="MobileWarn")
+              DO DefaultFont :: Set value  (Instance variable=Timeout, Value=3)
+              DO DefaultFont :: Set size  (Width=512, Height=80)
+              DO DefaultFont :: Set scale  (Scale=2)
+              DO DefaultFont :: Set text  (Text="Don't play on mobile!" & newline & "You have been warned!")
+              DO System :: Set value  (Variable=MobileWarned, Value=1)
+          IF Touch :: On any touch start
+          DO Browser :: Request fullscreen  (Mode=4)
+          IF Touch :: On any touch start
+          IF System :: Compare two values  (First value=TouchDPad.Count, Comparison=0, Second value=0)
+            VAR CanvasX (number) = 0
+            VAR CanvasY (number) = 0
+            VAR X (number) = 0
+            VAR Y (number) = 0
+            VAR StartDPad (number) = 1
+              IF System :: Every tick
+              DO System :: Set value  (Variable=CanvasX, Value=Touch.AbsoluteXForID(Touch.TouchID))
+              DO System :: Set value  (Variable=CanvasY, Value=Touch.AbsoluteYForID(Touch.TouchID))
+              DO System :: Set value  (Variable=X, Value=CanvasToLayerX("Touch", CanvasX, CanvasY))
+              DO System :: Set value  (Variable=Y, Value=CanvasToLayerY("Touch", CanvasX, CanvasY))
+              DO System :: Set value  (Variable=StartDPad, Value=1)
+              IF System :: Pick overlapping point  (Object=TouchA, X=X, Y=Y)
+              DO System :: Set value  (Variable=StartDPad, Value=0)
+              IF System :: Pick overlapping point  (Object=TouchB, X=X, Y=Y)
+              DO System :: Set value  (Variable=StartDPad, Value=0)
+              IF System :: Compare variable  (Variable=StartDPad, Comparison=0, Value=1)
+              DO System :: Create object  (Object to create=TouchDPad, Layer="Touch", X=X, Y=Y)
+              DO TouchDPad :: Set value  (Instance variable=TouchID, Value=Touch.TouchID)
+          IF Touch :: On touched object  (Object=TouchA)
+          IF TouchA :: Compare instance variable  (Instance variable=TouchID, Comparison=0, Value=-1)
+          DO TouchA :: Set value  (Instance variable=TouchID, Value=Touch.TouchID)
+          IF Touch :: On touched object  (Object=TouchB)
+          IF TouchB :: Compare instance variable  (Instance variable=TouchID, Comparison=0, Value=-1)
+          DO TouchB :: Set value  (Instance variable=TouchID, Value=Touch.TouchID)
+          IF Touch :: On any touch end
+          IF TouchA :: Compare instance variable  (Instance variable=TouchID, Comparison=0, Value=Touch.TouchID)
+          DO TouchA :: Set value  (Instance variable=TouchID, Value=-1)
+          IF Touch :: On any touch end
+          IF TouchB :: Compare instance variable  (Instance variable=TouchID, Comparison=0, Value=Touch.TouchID)
+          DO TouchB :: Set value  (Instance variable=TouchID, Value=-1)
+          IF Touch :: On any touch end
+          IF TouchDPad :: Compare instance variable  (Instance variable=TouchID, Comparison=0, Value=Touch.TouchID)
+          DO TouchDPad :: Destroy
+          IF System :: Compare two values  (First value=TouchDPad.Count, Comparison=4, Second value=0)
+            VAR CanvasX (number) = 0
+            VAR CanvasY (number) = 0
+            VAR X (number) = 0
+            VAR Y (number) = 0
+            VAR TOUCH_ZONE (number) = 24 [const]
+              IF System :: Every tick
+              DO System :: Set value  (Variable=CanvasX, Value=Touch.AbsoluteXForID(TouchDPad.TouchID))
+              DO System :: Set value  (Variable=CanvasY, Value=Touch.AbsoluteYForID(TouchDPad.TouchID))
+              DO System :: Set value  (Variable=X, Value=CanvasToLayerX("Touch", CanvasX, CanvasY))
+              DO System :: Set value  (Variable=Y, Value=CanvasToLayerY("Touch", CanvasX, CanvasY))
+              IF System :: Compare two values  (First value=Y, Comparison=3, Second value=TouchDPad.Y - TOUCH_ZONE)
+              DO VPad :: Set value  (Instance variable=Up, Value=1)
+              IF System :: Compare two values  (First value=Y, Comparison=5, Second value=TouchDPad.Y + TOUCH_ZONE)
+              DO VPad :: Set value  (Instance variable=Down, Value=1)
+              IF System :: Compare two values  (First value=X, Comparison=3, Second value=TouchDPad.X - TOUCH_ZONE)
+              DO VPad :: Set value  (Instance variable=Left, Value=1)
+              IF System :: Compare two values  (First value=X, Comparison=5, Second value=TouchDPad.X + TOUCH_ZONE)
+              DO VPad :: Set value  (Instance variable=Right, Value=1)
+          IF System :: For Each  (Object=TouchButton)
+            VAR CanvasX (number) = 0
+            VAR CanvasY (number) = 0
+            VAR X (number) = 0
+            VAR Y (number) = 0
+              IF System :: Every tick
+              DO System :: Set value  (Variable=CanvasX, Value=Touch.AbsoluteXForID(TouchButton.TouchID))
+              DO System :: Set value  (Variable=CanvasY, Value=Touch.AbsoluteYForID(TouchButton.TouchID))
+              DO System :: Set value  (Variable=X, Value=CanvasToLayerX("Touch", CanvasX, CanvasY))
+              DO System :: Set value  (Variable=Y, Value=CanvasToLayerY("Touch", CanvasX, CanvasY))
+              DO TouchButton :: Set boolean  (Instance variable=Pressed, Value=0)
+              IF System :: Pick overlapping point  (Object=TouchButton, X=X, Y=Y)
+              DO TouchButton :: Set boolean  (Instance variable=Pressed, Value=1)
+              IF TouchButton :: Is boolean instance variable set  (Instance variable=Pressed)
+              DO TouchButton :: Set animation  (Animation="Pressed", From=1)
+              IF TouchButton :: Is boolean instance variable set [INVERTED]  (Instance variable=Pressed)
+              DO TouchButton :: Set animation  (Animation="Default", From=1)
+          IF TouchA :: Is boolean instance variable set  (Instance variable=Pressed)
+          DO VPad :: Set value  (Instance variable=Confirm, Value=1)
+          IF TouchB :: Is boolean instance variable set  (Instance variable=Pressed)
+          DO VPad :: Set value  (Instance variable=Cancel, Value=1)
+

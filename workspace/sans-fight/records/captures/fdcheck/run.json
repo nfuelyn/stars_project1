@@ -1,0 +1,62 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 5,
+  "dt": 0.03333333333333333,
+  "frames": 150,
+  "wallSeconds": 0,
+  "startedAt": "2026-10-06T05:44:11.784Z",
+  "finishedAt": "2026-10-06T05:44:11.832Z",
+  "final": {
+    "time": 4.999999999999992,
+    "frame": 150,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 0,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [],
+  "logCount": 1,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 4,
+      "shot": "mobile-16-9-t4_00.png"
+    }
+  ]
+}

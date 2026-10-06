@@ -1,0 +1,20 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "mobile-smoke",
+  "dt": 0.016666666666666666,
+  "desc": "手机冒烟：在 mobile-16-9（1280×720）上走「开局 → 撑完第 1 回合 → 菜单可点」。R1 回合时长 9s，故步进 9.3s 进入菜单。必须用独立画布运行（runCase args.canvasId = mobile-16-9），不与 PC 串联。点击坐标是设计画布像素：菜单第 1 个按钮中心 (280, 636)。",
+  "canvasId": "mobile-16-9",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestSeed", "value": 1 } },
+    { "kind": "step", "args": { "dt": 9.3 } },
+    { "kind": "pointer", "args": { "type": "click", "x": 280, "y": 636 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "game_start", "source": "client" },
+    { "kind": "log", "contains": "round_clear round=1", "source": "client" },
+    { "kind": "log", "contains": "menu_attack final=0", "source": "client" },
+    { "kind": "tree", "name": "Box", "exists": true },
+    { "kind": "tree", "name": "Menu_Attack", "exists": true }
+  ]
+}

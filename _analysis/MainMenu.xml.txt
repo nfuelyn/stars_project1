@@ -1,0 +1,147 @@
+INCLUDE 
+INCLUDE 
+INCLUDE 
+INCLUDE 
+INCLUDE 
+  IF System :: On start of layout
+  DO System :: Create object  (Object to create=BattleFont, Layer=0, X=8, Y=416)
+  DO BattleFont :: Set value  (Instance variable=Name, Value="Update")
+  DO BattleFont :: Set width  (Width=640)
+  DO BattleFont :: Set height  (Height=64)
+  DO BattleFont :: Set text  (Text="UPDATE TEXT")
+  DO BattleFont :: Set visible  (Visibility=0)
+  IF Browser :: On update found
+  DO Browser :: Log  (Type=0, Message="[DEBUG] Update found")
+  DO System :: Wait  (Seconds=0)
+      IF RPGText :: Compare instance variable  (Instance variable=Name, Comparison=0, Value="Update")
+      DO BattleFont :: Set text  (Text="UPDATE AVAILABLE." & newline & "DOWNLOADING...")
+      DO RPGText :: Set visible  (Visibility=1)
+  IF Browser :: On update ready
+  DO Browser :: Log  (Type=0, Message="[DEBUG] Update ready")
+  DO System :: Wait  (Seconds=0)
+      IF RPGText :: Compare instance variable  (Instance variable=Name, Comparison=0, Value="Update")
+      DO RPGText :: Set visible  (Visibility=1)
+      DO RPGText :: Set text  (Text="UPDATE AVAILABLE." & newline & "PLEASE REFRESH THE PAGE.")
+===== GROUP: MainMenu  |  
+    IF Function :: On function  (Name="MenuMain")
+    DO MenuItem :: Destroy
+    DO DefaultFont :: Destroy
+    DO Function :: Call function  (Name="MenuBackAction", Parameter {n}="")
+    DO System :: Create object  (Object to create=DefaultFont, Layer=0, X=0, Y=32)
+    DO DefaultFont :: Set size  (Width=640, Height=32)
+    DO DefaultFont :: Set scale  (Scale=2)
+    DO DefaultFont :: Set text  (Text="Select your bad time")
+    DO DefaultFont :: Set horizontal alignment  (Horizontal alignment=1)
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}96{###}0{###}"Normal"{###}"MenuModeNormal")
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}128{###}1{###}"Practice"{###}"MenuModePractice")
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}160{###}2{###}"Endless"{###}"MenuModeEndless")
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}192{###}3{###}"Single attack"{###}"MenuModeSingle")
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}224{###}4{###}"Custom attack"{###}"MenuModeCustom")
+    IF Function :: On function  (Name="MenuModeNormal")
+    DO System :: Set value  (Variable=SimulatorMode, Value=MODE_NORMAL)
+    DO System :: Go to layout  (Layout=BattleScreen)
+    IF Function :: On function  (Name="MenuModePractice")
+    DO System :: Set value  (Variable=SimulatorMode, Value=MODE_PRACTICE)
+    DO System :: Go to layout  (Layout=BattleScreen)
+    IF Function :: On function  (Name="MenuModeEndless")
+    DO MenuItem :: Destroy
+    DO DefaultFont :: Destroy
+    DO Function :: Call function  (Name="MenuBackAction", Parameter {n}="MenuMain")
+    DO System :: Set value  (Variable=SimulatorMode, Value=MODE_ENDLESS)
+        IF System :: For  (Name="", Start index=0, End index=1)
+        DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}96 + loopindex*32{###}loopindex{###}"Phase " & (loopindex + 1){###}"MenuEndless")
+    IF Function :: On function  (Name="MenuEndless")
+    DO System :: Set value  (Variable=EndlessStage, Value=MenuStack.At(MenuStack.Width-2))
+    DO System :: Go to layout  (Layout=BattleScreen)
+    IF Function :: On function  (Name="MenuModeSingle")
+    DO MenuItem :: Destroy
+    DO DefaultFont :: Destroy
+    DO Function :: Call function  (Name="MenuBackAction", Parameter {n}="MenuMain")
+    DO System :: Set value  (Variable=SimulatorMode, Value=MODE_SINGLE)
+    DO System :: Create object  (Object to create=DefaultFont, Layer=0, X=0, Y=32)
+    DO DefaultFont :: Set size  (Width=640, Height=32)
+    DO DefaultFont :: Set scale  (Scale=2)
+    DO DefaultFont :: Set text  (Text="Choose an attack")
+    DO DefaultFont :: Set horizontal alignment  (Horizontal alignment=1)
+        IF System :: For  (Name="", Start index=0, End index=AttackLoader.Width-1)
+        DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}96 + loopindex*32{###}loopindex{###}AttackLoader.At(loopindex){###}"MenuSingleAttack")
+    IF Function :: On function  (Name="MenuSingleAttack")
+    DO System :: Set value  (Variable=SingleAttack, Value=AttackLoader.At(MenuStack.At(MenuStack.Width-2)))
+    DO System :: Go to layout  (Layout=BattleScreen)
+    IF Function :: On function  (Name="MenuModeCustom")
+    DO MenuItem :: Destroy
+    DO DefaultFont :: Destroy
+    DO FileChooser :: Destroy
+    DO Function :: Call function  (Name="MenuBackAction", Parameter {n}="MenuMain")
+    DO System :: Create object  (Object to create=DefaultFont, Layer=0, X=0, Y=32)
+    DO DefaultFont :: Set size  (Width=640, Height=32)
+    DO DefaultFont :: Set scale  (Scale=2)
+    DO DefaultFont :: Set text  (Text="Custom attack")
+    DO DefaultFont :: Set horizontal alignment  (Horizontal alignment=1)
+    DO System :: Set value  (Variable=SimulatorMode, Value=MODE_SINGLE)
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}96{###}0{###}"Documentation"{###}"")
+    DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}128{###}1{###}"Load file"{###}"MenuCustomSelect")
+      VAR Action (text) = 
+        IF AttackList :: Has key  (Key="custom")
+        DO System :: Set value  (Variable=Action, Value="MenuCustomRun")
+        IF System :: Every tick
+        DO Function :: Call function  (Name="CreateMenuItem", Parameter {n}=0{###}192{###}160{###}2{###}"Run attack"{###}Action)
+    IF Function :: On function  (Name="MenuCustomSelect")
+    DO MenuItem :: Destroy
+    DO DefaultFont :: Destroy
+    DO Function :: Call function  (Name="MenuBackAction", Parameter {n}="MenuModeCustom")
+    DO System :: Create object  (Object to create=MenuItem, Layer=0, X=192, Y=96)
+    DO MenuItem :: Set boolean  (Instance variable=Created, Value=1)
+    DO System :: Create object  (Object to create=FileChooser, Layer=0, X=224, Y=96)
+    DO Browser :: Execute Javascript  (Javascript="document.getElementById('filechooser').focus();")
+    IF Function :: On function  (Name="MenuCustomRun")
+    DO System :: Set value  (Variable=SingleAttack, Value="custom")
+    DO System :: Go to layout  (Layout=BattleScreen)
+    IF FileChooser :: On changed
+    DO AJAX :: Request URL  (Tag="custom", URL=FileChooser.FileURLAt(0))
+    IF AJAX :: On completed  (Tag="custom")
+    DO AttackList :: Add key  (Key="custom", Value=AJAX.LastData)
+    DO System :: Create object  (Object to create=BattleFont, Layer=0, X=8, Y=8)
+    DO BattleFont :: Set text  (Text="CUSTOM ATTACK LOADED")
+    DO BattleFont :: Set width  (Width=640)
+    DO BattleFont :: Set height  (Height=32)
+    DO BattleFont :: Set value  (Instance variable=Timeout, Value=1)
+    IF System :: On start of layout
+    DO System :: Set value  (Variable=HP, Value=MaxHP)
+    IF ANY-OF (OR):
+      IF System :: On start of layout
+      IF Function :: On function  (Name="AttackLoadFinished")
+        IF System :: Compare two values  (First value=AttackList.KeyCount, Comparison=5, Second value=AttackLoader.Width)
+        DO System :: Create object  (Object to create=PlayerHeart, Layer=0, X=0, Y=0)
+        DO PlayerHeart :: Set angle  (Angle=90)
+        DO PlayerHeart :: Set effect parameter  (Effect="Tint", Parameter index=0, Value=100)
+        DO PlayerHeart :: Set effect parameter  (Effect="Tint", Parameter index=1, Value=0)
+        DO PlayerHeart :: Set effect parameter  (Effect="Tint", Parameter index=2, Value=0)
+        DO PlayerHeart :: Set visible  (Visibility=1)
+        DO Function :: Call function  (Name="MenuMain", Parameter {n}=)
+          VAR FirstStart (number) = 1
+            IF System :: Compare variable  (Variable=FirstStart, Comparison=0, Value=1)
+            DO System :: Set value  (Variable=FirstStart, Value=0)
+                IF System :: Compare two values  (First value=Browser.QueryParam("mode"), Comparison=0, Second value="normal")
+                DO System :: Set value  (Variable=SimulatorMode, Value=MODE_NORMAL)
+                DO System :: Go to layout  (Layout=BattleScreen)
+                IF System :: Compare two values  (First value=Browser.QueryParam("mode"), Comparison=0, Second value="endless1")
+                DO System :: Set value  (Variable=SimulatorMode, Value=MODE_ENDLESS)
+                DO System :: Set value  (Variable=EndlessStage, Value=0)
+                DO System :: Go to layout  (Layout=BattleScreen)
+                IF System :: Compare two values  (First value=Browser.QueryParam("mode"), Comparison=0, Second value="endless2")
+                DO System :: Set value  (Variable=SimulatorMode, Value=MODE_ENDLESS)
+                DO System :: Set value  (Variable=EndlessStage, Value=1)
+                DO System :: Go to layout  (Layout=BattleScreen)
+                IF System :: Compare two values  (First value=Browser.QueryParam("mode"), Comparison=0, Second value="single")
+                IF AttackList :: Has key  (Key=Browser.QueryParam("attack"))
+                DO System :: Set value  (Variable=SimulatorMode, Value=MODE_SINGLE)
+                DO System :: Set value  (Variable=SingleAttack, Value=Browser.QueryParam("attack"))
+                DO System :: Go to layout  (Layout=BattleScreen)
+    IF System :: Every tick
+    DO Function :: Call function  (Name="RunMenu", Parameter {n}=)
+    IF MenuItem :: Compare instance variable  (Instance variable=ID, Comparison=0, Value=MenuStack.Back)
+    DO PlayerHeart :: Set X  (X=MenuItem.X + 8)
+    DO PlayerHeart :: Set Y  (Y=MenuItem.Y + 12)
+    DO System :: Scroll to Y  (Y=MenuItem.Y - 16)
+

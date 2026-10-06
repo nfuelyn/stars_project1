@@ -1,0 +1,3301 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "full-run",
+  "dt": 0.2,
+  "playerCount": 1,
+  "events": [
+    {
+      "t": 1,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 305.5,
+        "y": 375
+      }
+    },
+    {
+      "t": 4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 4.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 4.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 6,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 6.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 6.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 8.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 8.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 10,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 10.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 10.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 12,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 12.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 12.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 14,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 14.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 14.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 16,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 16.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 16.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 18,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 18.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 18.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 20,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 20.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 20.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 22,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 22.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 22.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 24,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 24.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 24.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 26,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 26.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 26.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 28,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 28.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 28.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 30,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 30.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 30.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 32,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 32.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 32.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 34,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 34.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 34.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 36,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 36.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 36.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 38,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 38.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 38.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 40,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 40.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 40.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 42,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 42.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 42.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 44,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 44.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 44.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 46,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 46.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 46.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 48,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 48.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 48.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 50,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 50.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 50.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 52,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 52.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 52.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 54,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 54.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 54.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 56,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 56.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 56.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 58,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 58.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 58.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 60,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 60.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 60.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 62,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 62.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 62.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 64,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 64.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 64.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 66,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 66.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 66.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 68,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 68.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 68.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 70,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 70.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 70.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 72,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 72.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 72.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 74,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 74.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 74.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 76,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 76.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 76.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 78,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 78.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 78.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 80,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 80.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 80.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 82,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 82.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 82.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 84,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 84.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 84.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 86,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 86.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 86.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 88,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 88.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 88.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 90,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 90.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 90.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 92,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 92.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 92.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 94,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 94.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 94.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 96,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 96.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 96.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 98,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 98.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 98.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 100,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 100.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 100.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 102,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 102.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 102.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 104,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 104.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 104.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 106,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 106.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 106.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 108,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 108.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 108.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 110,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 110.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 110.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 112,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 112.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 112.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 114,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 114.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 114.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 116,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 116.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 116.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 118,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 118.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 118.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 120,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 120.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 120.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 122,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 122.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 122.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 124,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 124.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 124.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 126,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 126.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 126.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 128,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 128.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 128.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 130,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 130.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 130.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 132,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 132.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 132.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 134,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 134.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 134.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 136,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 136.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 136.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 138,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 138.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 138.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 140,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 140.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 140.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 142,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 142.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 142.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 144,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 144.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 144.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 146,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 146.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 146.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 148,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 148.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 148.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 150,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 150.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 150.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 152,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 152.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 152.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 154,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 154.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 154.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 156,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 156.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 156.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 158,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 158.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 158.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 160,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 160.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 160.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 162,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 162.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 162.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 164,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 164.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 164.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 166,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 166.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 166.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 168,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 168.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 168.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 170,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 170.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 170.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 172,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 172.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 172.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 174,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 174.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 174.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 176,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 176.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 176.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 178,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 178.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 178.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 180,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 180.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 180.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 182,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 182.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 182.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 184,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 184.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 184.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 186,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 186.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 186.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 188,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 188.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 188.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 190,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 190.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 190.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 192,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 192.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 192.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 194,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 194.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 194.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 196,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 196.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 196.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 198,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 198.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 198.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 200,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 200.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 200.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 202,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 202.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 202.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 204,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 204.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 204.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 206,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 206.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 206.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 208,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 208.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 208.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 210,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 210.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 210.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 212,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 212.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 212.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 214,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 214.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 214.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 216,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 216.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 216.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 218,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 218.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 218.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    },
+    {
+      "t": 220,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 88.5
+      }
+    },
+    {
+      "t": 220.4,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 64.5
+      }
+    },
+    {
+      "t": 220.8,
+      "source": "user",
+      "kind": "pointer",
+      "payload": {
+        "type": "click",
+        "x": 370,
+        "y": 42
+      }
+    }
+  ],
+  "asserts": [
+    {
+      "kind": "log",
+      "at": 10,
+      "contains": "main: 阶段 title → enemy"
+    },
+    {
+      "kind": "log",
+      "at": 220,
+      "contains": "→ result"
+    }
+  ]
+}

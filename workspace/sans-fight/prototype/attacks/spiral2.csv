@@ -1,0 +1,33 @@
+# spiral2 —— 螺旋龙骨炮 · 中档（内部回合 18，HUD 显示 ROUND 19 / 20）
+# 与 spiral1 同一套几何（原作阶段④），参数收到更接近原作：gt→160 / gin→1.70 / 0.015 / 0.075s，
+# 框缩到 237 宽 —— 每发转角更大（10·gin 度）、间隔更短、走位空间更小。
+0,CombatZoneResize,205,226,442,391,TLResume
+0,HeartTeleport,320,306
+0,HeartMode,0
+0,TLPause
+0,SansHead,BlueEye
+0,SansX,320
+0,Sound,GasterBlaster
+0,SET,gt,0
+0,SET,gin,1
+0,:Loop
+0,MUL,Ang,$gt,-10
+0,COS,X,$Ang
+0,SIN,Y,$Ang
+0,MUL,EndX,$X,150
+0,MUL,EndY,$Y,150
+0,MUL,X,$EndX,3
+0,MUL,Y,$EndY,3
+0,ADD,X,$X,320
+0,ADD,Y,$Y,306
+0,ADD,EndX,$EndX,320
+0,ADD,EndY,$EndY,306
+0,ADD,Ang,$Ang,180
+0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.5,0,0,5
+0,ADD,gt,$gt,$gin
+0,JMPNL,Tail,$gin,1.7
+0,ADD,gin,$gin,0.015
+0,:Tail
+0.075,JMPL,Loop,$gt,160
+0,SansHead,Default
+0,EndAttack

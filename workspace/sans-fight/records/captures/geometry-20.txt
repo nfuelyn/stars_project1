@@ -1,0 +1,145 @@
+main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0
+main: 平台 = PC 分支（键盘移动/确认；指针只点 UI，无摇杆）
+main start: build=2026-10-05-bluejump device=unknown touch=false mode=core pool=692 flash=true cursor=true
+
+== geometry：世界实体只被平移一次（画布换算之外不允许再有平移）
+     画布 1280x720 → S=1.500 OX=160.0 OY=0.0（mobile-16-9）
+     A = 绘制位置 vs core 命令坐标；B = 绘制位置 vs 碰撞循环用的判定几何（由 game 状态独立算出）
+main: 阶段 nil → enemy (round=0 hp=99999)
+main: mode=core device=unknown touch=false frame=151 pool=692 cmds=29 box=(239,226,165,165) hp=99992 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=0 hp=99982)
+main: 阶段 menu → attack (round=0 hp=99982)
+main: mode=core device=unknown touch=false frame=302 pool=692 cmds=12 box=(239,226,165,165) hp=99981 phase=attack soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=453 pool=692 cmds=12 box=(239,226,165,165) hp=99971 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=1 hp=99968)
+main: mode=core device=unknown touch=false frame=604 pool=692 cmds=14 box=(241,226,165,165) hp=99959 phase=enemy soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=755 pool=692 cmds=13 box=(241,226,165,165) hp=99948 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=1 hp=99947)
+main: 阶段 menu → attack (round=1 hp=99947)
+main: mode=core device=unknown touch=false frame=906 pool=692 cmds=12 box=(241,226,165,165) hp=99942 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=2 hp=99942)
+main: mode=core device=unknown touch=false frame=1057 pool=692 cmds=22 box=(133,251,375,140) hp=99938 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1208 pool=692 cmds=11 box=(133,251,375,140) hp=99926 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=2 hp=99921)
+main: 阶段 menu → attack (round=2 hp=99921)
+main: mode=core device=unknown touch=false frame=1359 pool=692 cmds=12 box=(133,251,375,140) hp=99916 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=3 hp=99914)
+main: mode=core device=unknown touch=false frame=1510 pool=692 cmds=10 box=(133,251,375,140) hp=99914 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1661 pool=692 cmds=20 box=(133,251,375,140) hp=99903 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=3 hp=99892)
+main: 阶段 menu → attack (round=3 hp=99892)
+main: mode=core device=unknown touch=false frame=1812 pool=692 cmds=12 box=(133,251,375,140) hp=99890 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1963 pool=692 cmds=12 box=(133,251,375,140) hp=99880 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=4 hp=99878)
+main: mode=core device=unknown touch=false frame=2114 pool=692 cmds=21 box=(133,251,375,140) hp=99868 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=2265 pool=692 cmds=10 box=(133,251,375,140) hp=99857 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=4 hp=99855)
+main: 阶段 menu → attack (round=4 hp=99855)
+main: mode=core device=unknown touch=false frame=2416 pool=692 cmds=12 box=(133,251,375,140) hp=99847 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=5 hp=99844)
+main: mode=core device=unknown touch=false frame=2567 pool=692 cmds=14 box=(133,251,375,140) hp=99844 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=2718 pool=692 cmds=10 box=(133,251,375,140) hp=99832 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=5 hp=99819)
+main: 阶段 menu → attack (round=5 hp=99819)
+main: mode=core device=unknown touch=false frame=2869 pool=692 cmds=12 box=(133,251,375,140) hp=99818 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=3020 pool=692 cmds=12 box=(133,251,375,140) hp=99807 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=6 hp=99805)
+main: WARN 战斗框坐标异常 (171,276) 305x115 中心偏(+4,+25) 越界0px -- 已按原样绘制，请查 core
+main: mode=core device=unknown touch=false frame=3171 pool=692 cmds=20 box=(121,276,405,115) hp=99794 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=3322 pool=692 cmds=13 box=(121,276,405,115) hp=99781 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=6 hp=99774)
+main: 阶段 menu → attack (round=6 hp=99774)
+main: mode=core device=unknown touch=false frame=3473 pool=692 cmds=12 box=(33,251,575,140) hp=99770 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=7 hp=99760)
+main: mode=core device=unknown touch=false frame=3624 pool=692 cmds=10 box=(105,242,430,149) hp=99760 phase=enemy soul=320,309 joy=off
+main: mode=core device=unknown touch=false frame=3775 pool=692 cmds=13 box=(133,251,375,140) hp=99745 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=7 hp=99737)
+main: 阶段 menu → attack (round=7 hp=99737)
+main: mode=core device=unknown touch=false frame=3926 pool=692 cmds=12 box=(133,251,375,140) hp=99733 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=8 hp=99723)
+main: mode=core device=unknown touch=false frame=4077 pool=692 cmds=10 box=(195,237,251,154) hp=99723 phase=enemy soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=4228 pool=692 cmds=10 box=(241,226,165,165) hp=99709 phase=enemy soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=4379 pool=692 cmds=18 box=(33,251,574,140) hp=99696 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=8 hp=99688)
+main: 阶段 menu → attack (round=8 hp=99688)
+main: mode=core device=unknown touch=false frame=4530 pool=692 cmds=12 box=(33,251,575,140) hp=99684 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=9 hp=99674)
+main: mode=core device=unknown touch=false frame=4681 pool=692 cmds=10 box=(187,245,267,146) hp=99674 phase=enemy soul=321,377 joy=off
+main: mode=core device=unknown touch=false frame=4832 pool=692 cmds=45 box=(133,251,375,140) hp=99660 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=9 hp=99647)
+main: 阶段 menu → attack (round=9 hp=99647)
+main: mode=core device=unknown touch=false frame=4983 pool=692 cmds=12 box=(133,251,375,140) hp=99647 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=5134 pool=692 cmds=12 box=(133,251,375,140) hp=99637 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=10 hp=99633)
+main: mode=core device=unknown touch=false frame=5285 pool=692 cmds=25 box=(133,251,375,140) hp=99626 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=10 hp=99615)
+main: 阶段 menu → attack (round=10 hp=99615)
+main: mode=core device=unknown touch=false frame=5436 pool=692 cmds=12 box=(133,251,375,140) hp=99614 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=5587 pool=692 cmds=12 box=(133,251,375,140) hp=99604 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=11 hp=99601)
+main: mode=core device=unknown touch=false frame=5738 pool=692 cmds=10 box=(241,226,165,165) hp=99594 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=11 hp=99585)
+main: 阶段 menu → attack (round=11 hp=99585)
+main: mode=core device=unknown touch=false frame=5889 pool=692 cmds=12 box=(241,226,165,165) hp=99584 phase=attack soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=6040 pool=692 cmds=12 box=(241,226,165,165) hp=99574 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=12 hp=99571)
+main: mode=core device=unknown touch=false frame=6191 pool=692 cmds=35 box=(133,251,375,140) hp=99562 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=12 hp=99548)
+main: 阶段 menu → attack (round=12 hp=99548)
+main: mode=core device=unknown touch=false frame=6342 pool=692 cmds=12 box=(133,251,375,140) hp=99548 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=6493 pool=692 cmds=12 box=(133,251,375,140) hp=99538 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=13 hp=99534)
+     跑了 6600 帧（220.0s），A 对账 6600 帧
+
+== A：绘制位置 == core 命令的世界坐标（误差 ≤1px）
+  ok   A/bone：整场出现过（17122 条）
+  ok   A/bone：17122/17122 条一致
+  ok   A/blaster：整场出现过（634 条）
+  ok   A/blaster：634/634 条一致
+  ok   A/sine：整场出现过（6088 条）
+  ok   A/sine：6088/6088 条一致
+  ok   A/stab：整场出现过（75 条）
+  ok   A/stab：75/75 条一致
+  ok   A/platform：整场出现过（5866 条）
+  ok   A/platform：5866/5866 条一致
+  ok   A/wall：整场出现过（292 条）
+  ok   A/wall：292/292 条一致
+  ok   A/soul：整场出现过（8403 条）
+  ok   A/soul：8403/8403 条一致
+  ok   A：7 类世界实体全覆盖（实测 7 类）
+
+== B：绘制位置 == 判定几何（由 game 状态算出，误差 ≤1px）
+  ok   B/bone：整场出现过（17122 条）
+  ok   B/bone：17122/17122 条绘制位置 == 判定矩形
+  ok   B/blaster：整场出现过（532 条）
+  ok   B/blaster：532/532 条绘制位置 == 判定矩形
+  ok   B/sine：整场出现过（6088 条）
+  ok   B/sine：6088/6088 条绘制位置 == 判定矩形
+  ok   B/stab：整场出现过（75 条）
+  ok   B/stab：75/75 条绘制位置 == 判定矩形
+  ok   B/platform：整场出现过（5866 条）
+  ok   B/platform：5866/5866 条绘制位置 == 判定矩形
+  ok   B/wall：整场出现过（292 条）
+  ok   B/wall：292/292 条绘制位置 == 判定矩形
+  ok   B/soul：整场出现过（8403 条）
+  ok   B/soul：8403/8403 条绘制位置 == 判定矩形
+  ok   B：7 类世界实体全覆盖（实测 7 类 / 38378 条）
+  ok   反证：整体 +BOX_OFF 后命中率 ≤ 2%（命中 11 / 干净 115225 = 0.01%）
+  ok   控件属性写入 0 违规（0）
+  ok   整帧绘制失败 0 次（0）
+
+------------------------------
+PASS 33 / FAIL 0

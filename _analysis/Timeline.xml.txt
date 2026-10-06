@@ -1,0 +1,144 @@
+===== GROUP: Timeline  |  
+  VAR Running (number) = 0
+  VAR Line (number) = 0
+  VAR T (number) = 0
+  VAR PanicFunc (text) = 
+  VAR RunCount (number) = 0
+    IF System :: On start of layout
+    IF Function :: On function  (Name="TLPanic")
+    DO System :: Set value  (Variable=PanicFunc, Value=Function.Param(0))
+    IF Function :: On function  (Name="TLPlay")
+    DO TLActionList :: Set size  (Width=0, Height=1, Depth=1)
+    DO TLLabels :: Clear
+    DO TLVars :: Clear
+    DO TLVars :: Add key  (Key="pi", Value=pi)
+      VAR Text (text) = 
+      VAR Count (number) = 0
+      VAR LineText (text) = 
+        IF System :: Every tick
+        DO System :: Set value  (Variable=Text, Value=Function.Param(0))
+        DO System :: Set value  (Variable=Count, Value=tokencount(Text, newline))
+        IF System :: For  (Name="", Start index=0, End index=Count-1)
+        DO System :: Set value  (Variable=LineText, Value=tokenat(Text, loopindex, newline))
+        DO TLActionList :: Push  (Where=0, Value=LineText, Axis=0)
+          VAR Token (text) = 
+            IF System :: Every tick
+            DO System :: Set value  (Variable=Token, Value=tokenat(LineText, 1, ","))
+            IF System :: Compare two values  (First value=left(Token, 1), Comparison=0, Second value=":")
+            DO System :: Set value  (Variable=Token, Value=mid(Token, 1, 1000))
+            DO TLLabels :: Add key  (Key=Token, Value=loopindex + 1)
+        IF System :: Every tick
+        DO System :: Set value  (Variable=T, Value=0)
+        DO System :: Set value  (Variable=Line, Value=1)
+        DO Function :: Call function  (Name="TLLoadLine", Parameter {n}=)
+        DO System :: Set value  (Variable=Running, Value=1)
+    IF Function :: On function  (Name="TLLoadLine")
+    DO TLCurrentLine :: Set size  (Width=0, Height=1, Depth=1)
+      VAR Text (text) = 
+      VAR Count (number) = 0
+        IF System :: Every tick
+        DO System :: Set value  (Variable=Text, Value=TLActionList.At(Line-1))
+        DO System :: Set value  (Variable=Count, Value=tokencount(Text, ","))
+        IF System :: For  (Name="", Start index=0, End index=Count-1)
+          VAR Token (text) = 
+            IF System :: Every tick
+            DO System :: Set value  (Variable=Token, Value=tokenat(Text, loopindex, ","))
+            IF System :: Compare two values  (First value=left(Token, 1), Comparison=0, Second value="$")
+            DO TLCurrentLine :: Push  (Where=0, Value=TLVars.Get(mid(Token, 1, 1000)), Axis=0)
+            IF System :: Else
+            DO TLCurrentLine :: Push  (Where=0, Value=Token, Axis=0)
+    IF Function :: On function  (Name="TLPause")
+    DO System :: Set value  (Variable=Running, Value=0)
+    IF Function :: On function  (Name="TLResume")
+    DO System :: Set value  (Variable=Running, Value=1)
+    IF Function :: On function  (Name="TLIsRunning")
+    DO Function :: Set return value  (Value=Running)
+    IF Function :: On function  (Name="TLStop")
+    DO TLActionList :: Set size  (Width=0, Height=1, Depth=1)
+    DO TLCurrentLine :: Set size  (Width=0, Height=1, Depth=1)
+    DO System :: Set value  (Variable=Running, Value=0)
+    IF System :: While
+    IF System :: Compare variable  (Variable=Running, Comparison=4, Value=0)
+    IF System :: Compare variable  (Variable=Line, Comparison=4, Value=0)
+    IF System :: Compare variable  (Variable=Line, Comparison=3, Value=TLActionList.Width)
+    IF System :: Compare variable  (Variable=T, Comparison=5, Value=float(TLCurrentLine.At(0)))
+        IF System :: Compare two values  (First value=left(TLCurrentLine.At(1), 1), Comparison=1, Second value=":")
+        DO Function :: Call function  (Name=TLCurrentLine.At(1), Parameter {n}=TLCurrentLine.At(2){###}TLCurrentLine.At(3){###}TLCurrentLine.At(4){###}TLCurrentLine.At(5){###}TLCurrentLine.At(6){###}TLCurrentLine.At(7){###}TLCurrentLine.At(8){###}TLCurrentLine.At(9){###}TLCurrentLine.At(10))
+        IF System :: Every tick
+        DO System :: Subtract from  (Variable=T, Value=float(TLCurrentLine.At(0)))
+        DO System :: Add to  (Variable=Line, Value=1)
+        DO Function :: Call function  (Name="TLLoadLine", Parameter {n}=)
+        DO System :: Add to  (Variable=RunCount, Value=1)
+        IF System :: Compare variable  (Variable=RunCount, Comparison=5, Value=1000)
+        DO System :: Set value  (Variable=Running, Value=0)
+        DO Function :: Call function  (Name=PanicFunc, Parameter {n}="Infinite loop detected line " & Line)
+    IF System :: Compare variable  (Variable=Running, Comparison=4, Value=0)
+    DO System :: Add to  (Variable=T, Value=dt)
+  ===== GROUP: TimelineCPU  |  
+      IF Function :: On function  (Name="SET")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=Function.Param(1))
+      IF Function :: On function  (Name="ADD")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) + float(Function.Param(2)))
+      IF Function :: On function  (Name="SUB")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) - float(Function.Param(2)))
+      IF Function :: On function  (Name="MUL")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) * float(Function.Param(2)))
+      IF Function :: On function  (Name="DIV")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) / float(Function.Param(2)))
+      IF Function :: On function  (Name="MOD")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) % float(Function.Param(2)))
+      IF Function :: On function  (Name="FLOOR")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=floor(float(Function.Param(1))))
+      IF Function :: On function  (Name="DEG")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) * 180 / pi)
+      IF Function :: On function  (Name="RAD")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=float(Function.Param(1)) * pi / 180)
+      IF Function :: On function  (Name="SIN")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=sin(float(Function.Param(1))))
+      IF Function :: On function  (Name="COS")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=cos(float(Function.Param(1))))
+      IF Function :: On function  (Name="ANGLE")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=angle(float(Function.Param(1)), float(Function.Param(2)), float(Function.Param(3)), float(Function.Param(4))))
+      IF Function :: On function  (Name="RND")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=floor(random(int(Function.Param(1)))))
+      IF Function :: On function  (Name="JMPABS")
+          IF System :: Test regex  (String=Function.Param(0), Regex="^[0-9]+$", Flags="gi")
+          DO System :: Set value  (Variable=Line, Value=int(Function.Param(0))-1)
+          IF System :: Else
+              IF TLLabels :: Has key  (Key=Function.Param(0))
+              DO System :: Set value  (Variable=Line, Value=TLLabels.Get(Function.Param(0))-1)
+              IF System :: Else
+              DO System :: Set value  (Variable=Running, Value=0)
+              DO Function :: Call function  (Name=PanicFunc, Parameter {n}="Label " & Function.Param(0) & " does not exist line " & Line)
+      IF Function :: On function  (Name="JMPREL")
+      DO System :: Add to  (Variable=Line, Value=int(Function.Param(0))-1)
+      IF Function :: On function  (Name="JMPZ")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=0, Second value=0)
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPNZ")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=1, Second value=0)
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPE")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=0, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPNE")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=1, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPL")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=2, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPNL")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=5, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPG")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=4, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="JMPNG")
+      IF System :: Compare two values  (First value=float(Function.Param(1)), Comparison=3, Second value=float(Function.Param(2)))
+      DO Function :: Call function  (Name="JMPABS", Parameter {n}=Function.Param(0))
+      IF Function :: On function  (Name="GetHeartPos")
+      DO TLVars :: Add key  (Key=Function.Param(0), Value=PlayerHeart.X)
+      DO TLVars :: Add key  (Key=Function.Param(1), Value=PlayerHeart.Y)
+      IF Function :: On function  (Name="Debug")
+      DO System :: Set time scale  (Time scale=0)
+

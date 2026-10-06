@@ -1,0 +1,16 @@
+VAR HEARTMODE_RED (number) = 0 [const]
+VAR HEARTMODE_BLUE (number) = 1 [const]
+VAR MODE_NORMAL (number) = 0 [const]
+VAR MODE_ENDLESS (number) = 1 [const]
+VAR MODE_SINGLE (number) = 2 [const]
+VAR MODE_PRACTICE (number) = 3 [const]
+VAR SimulatorMode (number) = 0
+VAR EndlessStage (number) = 0
+VAR PracticeTarget (number) = 60
+VAR SingleAttack (text) = 
+VAR Name (text) = Chara
+VAR HP (number) = 92
+VAR MaxHP (number) = 92
+VAR KR (number) = 0
+VAR KR_T (number) = 0
+

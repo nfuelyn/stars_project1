@@ -1,0 +1,16 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "first-success",
+  "dt": 0.016666666666666666,
+  "desc": "第一次成功：无伤通过第 1 回合的第 1 波（R1 第 1 波保证出生点留安全位，所以本用例不需要输入序列）。骨头有四段生命：冒头 0.5s（非致命预示）→ 伸出 → 保持 → 收回，因此第 1 波完整走完约在 2.2s，用例步进 2.8s。关联 C5/C8/C14。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestSeed", "value": 1 } },
+    { "kind": "step", "args": { "dt": 2.8 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "wave_peek wave=1", "source": "client" },
+    { "kind": "log", "contains": "wave_clear wave=1 hp=20", "source": "client" },
+    { "kind": "log", "contains": "round_start round=1", "source": "client" }
+  ]
+}

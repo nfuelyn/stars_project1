@@ -1,0 +1,39 @@
+  IF ANY-OF (OR):
+    IF System :: On start of layout
+    IF BattleFont :: On created
+  DO BattleFont :: Set character width  (Character="!""#%-/0123456789<=>?ABCDEFGHIJKLNOPQRSTUVXYZ[\]_", Width=5)
+  DO BattleFont :: Set character width  (Character="""()<>[]", Width=4)
+  DO BattleFont :: Set character width  (Character=" -", Width=3)
+  DO BattleFont :: Set character width  (Character="',.:;", Width=2)
+  IF ANY-OF (OR):
+    IF System :: On start of layout
+    IF DamageFont :: On created
+  DO DamageFont :: Set character width  (Character="~", Width=29)
+  DO DamageFont :: Set character width  (Character="""/<>I^j{}", Width=25)
+  DO DamageFont :: Set character width  (Character="(),1[]`", Width=21)
+  DO DamageFont :: Set character width  (Character="!'.:;il|", Width=17)
+  IF ANY-OF (OR):
+    IF System :: On start of layout
+    IF DefaultFont :: On created
+  DO DefaultFont :: Set character width  (Character="#%&MWmw~", Width=9)
+  DO DefaultFont :: Set character width  (Character=" $*+-./0123456789=?@ABCDEFGHIJKLNOPQRSTUVXYZ\^abcdefghijklnopqrstuvxyz", Width=8)
+  DO DefaultFont :: Set character width  (Character="""<>{}", Width=7)
+  DO DefaultFont :: Set character width  (Character="!()[]_", Width=6)
+  DO DefaultFont :: Set character width  (Character="`", Width=5)
+  DO DefaultFont :: Set character width  (Character="',:;|", Width=4)
+  IF ANY-OF (OR):
+    IF System :: On start of layout
+    IF SansFont :: On created
+  DO SansFont :: Set character width  (Character="W", Width=15)
+  DO SansFont :: Set character width  (Character="@", Width=14)
+  DO SansFont :: Set character width  (Character="%Q", Width=13)
+  DO SansFont :: Set character width  (Character="MO", Width=12)
+  DO SansFont :: Set character width  (Character="#&GNVX_", Width=11)
+  DO SansFont :: Set character width  (Character=" $ACHJSTUYZmw", Width=10)
+  DO SansFont :: Set character width  (Character="247?BDEKdxy~", Width=9)
+  DO SansFont :: Set character width  (Character="*+/0135689FILR\^abcefghknopqrtuvz", Width=8)
+  DO SansFont :: Set character width  (Character="-=Pjs{}", Width=7)
+  DO SansFont :: Set character width  (Character="()<>[]", Width=6)
+  DO SansFont :: Set character width  (Character=""";`", Width=5)
+  DO SansFont :: Set character width  (Character="!',.:il|", Width=4)
+

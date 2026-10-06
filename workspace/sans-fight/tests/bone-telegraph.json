@@ -1,0 +1,15 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "bone-telegraph",
+  "dt": 0.016666666666666666,
+  "desc": "骨头预示（C14）：地面骨头先「冒头」0.5s（非致命、纯预示）再伸出，且同一时刻只有一波处于致命阶段。autotest 只能断言到「冒头波已产生」；冒头时长的精确测量在 L1（prototype/selftest.js 的 bone-telegraph 段，实测 ≈0.5s）。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestSeed", "value": 1 } },
+    { "kind": "step", "args": { "dt": 1.2 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "wave_peek wave=1", "source": "client" },
+    { "kind": "log", "contains": "wave_clear", "source": "client" }
+  ]
+}

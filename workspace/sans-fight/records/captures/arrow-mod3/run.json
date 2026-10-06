@@ -1,0 +1,93 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 2.6,
+  "dt": 0.03333333333333333,
+  "frames": 78,
+  "wallSeconds": 0.5,
+  "startedAt": "2026-10-05T12:41:18.850Z",
+  "finishedAt": "2026-10-05T12:41:19.353Z",
+  "final": {
+    "time": 2.6000000000000005,
+    "frame": 78,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 28,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-arrow device=Mobile touch=true mode=core pool=692 flash=true cursor=true"
+  ],
+  "logCount": 69,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 1.0666666666666667,
+      "shot": "mobile-16-9-t1_07.png"
+    },
+    {
+      "t": 1.1333333333333333,
+      "shot": "mobile-16-9-t1_13.png"
+    },
+    {
+      "t": 1.2333333333333334,
+      "shot": "mobile-16-9-t1_23.png"
+    },
+    {
+      "t": 1.2666666666666666,
+      "shot": "mobile-16-9-t1_27.png"
+    },
+    {
+      "t": 1.3666666666666667,
+      "shot": "mobile-16-9-t1_37.png"
+    },
+    {
+      "t": 1.6,
+      "shot": "mobile-16-9-t1_60.png"
+    },
+    {
+      "t": 2,
+      "shot": "mobile-16-9-t2_00.png"
+    },
+    {
+      "t": 2.4,
+      "shot": "mobile-16-9-t2_40.png"
+    }
+  ]
+}

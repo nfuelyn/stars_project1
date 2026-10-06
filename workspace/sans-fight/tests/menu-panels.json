@@ -1,0 +1,25 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "menu-panels",
+  "dt": 0.016666666666666666,
+  "desc": "四个菜单选项各自的 UI 面板与语义（C13）：行动 4 项、道具 2 项、仁慈 2 项；沉默不结束回合，检查结束回合。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestSeed", "value": 1 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestNoSpawn", "value": 1 } },
+    { "kind": "step", "args": { "dt": 9.2 } },
+    { "kind": "click", "args": { "name": "Menu_Act" } },
+    { "kind": "click", "args": { "name": "SubRow_4" } },
+    { "kind": "step", "args": { "dt": 0.3 } },
+    { "kind": "click", "args": { "name": "Menu_Act" } },
+    { "kind": "click", "args": { "name": "SubRow_1" } },
+    { "kind": "step", "args": { "dt": 0.3 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "sub_open kind=act", "source": "client" },
+    { "kind": "log", "contains": "act_result id=wait", "source": "client" },
+    { "kind": "log", "contains": "act_result id=inspect", "source": "client" },
+    { "kind": "log", "contains": "round_start round=2", "source": "client" },
+    { "kind": "tree", "name": "SubPanel", "exists": true }
+  ]
+}

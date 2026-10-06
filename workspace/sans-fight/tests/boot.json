@@ -1,0 +1,16 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "boot",
+  "dt": 0.016666666666666666,
+  "desc": "开局：标题→开始，HUD 初始化，进入第 1 回合。关联 C9/C10。",
+  "events": [],
+  "asserts": [
+    { "kind": "log", "contains": "game_start", "source": "client" },
+    { "kind": "tree", "name": "HUD_HP", "exists": true },
+    { "kind": "tree", "name": "HUD_KR", "exists": true },
+    { "kind": "tree", "name": "Box", "exists": true },
+    { "kind": "tree", "name": "Menu_Attack", "exists": true },
+    { "kind": "log", "contains": "round_start round=1", "source": "client" }
+  ]
+}

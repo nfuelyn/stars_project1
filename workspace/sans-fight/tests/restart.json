@@ -1,0 +1,18 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "restart",
+  "dt": 0.016666666666666666,
+  "desc": "重开复位：失败后点重开，HP/KR/回合数全部复位且无残留弹幕。关联 C9。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestHP", "value": 1 } },
+    { "kind": "step", "args": { "dt": 12.0 } },
+    { "kind": "click", "args": { "name": "Btn_Restart" } },
+    { "kind": "step", "args": { "dt": 0.5 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "restart", "source": "client" },
+    { "kind": "log", "contains": "game_start", "source": "client" },
+    { "kind": "log", "contains": "round_start round=1", "source": "client" }
+  ]
+}

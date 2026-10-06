@@ -1,0 +1,22 @@
+# platforms2 —— 蓝魂：58 根矮骨地毯（间距 15）持续压迫，同时从右侧连续送来 6 块平台
+# 数据来源：BTS（jcw87/c2-sans-fight, GPL-3.0）Files/sans_platforms2.csv 逐行转写，数值未改。
+# 坐标系：原版 640×480，Y 向下；战斗框参数为 (左, 上, 右, 下)。速度单位 px/s（= 原作值 ×30）。
+0,CombatZoneResize,133,251,508,391,TLResume
+0,HeartTeleport,320,376
+0,HeartMode,1
+0,TLPause
+0,Platform,640,346,51,2,150
+0.4,BoneVRepeat,508,356,40,2,120,58,15
+0.4,Platform,640,296,51,2,150
+0.5,Platform,640,346,51,2,150
+0.4,BoneV,508,316,56,2,150
+0.4,Platform,640,296,31,2,60
+0.6,Platform,640,326,51,2,150
+0.7,Platform,640,336,51,2,150
+0.3,BoneV,508,257,45,2,150
+0.4,Platform,640,316,51,2,150
+0.3,BoneV,508,257,55,2,150
+0.7,BoneV,508,257,35,2,150
+1.5,BoneV,133,257,95,0,90
+0.7,BoneV,508,276,96,2,240
+2.5,EndAttack

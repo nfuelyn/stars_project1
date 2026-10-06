@@ -1,0 +1,18 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "kr-floor",
+  "dt": 0.016666666666666666,
+  "desc": "KR 不致死（C2/C3）：HP=2 时挨一次命中（HP→1、KR=min(4,命中前HP-1)=1），随后静止不动让 KR 结算完。期望 HP 停在 1、KR 归零，且**不出现 fail**。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestHP", "value": 2 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestNoSpawn", "value": 1 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestHitsAt", "value": "1.0" } },
+    { "kind": "step", "args": { "dt": 6.0 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "hit hp=1 kr=1", "source": "client" },
+    { "kind": "log", "contains": "kr_floor hp=1", "source": "client" },
+    { "kind": "log", "contains": "kr_done hp=1 kr=0", "source": "client" }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 110,
+  "dt": 0.03333333333333333,
+  "frames": 3300,
+  "wallSeconds": 24.2,
+  "startedAt": "2026-10-05T10:47:20.982Z",
+  "finishedAt": "2026-10-05T10:47:45.209Z",
+  "final": {
+    "time": 109.99999999999632,
+    "frame": 3300,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 121,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-clipzone device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=34 box=(239,226,165,165) hp=9995 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=692 cmds=10 box=(239,226,165,165) hp=9983 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=453 pool=692 cmds=10 box=(240,226,164,165) hp=9973 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=604 pool=692 cmds=10 box=(241,226,165,165) hp=9961 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=755 pool=692 cmds=11 box=(241,226,165,165) hp=9950 phase=menu soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=906 pool=692 cmds=16 box=(133,251,375,140) hp=9942 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1057 pool=692 cmds=10 box=(133,251,375,140) hp=9930 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1208 pool=692 cmds=12 box=(133,251,375,140) hp=9921 phase=attack soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1359 pool=692 cmds=16 box=(133,251,375,140) hp=9921 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1510 pool=692 cmds=14 box=(133,251,375,140) hp=9907 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1661 pool=692 cmds=12 box=(133,251,375,140) hp=9896 phase=attack soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1812 pool=692 cmds=22 box=(133,251,375,140) hp=9884 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1963 pool=692 cmds=10 box=(133,251,375,140) hp=9873 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2114 pool=692 cmds=12 box=(133,251,375,140) hp=9865 phase=attack soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2265 pool=692 cmds=10 box=(241,226,165,165) hp=9865 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2416 pool=692 cmds=10 box=(241,226,165,165) hp=9865 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2567 pool=692 cmds=12 box=(241,226,165,165) hp=9858 phase=attack soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2718 pool=692 cmds=17 box=(133,251,375,140) hp=9853 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=2869 pool=692 cmds=14 box=(133,251,375,140) hp=9842 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=3020 pool=692 cmds=12 box=(133,251,375,140) hp=9830 phase=attack soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=3171 pool=692 cmds=14 box=(224,226,181,165) hp=9819 phase=enemy soul=320,304 joy=off"
+  ],
+  "logCount": 471,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    },
+    {
+      "t": 20,
+      "time": 20.033333333333488,
+      "frame": 601
+    },
+    {
+      "t": 30,
+      "time": 30.033333333333985,
+      "frame": 901
+    },
+    {
+      "t": 40,
+      "time": 40.03333333333362,
+      "frame": 1201
+    },
+    {
+      "t": 50,
+      "time": 50.033333333333054,
+      "frame": 1501
+    },
+    {
+      "t": 60,
+      "time": 60.033333333332486,
+      "frame": 1801
+    },
+    {
+      "t": 70,
+      "time": 70.03333333333192,
+      "frame": 2101
+    },
+    {
+      "t": 80,
+      "time": 80.03333333333136,
+      "frame": 2401
+    },
+    {
+      "t": 90,
+      "time": 90.03333333333079,
+      "frame": 2701
+    },
+    {
+      "t": 100,
+      "time": 100.03333333333022,
+      "frame": 3001
+    },
+    {
+      "t": 110,
+      "time": 109.99999999999632,
+      "frame": 3300
+    }
+  ],
+  "timeline": [
+    {
+      "t": 46,
+      "shot": "mobile-16-9-t46_00.png"
+    },
+    {
+      "t": 48,
+      "shot": "mobile-16-9-t48_00.png"
+    },
+    {
+      "t": 50,
+      "shot": "mobile-16-9-t50_00.png"
+    },
+    {
+      "t": 52,
+      "shot": "mobile-16-9-t52_00.png"
+    },
+    {
+      "t": 54,
+      "shot": "mobile-16-9-t54_00.png"
+    },
+    {
+      "t": 56,
+      "shot": "mobile-16-9-t56_00.png"
+    },
+    {
+      "t": 58,
+      "shot": "mobile-16-9-t58_00.png"
+    },
+    {
+      "t": 60,
+      "shot": "mobile-16-9-t60_00.png"
+    },
+    {
+      "t": 62,
+      "shot": "mobile-16-9-t62_00.png"
+    },
+    {
+      "t": 64,
+      "shot": "mobile-16-9-t64_00.png"
+    },
+    {
+      "t": 66,
+      "shot": "mobile-16-9-t66_00.png"
+    },
+    {
+      "t": 68,
+      "shot": "mobile-16-9-t68_00.png"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+// ItemType, ItemMod, ItemName1, ItemName2
+  IF System :: On start of layout
+  IF ItemDB :: Is empty
+  DO Function :: Call function  (Name="RegisterItem", Parameter {n}=0{###}99{###}"Butterscotch Pie"{###}"Pie")
+  DO Function :: Call function  (Name="RegisterItem", Parameter {n}=0{###}90{###}"Instant Noodles"{###}"I.Noodles")
+  DO Function :: Call function  (Name="RegisterItem", Parameter {n}=0{###}60{###}"Face Steak"{###}"Steak")
+  DO Function :: Call function  (Name="RegisterItem", Parameter {n}=0{###}40{###}"Legendary Hero"{###}"L. Hero")
+  IF Function :: On function  (Name="RegisterItem")
+  DO ItemDB :: Push  (Where=0, Value=0, Axis=0)
+  DO ItemDB :: Set at XY  (X=ItemDB.Width-1, Y=0, Value=Function.Param(0))
+  DO ItemDB :: Set at XY  (X=ItemDB.Width-1, Y=1, Value=Function.Param(1))
+  DO ItemDB :: Set at XY  (X=ItemDB.Width-1, Y=2, Value=Function.Param(2))
+  DO ItemDB :: Set at XY  (X=ItemDB.Width-1, Y=3, Value=Function.Param(3))
+

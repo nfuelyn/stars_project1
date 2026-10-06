@@ -1,0 +1,100 @@
+===== GROUP: Menus  |  
+    IF System :: On start of layout
+    DO MenuStack :: Set size  (Width=1, Height=2, Depth=1)
+    DO MenuStack :: Set at X  (X=0, Value=0)
+    DO MenuStack :: Set at XY  (X=0, Y=1, Value="")
+    IF Function :: On function  (Name="MenuBackAction")
+    DO MenuStack :: Set at XY  (X=MenuStack.Width-1, Y=1, Value=Function.Param(0))
+    IF Function :: On function  (Name="MenuSelect")
+    IF MenuItem :: Compare instance variable  (Instance variable=ID, Comparison=0, Value=MenuStack.Back)
+      VAR ID (number) = 0
+      VAR X (number) = 0
+      VAR Y (number) = 0
+      VAR TargetID (number) = 0
+      VAR TargetDist (number) = 0
+        IF System :: Every tick
+        DO System :: Set value  (Variable=ID, Value=MenuItem.ID)
+        DO System :: Set value  (Variable=X, Value=MenuItem.X)
+        DO System :: Set value  (Variable=Y, Value=MenuItem.Y)
+        DO System :: Set value  (Variable=TargetID, Value=-1)
+        DO System :: Set value  (Variable=TargetDist, Value=Infinity)
+        IF System :: Pick all  (Object=MenuItem)
+        IF MenuItem :: Compare instance variable  (Instance variable=ID, Comparison=1, Value=ID)
+        IF System :: For Each  (Object=MenuItem)
+          VAR Ang (number) = 0
+          VAR Dist (number) = 0
+            IF System :: Every tick
+            DO System :: Set value  (Variable=Ang, Value=angle(X, Y, MenuItem.X, MenuItem.Y))
+            IF System :: Is within angle  (Angle 1=Ang, Within=0.5, Angle 2=Function.Param(0)*90)
+            DO System :: Set value  (Variable=Dist, Value=distance(X, Y, MenuItem.X, MenuItem.Y))
+                IF System :: Compare variable  (Variable=Dist, Comparison=2, Value=TargetDist)
+                DO System :: Set value  (Variable=TargetDist, Value=Dist)
+                DO System :: Set value  (Variable=TargetID, Value=MenuItem.ID)
+        IF System :: Compare variable  (Variable=TargetID, Comparison=0, Value=-1)
+        DO System :: Set value  (Variable=TargetDist, Value=-Infinity)
+        IF System :: Compare variable  (Variable=TargetID, Comparison=0, Value=-1)
+        IF System :: Pick all  (Object=MenuItem)
+        IF MenuItem :: Compare instance variable  (Instance variable=ID, Comparison=1, Value=ID)
+        IF System :: For Each  (Object=MenuItem)
+          VAR Ang (number) = 0
+          VAR Dist (number) = 0
+            IF System :: Every tick
+            DO System :: Set value  (Variable=Ang, Value=angle(X, Y, MenuItem.X, MenuItem.Y))
+            IF System :: Is within angle  (Angle 1=Ang, Within=0.5, Angle 2=Function.Param(0)*90 - 180)
+            DO System :: Set value  (Variable=Dist, Value=distance(X, Y, MenuItem.X, MenuItem.Y))
+                IF System :: Compare variable  (Variable=Dist, Comparison=4, Value=TargetDist)
+                DO System :: Set value  (Variable=TargetDist, Value=Dist)
+                DO System :: Set value  (Variable=TargetID, Value=MenuItem.ID)
+        IF System :: Compare variable  (Variable=TargetID, Comparison=1, Value=-1)
+        DO MenuStack :: Set at X  (X=MenuStack.Width-1, Value=TargetID)
+        DO Audio :: Play  (Audio file=MenuCursor, Loop=0, Volume=0, Tag (optional)="")
+    IF Function :: On function  (Name="RunMenu")
+        IF VPad :: Compare instance variable  (Instance variable=Confirm, Comparison=4, Value=VPad.LastConfirm)
+        IF MenuItem :: Compare instance variable  (Instance variable=ID, Comparison=0, Value=MenuStack.Back)
+        IF MenuItem :: Compare instance variable  (Instance variable=Action, Comparison=1, Value="")
+        DO Browser :: Log  (Type=0, Message="MenuConfirm on tick " & tickcount)
+        DO MenuStack :: Push  (Where=0, Value=0, Axis=0)
+        DO Function :: Call function  (Name=MenuItem.Action, Parameter {n}=)
+        DO Audio :: Play  (Audio file=MenuSelect, Loop=0, Volume=0, Tag (optional)="")
+        IF System :: Else
+        IF VPad :: Compare instance variable  (Instance variable=Cancel, Comparison=4, Value=VPad.LastCancel)
+        IF MenuStack :: Compare at XY  (X=MenuStack.Width-1, Y=1, Comparison=1, Value="")
+        DO Browser :: Log  (Type=0, Message="MenuBack on tick " & tickcount)
+          VAR FuncName (text) = 
+            IF System :: Every tick
+            DO System :: Set value  (Variable=FuncName, Value=MenuStack.At(MenuStack.Width-1, 1))
+            DO MenuStack :: Pop  (Where=0, Axis=0)
+            DO Function :: Call function  (Name=FuncName, Parameter {n}=)
+            DO Audio :: Play  (Audio file=MenuSelect, Loop=0, Volume=0, Tag (optional)="")
+        IF System :: Else
+        IF VPad :: Compare instance variable  (Instance variable=Right, Comparison=4, Value=VPad.LastRight)
+        DO Function :: Call function  (Name="MenuSelect", Parameter {n}=0)
+        IF System :: Else
+        IF VPad :: Compare instance variable  (Instance variable=Down, Comparison=4, Value=VPad.LastDown)
+        DO Function :: Call function  (Name="MenuSelect", Parameter {n}=1)
+        IF System :: Else
+        IF VPad :: Compare instance variable  (Instance variable=Left, Comparison=4, Value=VPad.LastLeft)
+        DO Function :: Call function  (Name="MenuSelect", Parameter {n}=2)
+        IF System :: Else
+        IF VPad :: Compare instance variable  (Instance variable=Up, Comparison=4, Value=VPad.LastUp)
+        DO Function :: Call function  (Name="MenuSelect", Parameter {n}=3)
+        IF System :: For Each  (Object=MenuItem)
+        IF DefaultFont :: Compare instance variable  (Instance variable=Name, Comparison=0, Value="Menu" & MenuItem.ID)
+        DO DefaultFont :: Set X  (X=MenuItem.X + 32)
+        DO DefaultFont :: Set Y  (Y=MenuItem.Y)
+    IF Function :: On function  (Name="CreateMenuItem")
+    DO System :: Create object  (Object to create=MenuItem, Layer=Function.Param(0), X=Function.Param(1), Y=Function.Param(2))
+    DO MenuItem :: Set value  (Instance variable=ID, Value=Function.Param(3))
+    DO MenuItem :: Set value  (Instance variable=Text, Value=Function.Param(4))
+    DO MenuItem :: Set value  (Instance variable=Action, Value=Function.Param(5))
+    DO Function :: Set return value  (Value=MenuItem.UID)
+    DO System :: Create object  (Object to create=DefaultFont, Layer=0, X=MenuItem.X + 32, Y=MenuItem.Y)
+    DO DefaultFont :: Set size  (Width=512, Height=96)
+    DO DefaultFont :: Set scale  (Scale=2)
+    DO DefaultFont :: Set text  (Text=MenuItem.Text)
+    DO DefaultFont :: Set value  (Instance variable=Name, Value="Menu" & MenuItem.ID)
+        IF MenuItem :: Compare instance variable  (Instance variable=Action, Comparison=0, Value="")
+        DO DefaultFont :: Set effect parameter  (Effect="Tint", Parameter index=0, Value=50)
+        DO DefaultFont :: Set effect parameter  (Effect="Tint", Parameter index=1, Value=50)
+        DO DefaultFont :: Set effect parameter  (Effect="Tint", Parameter index=2, Value=50)
+

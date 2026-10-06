@@ -1,0 +1,118 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 8,
+  "dt": 0.03333333333333333,
+  "frames": 240,
+  "wallSeconds": 3.6,
+  "startedAt": "2026-10-05T06:53:45.427Z",
+  "finishedAt": "2026-10-05T06:53:49.046Z",
+  "final": {
+    "time": 7.999999999999981,
+    "frame": 240,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 29,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-rounds20 device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=35 box=(239,226,165,165) hp=88 phase=enemy soul=320,304 joy=off"
+  ],
+  "logCount": 88,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 6.8999999999999995,
+      "shot": "mobile-16-9-t6_90.png"
+    },
+    {
+      "t": 6.933333333333334,
+      "shot": "mobile-16-9-t6_93.png"
+    },
+    {
+      "t": 6.966666666666667,
+      "shot": "mobile-16-9-t6_97.png"
+    },
+    {
+      "t": 7,
+      "shot": "mobile-16-9-t7_00.png"
+    },
+    {
+      "t": 7.033333333333333,
+      "shot": "mobile-16-9-t7_03.png"
+    },
+    {
+      "t": 7.066666666666666,
+      "shot": "mobile-16-9-t7_07.png"
+    },
+    {
+      "t": 7.1,
+      "shot": "mobile-16-9-t7_10.png"
+    },
+    {
+      "t": 7.166666666666667,
+      "shot": "mobile-16-9-t7_17.png"
+    },
+    {
+      "t": 7.2,
+      "shot": "mobile-16-9-t7_20.png"
+    },
+    {
+      "t": 7.233333333333333,
+      "shot": "mobile-16-9-t7_23.png"
+    },
+    {
+      "t": 7.266666666666667,
+      "shot": "mobile-16-9-t7_27.png"
+    },
+    {
+      "t": 7.3,
+      "shot": "mobile-16-9-t7_30.png"
+    },
+    {
+      "t": 7.333333333333333,
+      "shot": "mobile-16-9-t7_33.png"
+    },
+    {
+      "t": 7.366666666666666,
+      "shot": "mobile-16-9-t7_37.png"
+    }
+  ]
+}

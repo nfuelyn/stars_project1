@@ -1,0 +1,33 @@
+# platforms3 —— 循环 16 次：从 3 个位置里随机挑一处弹出一根骨（RND + JMPREL 跳表），
+#              两组 PlatformRepeat 提供持续移动的落脚点（右上 5 块向西、左下 4 块向东）
+# 数据来源：BTS（jcw87/c2-sans-fight, GPL-3.0）Files/sans_platforms3.csv 逐行转写。
+# 【2026-10-05 第十轮 · 用户口径】ROUND 10 有根「过不去的骨头」——两根吊顶/中段骨正好盖住了平台的
+#   站立带（平台顶面 -SOUL_CLAMP-4..+4），站在平台上必被扫到、没有落脚点：
+#     * 517,257,45 → 257..302 盖住 y=306 平台的站立带 294..302 → 高度 45 → **32**（257..289，让出 5px）
+#     * 125,306,40 → 306..346 盖住 y=346 平台的站立带 334..342 → 高度 40 → **24**（306..330，让出 4px）
+#   第十一轮补充：贴地骨 517,349,35 → **24**（349..373）—— 原高度压住地面站立带 379..387，
+#   玩家说的「最后从右边过来的骨头没法躲」就是它；现在地面也让开了。
+# 跳转沿用原作 1-based 行号（行号只数非注释行，故上方注释不影响）：JMPZ,22 → 第 22 行 EndAttack；
+# JMPABS,8 → 第 8 行 JMPZ,22,$Loop（循环回跳）。
+0,CombatZoneResize,133,251,508,391,TLResume
+0,HeartTeleport,320,376
+0,HeartMode,1
+0,TLPause
+0,PlatformRepeat,513,346,121,2,120,5,220
+0,PlatformRepeat,-71,306,161,0,120,4,280
+0,SET,Loop,16
+0,JMPZ,22,$Loop
+0,SUB,Loop,$Loop,1
+0,RND,Jump,3
+0,ADD,Jump,$Jump,1
+0,JMPREL,$Jump
+0,JMPREL,3
+0,JMPREL,4
+0,JMPREL,5
+0,BoneV,517,257,45,2,120
+0.5,JMPABS,8
+0,BoneV,125,306,40,0,120
+0.5,JMPABS,8
+0,BoneV,517,349,35,2,120
+0.5,JMPABS,8
+0,EndAttack

@@ -1,0 +1,100 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 52,
+  "dt": 0.03333333333333333,
+  "frames": 1560,
+  "wallSeconds": 12.1,
+  "startedAt": "2026-10-05T06:58:23.803Z",
+  "finishedAt": "2026-10-05T06:58:35.993Z",
+  "final": {
+    "time": 51.99999999999961,
+    "frame": 1560,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 32,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-rounds20 device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=35 box=(239,226,165,165) hp=88 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=692 cmds=12 box=(239,226,165,165) hp=77 phase=attack soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=453 pool=692 cmds=15 box=(241,226,165,165) hp=77 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=604 pool=692 cmds=13 box=(241,226,165,165) hp=75 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=755 pool=692 cmds=12 box=(241,226,165,165) hp=67 phase=attack soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=906 pool=692 cmds=30 box=(133,251,375,140) hp=67 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1057 pool=692 cmds=11 box=(133,251,375,140) hp=67 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1208 pool=692 cmds=12 box=(133,251,375,140) hp=67 phase=attack soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1359 pool=692 cmds=25 box=(133,251,375,140) hp=67 phase=enemy soul=321,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=1510 pool=692 cmds=12 box=(133,251,375,140) hp=67 phase=enemy soul=321,383 joy=off"
+  ],
+  "logCount": 256,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    },
+    {
+      "t": 20,
+      "time": 20.033333333333488,
+      "frame": 601
+    },
+    {
+      "t": 30,
+      "time": 30.033333333333985,
+      "frame": 901
+    },
+    {
+      "t": 40,
+      "time": 40.03333333333362,
+      "frame": 1201
+    },
+    {
+      "t": 50,
+      "time": 50.033333333333054,
+      "frame": 1501
+    }
+  ],
+  "timeline": [
+    {
+      "t": 50,
+      "shot": "mobile-16-9-t50_00.png"
+    }
+  ]
+}

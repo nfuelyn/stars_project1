@@ -1,0 +1,18 @@
+# ---- 密钥（绝不能上传）----
+.env
+**/.env
+*.key
+*.pem
+# ---- 依赖 ----
+node_modules/
+**/node_modules/
+# ---- 第三方参考仓库 clone（非本项目代码）----
+workspace/_refs/
+# ---- 参考工程的解包/工具产物 ----
+workspace/sans-fight/.ref/
+# ---- 临时/调试脚本 ----
+.tmp-*.mjs
+tmp-*.js
+test.lua
+*.tmp
+*.log

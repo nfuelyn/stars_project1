@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Sans 弹幕审判 · 效果展示（步骤 3 · v2）</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #050505; overflow: hidden; }
+  #wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  canvas { display: block; touch-action: none; }
+  #hint { position: fixed; left: 8px; bottom: 6px; color: #555; font: 12px/1.4 monospace; pointer-events: none; }
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="cv" width="1280" height="720"></canvas></div>
+<div id="hint">标题页选难度 · 战斗中 WASD/方向键或框内拖动移动 · 空格确认 · 菜单 1-4 · 子菜单 ↑↓+回车，Esc 返回 · L 日志 · R 重开</div>
+<script src="game.js"></script>
+<script>
+(function () {
+  'use strict';
+  var Q = window.QXQY, DW = Q.DESIGN_W, DH = Q.DESIGN_H;
+  var cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+
+  /* URL 参数 = 测试入口（对应千星侧服务端变量 TestSeed / TestHP / TestStartRound / TestDiff…） */
+  var p = new URLSearchParams(location.search);
+  var g = new Q.Game({
+    seed: p.has('seed') ? Number(p.get('seed')) : undefined,
+    hp: p.has('hp') ? Number(p.get('hp')) : undefined,
+    startRound: p.has('round') ? Number(p.get('round')) : undefined,
+    diff: p.has('diff') ? p.get('diff') : undefined,
+    noSpawn: p.get('nospawn') === '1',
+    aimWave1: p.get('aim') === '1',
+    hitsAt: p.has('hits') ? p.get('hits').split(',').map(Number) : []
+  });
+  g.setDiff(['easy', 'normal', 'hard'].indexOf(g.diffKey));
+  window.__qxqy = g;                    // 外部检查：__qxqy.snapshot()
+
+  /* ------------------------------------------- 画布：设计板等比缩放（不足处留边） */
+  function fit() {
+    var s = Math.min(window.innerWidth / DW, window.innerHeight / DH);
+    cv.style.width = Math.round(DW * s) + 'px';
+    cv.style.height = Math.round(DH * s) + 'px';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  function toDesign(ev) {
+    var r = cv.getBoundingClientRect();
+    return { x: (ev.clientX - r.left) / r.width * DW, y: (ev.clientY - r.top) / r.height * DH };
+  }
+  function inRect(q, r) { return q.x >= r.x && q.x <= r.x + r.w && q.y >= r.y && q.y <= r.y + r.h; }
+
+  /* ------------------------------------------------------------------ 指针 */
+  var dragging = false, last = null;
+  var BOX_PAD = 24;
+
+  cv.addEventListener('pointerdown', function (ev) {
+    cv.setPointerCapture(ev.pointerId);
+    var q = toDesign(ev), i;
+
+    if (g.state === 'title') {
+      for (i = 0; i < Q.DIFF_ORDER.length; i++) if (inRect(q, g.diffCardRect(i))) { g.setDiff(i); g.start(); return; }
+      g.start(); return;
+    }
+    if (g.state === 'result') { if (inRect(q, g.restartRect())) g.restart(); return; }
+    if (g.state === 'menu') {
+      for (i = 0; i < 4; i++) if (inRect(q, g.menuRect(i))) { g.menuChoose(i); return; }
+      return;
+    }
+    if (g.state === 'sub') {
+      var rows = g.subRows();
+      for (i = 0; i < rows.length; i++) if (inRect(q, g.subRowRect(i))) { g.subIndex = i; g.subConfirm(); return; }
+      if (!inRect(q, g.subPanelRect())) g.subBack();      // 点面板外 = 返回
+      return;
+    }
+    if (g.state === 'attack') { g.stopAttack(); return; }
+    if (g.state === 'enemy') {
+      var b = g.box;
+      if (q.x >= b.x - BOX_PAD && q.x <= b.x + b.w + BOX_PAD && q.y >= b.y - BOX_PAD && q.y <= b.y + b.h + BOX_PAD) {
+        dragging = true; last = q;
+        if (g.soul.mode === 'blue') g.jump();
+      }
+    }
+  });
+
+  cv.addEventListener('pointermove', function (ev) {
+    if (!dragging || g.state !== 'enemy') return;
+    var q = toDesign(ev);
+    var dx = q.x - last.x, dy = (g.soul.mode === 'blue') ? 0 : (q.y - last.y);
+    g.move(dx, dy);                     // 相对位移：手指不遮住灵魂
+    last = q;
+  });
+  function endDrag() { dragging = false; last = null; }
+  cv.addEventListener('pointerup', endDrag);
+  cv.addEventListener('pointercancel', endDrag);
+
+  /* ------------------------------------------------------------------ 键盘 */
+  function act() {
+    if (g.state === 'title') g.start();
+    else if (g.state === 'menu') g.menuChoose();
+    else if (g.state === 'sub') g.subConfirm();
+    else if (g.state === 'attack') g.stopAttack();
+    else if (g.state === 'result') g.restart();
+  }
+  var KEYMAP = {
+    ArrowLeft: 'left', a: 'left', A: 'left',
+    ArrowRight: 'right', d: 'right', D: 'right',
+    ArrowUp: 'up', w: 'up', W: 'up',
+    ArrowDown: 'down', s: 'down', S: 'down'
+  };
+  window.addEventListener('keydown', function (ev) {
+    var k = ev.key;
+    /* 子菜单优先：上下选择、回车确认、Esc 返回 */
+    if (g.state === 'sub') {
+      if (k === 'ArrowUp' || k === 'w' || k === 'W') { g.subMove(-1); ev.preventDefault(); return; }
+      if (k === 'ArrowDown' || k === 's' || k === 'S') { g.subMove(1); ev.preventDefault(); return; }
+      if (k === ' ' || k === 'Enter') { g.subConfirm(); ev.preventDefault(); return; }
+      if (k === 'Escape' || k === 'Backspace') { g.subBack(); ev.preventDefault(); return; }
+      if (k >= '1' && k <= '4') { g.subIndex = Number(k) - 1; g.subConfirm(); return; }
+      return;
+    }
+    /* 标题页：左右切难度，1-3 直接开始 */
+    if (g.state === 'title') {
+      if (k === 'ArrowLeft' || k === 'ArrowRight') { g.setDiff(g.titleIndex + (k === 'ArrowLeft' ? -1 : 1)); ev.preventDefault(); return; }
+      if (k >= '1' && k <= '4' && (Number(k) - 1) < Q.DIFF_ORDER.length) { g.setDiff(Number(k) - 1); g.start(); return; }
+      if (k === ' ' || k === 'Enter') { g.start(); ev.preventDefault(); return; }
+      return;
+    }
+    if (g.state === 'menu' && (k === 'ArrowLeft' || k === 'ArrowRight')) { g.menuMove(k === 'ArrowLeft' ? -1 : 1); ev.preventDefault(); return; }
+    if (KEYMAP[k]) { g.press(KEYMAP[k], true); ev.preventDefault(); return; }
+    if (g.state === 'enemy' && g.soul.mode === 'blue' && (k === ' ' || k === 'Spacebar')) { g.jump(); ev.preventDefault(); return; }
+    if (k === ' ' || k === 'Enter') { act(); ev.preventDefault(); return; }
+    if (k >= '1' && k <= '4' && g.state === 'menu') { g.menuChoose(Number(k) - 1); return; }
+    if (k === 'Escape' && g.state === 'menu') { g.menuIndex = 0; return; }
+    if (k === 'l' || k === 'L') { g.showLog = !g.showLog; return; }
+    if (k === 'r' || k === 'R') { g.restart(); return; }
+  });
+  window.addEventListener('keyup', function (ev) { if (KEYMAP[ev.key]) g.press(KEYMAP[ev.key], false); });
+
+  /* ------------------------------------------------- 固定步长主循环（确定性） */
+  var acc = 0, prev = performance.now();
+  function frame(now) {
+    var dt = Math.min(0.1, (now - prev) / 1000);   // 掉帧保护：单帧最多推进 0.1s
+    prev = now; acc += dt;
+    while (acc >= Q.DT) { g.update(Q.DT); acc -= Q.DT; }
+    Q.render(ctx, g);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

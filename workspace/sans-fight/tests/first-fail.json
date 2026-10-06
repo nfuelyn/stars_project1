@@ -1,0 +1,18 @@
+{
+  "format": "qxqy-autotest",
+  "version": 1,
+  "name": "first-fail",
+  "dt": 0.016666666666666666,
+  "desc": "第一次失败：HP=1 时挨一次直接命中 → HP 归零 → GAME OVER。关联 C1/C4。用 TestNoSpawn + TestHitsAt 把随机弹幕隔离掉，只验证「直接命中才能致死」这条规则。",
+  "events": [
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestHP", "value": 1 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestNoSpawn", "value": 1 } },
+    { "kind": "serverSet", "args": { "entityType": "PlayerSelf", "name": "TestHitsAt", "value": "1.0" } },
+    { "kind": "step", "args": { "dt": 1.5 } }
+  ],
+  "asserts": [
+    { "kind": "log", "contains": "fail hp_zero", "source": "client" },
+    { "kind": "tree", "name": "ResultPanel", "exists": true },
+    { "kind": "tree", "name": "Btn_Restart", "exists": true }
+  ]
+}

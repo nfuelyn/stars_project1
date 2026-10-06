@@ -1,0 +1,385 @@
+main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0
+main: 平台 = PC 分支（键盘移动/确认；指针只点 UI，无摇杆）
+main start: build=2026-10-05-blue06 device=unknown touch=false mode=core pool=692 flash=true cursor=true
+main: 阶段 nil → title (round=1 hp=92)
+t=   0.0 状态=enemy round=0 hp=92
+t=   0.0 框变化 #1 core=(240,226) 160x165  绘制=(195,209) 251x198  溢出 0→0  state=enemy round=0
+main: 阶段 title → enemy (round=0 hp=92)
+t=   0.1 框变化 #2 core=(239,226) 165x165  绘制=(227,221) 187x174  溢出 0→0  state=enemy round=0
+main: mode=core device=unknown touch=false frame=151 pool=692 cmds=10 box=(239,226,165,165) hp=92 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=0 hp=92)
+t=   9.4 状态=attack round=0 hp=92
+main: 阶段 menu → attack (round=0 hp=92)
+main: mode=core device=unknown touch=false frame=302 pool=692 cmds=12 box=(239,226,165,165) hp=92 phase=attack soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=453 pool=692 cmds=12 box=(239,226,165,165) hp=92 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=1 hp=92)
+t=  16.4 状态=enemy round=1 hp=92
+t=  16.4 框变化 #3 core=(240,226) 160x165  绘制=(239,226) 163x165  溢出 0→0  state=enemy round=1
+t=  16.5 框变化 #4 core=(241,226) 165x165  绘制=(240,226) 164x165  溢出 0→0  state=enemy round=1
+main: mode=core device=unknown touch=false frame=604 pool=692 cmds=10 box=(241,226,165,165) hp=92 phase=enemy soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=755 pool=692 cmds=10 box=(241,226,165,165) hp=92 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=1 hp=92)
+t=  25.5 状态=attack round=1 hp=92
+main: 阶段 menu → attack (round=1 hp=92)
+main: mode=core device=unknown touch=false frame=906 pool=692 cmds=12 box=(241,226,165,165) hp=92 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=2 hp=92)
+t=  32.5 状态=enemy round=2 hp=92
+t=  32.5 框变化 #5 core=(240,226) 160x165  绘制=(241,226) 163x165  溢出 0→0  state=enemy round=2
+t=  32.5 框变化 #6 core=(230,236) 180x155  绘制=(237,230) 169x162  溢出 0→0  state=enemy round=2
+t=  32.6 框变化 #7 core=(220,246) 200x145  绘制=(231,235) 180x156  溢出 0→0  state=enemy round=2
+t=  32.6 框变化 #8 core=(210,251) 220x140  绘制=(224,241) 194x150  溢出 0→0  state=enemy round=2
+t=  32.6 框变化 #9 core=(200,251) 240x140  绘制=(215,244) 210x147  溢出 0→0  state=enemy round=2
+t=  32.7 框变化 #10 core=(190,251) 260x140  绘制=(206,247) 228x144  溢出 0→0  state=enemy round=2
+t=  32.7 框变化 #11 core=(180,251) 280x140  绘制=(197,248) 246x143  溢出 0→0  state=enemy round=2
+t=  32.7 框变化 #12 core=(170,251) 300x140  绘制=(188,249) 265x142  溢出 0→0  state=enemy round=2
+t=  32.8 框变化 #13 core=(160,251) 320x140  绘制=(178,250) 284x141  溢出 0→0  state=enemy round=2
+t=  32.8 框变化 #14 core=(150,251) 340x140  绘制=(168,250) 304x141  溢出 0→0  state=enemy round=2
+t=  32.8 框变化 #15 core=(140,251) 360x140  绘制=(158,250) 323x141  溢出 0→0  state=enemy round=2
+t=  32.9 框变化 #16 core=(133,251) 375x140  绘制=(149,251) 341x140  溢出 0→0  state=enemy round=2
+main: mode=core device=unknown touch=false frame=1057 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1208 pool=692 cmds=11 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=2 hp=92)
+t=  42.5 状态=attack round=2 hp=92
+main: 阶段 menu → attack (round=2 hp=92)
+main: mode=core device=unknown touch=false frame=1359 pool=692 cmds=12 box=(133,251,375,140) hp=92 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=3 hp=92)
+t=  49.6 状态=enemy round=3 hp=92
+t=  49.6 框变化 #17 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=3
+t=  49.6 框变化 #18 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=3
+t=  49.6 框变化 #19 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=3
+t=  49.7 框变化 #20 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=3
+t=  49.7 框变化 #21 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=3
+t=  49.7 框变化 #22 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=3
+t=  49.8 框变化 #23 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=3
+t=  49.8 框变化 #24 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=3
+t=  49.8 框变化 #25 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=3
+t=  49.9 框变化 #26 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=3
+t=  49.9 框变化 #27 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=3
+t=  49.9 框变化 #28 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=3
+main: mode=core device=unknown touch=false frame=1510 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1661 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=3 hp=92)
+t=  59.6 状态=attack round=3 hp=92
+main: 阶段 menu → attack (round=3 hp=92)
+main: mode=core device=unknown touch=false frame=1812 pool=692 cmds=12 box=(133,251,375,140) hp=92 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=1963 pool=692 cmds=12 box=(133,251,375,140) hp=92 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=4 hp=92)
+t=  66.6 状态=enemy round=4 hp=92
+t=  66.6 框变化 #29 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=4
+t=  66.7 框变化 #30 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=4
+t=  66.7 框变化 #31 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=4
+t=  66.7 框变化 #32 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=4
+t=  66.8 框变化 #33 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=4
+t=  66.8 框变化 #34 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=4
+t=  66.8 框变化 #35 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=4
+t=  66.9 框变化 #36 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=4
+t=  66.9 框变化 #37 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=4
+t=  66.9 框变化 #38 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=4
+t=  67.0 框变化 #39 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=4
+t=  67.0 框变化 #40 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=4
+main: mode=core device=unknown touch=false frame=2114 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=2265 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=4 hp=92)
+t=  76.7 状态=attack round=4 hp=92
+main: 阶段 menu → attack (round=4 hp=92)
+main: mode=core device=unknown touch=false frame=2416 pool=692 cmds=12 box=(133,251,375,140) hp=92 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=5 hp=92)
+t=  83.7 状态=enemy round=5 hp=92
+t=  83.7 框变化 #41 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=5
+t=  83.7 框变化 #42 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=5
+t=  83.8 框变化 #43 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=5
+t=  83.8 框变化 #44 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=5
+t=  83.8 框变化 #45 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=5
+t=  83.9 框变化 #46 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=5
+t=  83.9 框变化 #47 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=5
+t=  83.9 框变化 #48 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=5
+t=  84.0 框变化 #49 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=5
+t=  84.0 框变化 #50 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=5
+t=  84.0 框变化 #51 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=5
+t=  84.1 框变化 #52 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=5
+main: mode=core device=unknown touch=false frame=2567 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=2718 pool=692 cmds=10 box=(133,251,375,140) hp=92 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=5 hp=90)
+t=  94.7 状态=attack round=5 hp=90
+main: 阶段 menu → attack (round=5 hp=90)
+main: mode=core device=unknown touch=false frame=2869 pool=692 cmds=12 box=(133,251,375,140) hp=89 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=3020 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=6 hp=81)
+t= 101.8 状态=enemy round=6 hp=81
+t= 101.8 框变化 #53 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=6
+t= 101.8 框变化 #54 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=6
+t= 101.8 框变化 #55 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=6
+t= 101.9 框变化 #56 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=6
+t= 101.9 框变化 #57 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=6
+t= 101.9 框变化 #58 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=6
+t= 102.0 框变化 #59 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=6
+t= 102.0 框变化 #60 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=6
+t= 102.0 框变化 #61 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=6
+t= 102.1 框变化 #62 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=6
+t= 102.1 框变化 #63 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=6
+t= 102.1 框变化 #64 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=6
+t= 102.6 框变化 #65 core=(171,276) 305x115  绘制=(146,260) 351x131  溢出 0→0  state=enemy round=6
+main: WARN 战斗框坐标异常 (171,276) 305x115 中心偏(+4,+25) 越界0px -- 已按原样绘制，请查 core
+t= 104.9 框变化 #66 core=(121,276) 405x115  绘制=(154,276) 340x115  溢出 0→0  state=enemy round=6
+main: mode=core device=unknown touch=false frame=3171 pool=692 cmds=13 box=(121,276,405,115) hp=81 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=3322 pool=692 cmds=13 box=(121,276,405,115) hp=81 phase=enemy soul=321,383 joy=off
+t= 110.8 框变化 #67 core=(33,251) 575x140  绘制=(90,267) 465x124  溢出 0→0  state=enemy round=6
+main: 阶段 enemy → menu (round=6 hp=81)
+t= 113.8 状态=attack round=6 hp=81
+main: 阶段 menu → attack (round=6 hp=81)
+main: mode=core device=unknown touch=false frame=3473 pool=692 cmds=12 box=(33,251,575,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: mode=core device=unknown touch=false frame=3624 pool=692 cmds=12 box=(33,251,575,140) hp=81 phase=attack soul=321,383 joy=off
+main: 阶段 attack → enemy (round=7 hp=81)
+t= 120.8 状态=enemy round=7 hp=81
+t= 120.8 框变化 #68 core=(240,226) 160x165  绘制=(105,242) 430x149  溢出 0→0  state=enemy round=7
+t= 120.9 框变化 #69 core=(230,236) 180x155  绘制=(149,240) 342x151  溢出 0→0  state=enemy round=7
+t= 120.9 框变化 #70 core=(220,246) 200x145  绘制=(174,242) 293x149  溢出 0→0  state=enemy round=7
+t= 120.9 框变化 #71 core=(210,251) 220x140  绘制=(187,245) 267x146  溢出 0→0  state=enemy round=7
+t= 121.0 框变化 #72 core=(200,251) 240x140  绘制=(191,247) 258x144  溢出 0→0  state=enemy round=7
+t= 121.0 框变化 #73 core=(190,251) 260x140  绘制=(191,249) 258x142  溢出 0→0  state=enemy round=7
+t= 121.0 框变化 #74 core=(180,251) 280x140  绘制=(187,249) 266x142  溢出 0→0  state=enemy round=7
+t= 121.1 框变化 #75 core=(170,251) 300x140  绘制=(181,250) 278x141  溢出 0→0  state=enemy round=7
+t= 121.1 框变化 #76 core=(160,251) 320x140  绘制=(174,250) 293x141  溢出 0→0  state=enemy round=7
+t= 121.1 框变化 #77 core=(150,251) 340x140  绘制=(165,251) 309x140  溢出 0→0  state=enemy round=7
+t= 121.2 框变化 #78 core=(140,251) 360x140  绘制=(157,251) 327x140  溢出 0→0  state=enemy round=7
+t= 121.2 框变化 #79 core=(133,251) 375x140  绘制=(148,251) 344x140  溢出 0→0  state=enemy round=7
+main: mode=core device=unknown touch=false frame=3775 pool=692 cmds=10 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=7 hp=81)
+t= 128.9 状态=attack round=7 hp=81
+main: 阶段 menu → attack (round=7 hp=81)
+main: mode=core device=unknown touch=false frame=3926 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=8 hp=81)
+main: mode=core device=unknown touch=false frame=4077 pool=692 cmds=10 box=(170,242,300,149) hp=81 phase=enemy soul=320,309 joy=off
+t= 135.9 状态=enemy round=8 hp=81
+t= 135.9 框变化 #80 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=8
+t= 136.4 框变化 #81 core=(179,226) 225x165  绘制=(218,226) 183x165  溢出 0→0  state=enemy round=8
+t= 138.5 框变化 #82 core=(241,226) 165x165  绘制=(201,226) 204x165  溢出 0→0  state=enemy round=8
+main: mode=core device=unknown touch=false frame=4228 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,304 joy=off
+t= 141.8 框变化 #83 core=(179,226) 225x165  绘制=(219,226) 186x165  溢出 0→0  state=enemy round=8
+t= 143.9 框变化 #84 core=(241,226) 165x165  绘制=(201,226) 204x165  溢出 0→0  state=enemy round=8
+t= 145.5 框变化 #85 core=(33,251) 575x140  绘制=(168,235) 309x156  溢出 0→0  state=enemy round=8
+main: mode=core device=unknown touch=false frame=4379 pool=692 cmds=10 box=(33,251,574,140) hp=81 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=8 hp=81)
+t= 148.9 状态=attack round=8 hp=81
+main: 阶段 menu → attack (round=8 hp=81)
+main: mode=core device=unknown touch=false frame=4530 pool=692 cmds=12 box=(33,251,575,140) hp=81 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=9 hp=81)
+t= 156.0 状态=enemy round=9 hp=81
+t= 156.0 框变化 #86 core=(240,226) 160x165  绘制=(105,242) 430x149  溢出 0→0  state=enemy round=9
+t= 156.0 框变化 #87 core=(230,236) 180x155  绘制=(149,240) 342x151  溢出 0→0  state=enemy round=9
+main: mode=core device=unknown touch=false frame=4681 pool=692 cmds=10 box=(174,242,293,149) hp=81 phase=enemy soul=321,380 joy=off
+t= 156.0 框变化 #88 core=(220,246) 200x145  绘制=(174,242) 293x149  溢出 0→0  state=enemy round=9
+t= 156.1 框变化 #89 core=(210,251) 220x140  绘制=(187,245) 267x146  溢出 0→0  state=enemy round=9
+t= 156.1 框变化 #90 core=(200,251) 240x140  绘制=(191,247) 258x144  溢出 0→0  state=enemy round=9
+t= 156.1 框变化 #91 core=(190,251) 260x140  绘制=(191,249) 258x142  溢出 0→0  state=enemy round=9
+t= 156.2 框变化 #92 core=(180,251) 280x140  绘制=(187,249) 266x142  溢出 0→0  state=enemy round=9
+t= 156.2 框变化 #93 core=(170,251) 300x140  绘制=(181,250) 278x141  溢出 0→0  state=enemy round=9
+t= 156.2 框变化 #94 core=(160,251) 320x140  绘制=(174,250) 293x141  溢出 0→0  state=enemy round=9
+t= 156.3 框变化 #95 core=(150,251) 340x140  绘制=(165,251) 309x140  溢出 0→0  state=enemy round=9
+t= 156.3 框变化 #96 core=(140,251) 360x140  绘制=(157,251) 327x140  溢出 0→0  state=enemy round=9
+t= 156.3 框变化 #97 core=(133,251) 375x140  绘制=(148,251) 344x140  溢出 0→0  state=enemy round=9
+main: mode=core device=unknown touch=false frame=4832 pool=692 cmds=17 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=9 hp=81)
+t= 165.8 状态=attack round=9 hp=81
+main: 阶段 menu → attack (round=9 hp=81)
+main: mode=core device=unknown touch=false frame=4983 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=5134 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=10 hp=81)
+t= 172.8 状态=enemy round=10 hp=81
+t= 172.8 框变化 #98 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=10
+t= 172.9 框变化 #99 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=10
+t= 172.9 框变化 #100 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=10
+t= 172.9 框变化 #101 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=10
+t= 173.0 框变化 #102 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=10
+t= 173.0 框变化 #103 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=10
+t= 173.0 框变化 #104 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=10
+t= 173.1 框变化 #105 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=10
+t= 173.1 框变化 #106 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=10
+t= 173.1 框变化 #107 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=10
+t= 173.2 框变化 #108 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=10
+t= 173.2 框变化 #109 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=10
+main: mode=core device=unknown touch=false frame=5285 pool=692 cmds=19 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=10 hp=81)
+t= 180.9 状态=attack round=10 hp=81
+main: 阶段 menu → attack (round=10 hp=81)
+main: mode=core device=unknown touch=false frame=5436 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=5587 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=11 hp=81)
+t= 187.9 状态=enemy round=11 hp=81
+t= 187.9 框变化 #110 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=11
+t= 187.9 框变化 #111 core=(241,226) 165x165  绘制=(195,237) 253x154  溢出 0→0  state=enemy round=11
+main: mode=core device=unknown touch=false frame=5738 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=11 hp=81)
+t= 195.9 状态=attack round=11 hp=81
+main: 阶段 menu → attack (round=11 hp=81)
+main: mode=core device=unknown touch=false frame=5889 pool=692 cmds=12 box=(241,226,165,165) hp=81 phase=attack soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=6040 pool=692 cmds=12 box=(241,226,165,165) hp=81 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=12 hp=81)
+t= 203.0 状态=enemy round=12 hp=81
+t= 203.0 框变化 #112 core=(240,226) 160x165  绘制=(241,226) 163x165  溢出 0→0  state=enemy round=12
+t= 203.0 框变化 #113 core=(230,236) 180x155  绘制=(237,230) 169x162  溢出 0→0  state=enemy round=12
+t= 203.0 框变化 #114 core=(220,246) 200x145  绘制=(231,235) 180x156  溢出 0→0  state=enemy round=12
+t= 203.1 框变化 #115 core=(210,251) 220x140  绘制=(224,241) 194x150  溢出 0→0  state=enemy round=12
+t= 203.1 框变化 #116 core=(200,251) 240x140  绘制=(215,244) 210x147  溢出 0→0  state=enemy round=12
+t= 203.1 框变化 #117 core=(190,251) 260x140  绘制=(206,247) 228x144  溢出 0→0  state=enemy round=12
+t= 203.2 框变化 #118 core=(180,251) 280x140  绘制=(197,248) 246x143  溢出 0→0  state=enemy round=12
+t= 203.2 框变化 #119 core=(170,251) 300x140  绘制=(188,249) 265x142  溢出 0→0  state=enemy round=12
+t= 203.2 框变化 #120 core=(160,251) 320x140  绘制=(178,250) 284x141  溢出 0→0  state=enemy round=12
+t= 203.3 框变化 #121 core=(150,251) 340x140  绘制=(168,250) 304x141  溢出 0→0  state=enemy round=12
+t= 203.3 框变化 #122 core=(140,251) 360x140  绘制=(158,250) 323x141  溢出 0→0  state=enemy round=12
+t= 203.3 框变化 #123 core=(133,251) 375x140  绘制=(149,251) 341x140  溢出 0→0  state=enemy round=12
+main: mode=core device=unknown touch=false frame=6191 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=12 hp=81)
+t= 211.3 状态=attack round=12 hp=81
+main: 阶段 menu → attack (round=12 hp=81)
+main: mode=core device=unknown touch=false frame=6342 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=6493 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=13 hp=81)
+t= 218.3 状态=enemy round=13 hp=81
+t= 218.3 框变化 #124 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=13
+t= 218.4 框变化 #125 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=13
+t= 218.4 框变化 #126 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=13
+t= 218.4 框变化 #127 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=13
+t= 218.5 框变化 #128 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=13
+t= 218.5 框变化 #129 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=13
+t= 218.5 框变化 #130 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=13
+t= 218.6 框变化 #131 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=13
+t= 218.6 框变化 #132 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=13
+t= 218.6 框变化 #133 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=13
+t= 218.7 框变化 #134 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=13
+t= 218.7 框变化 #135 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=13
+main: mode=core device=unknown touch=false frame=6644 pool=692 cmds=26 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=13 hp=81)
+t= 226.4 状态=attack round=13 hp=81
+main: 阶段 menu → attack (round=13 hp=81)
+main: mode=core device=unknown touch=false frame=6795 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=6946 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=14 hp=81)
+t= 233.4 状态=enemy round=14 hp=81
+t= 233.4 框变化 #136 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=14
+t= 233.4 框变化 #137 core=(230,236) 180x155  绘制=(191,240) 258x151  溢出 0→0  state=enemy round=14
+t= 233.5 框变化 #138 core=(220,246) 200x145  绘制=(201,242) 238x149  溢出 0→0  state=enemy round=14
+t= 233.5 框变化 #139 core=(210,251) 220x140  绘制=(204,245) 231x146  溢出 0→0  state=enemy round=14
+t= 233.5 框变化 #140 core=(200,251) 240x140  绘制=(203,247) 234x144  溢出 0→0  state=enemy round=14
+t= 233.6 框变化 #141 core=(190,251) 260x140  绘制=(198,249) 243x142  溢出 0→0  state=enemy round=14
+t= 233.6 框变化 #142 core=(180,251) 280x140  绘制=(192,249) 256x142  溢出 0→0  state=enemy round=14
+t= 233.6 框变化 #143 core=(170,251) 300x140  绘制=(184,250) 272x141  溢出 0→0  state=enemy round=14
+t= 233.7 框变化 #144 core=(160,251) 320x140  绘制=(176,250) 288x141  溢出 0→0  state=enemy round=14
+t= 233.7 框变化 #145 core=(150,251) 340x140  绘制=(167,251) 307x140  溢出 0→0  state=enemy round=14
+t= 233.7 框变化 #146 core=(140,251) 360x140  绘制=(157,251) 325x140  溢出 0→0  state=enemy round=14
+t= 233.8 框变化 #147 core=(133,251) 375x140  绘制=(149,251) 343x140  溢出 0→0  state=enemy round=14
+main: mode=core device=unknown touch=false frame=7097 pool=692 cmds=26 box=(133,251,375,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=14 hp=81)
+t= 241.4 状态=attack round=14 hp=81
+main: 阶段 menu → attack (round=14 hp=81)
+main: mode=core device=unknown touch=false frame=7248 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=7399 pool=692 cmds=12 box=(133,251,375,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=15 hp=81)
+t= 248.5 状态=enemy round=15 hp=81
+t= 248.5 框变化 #148 core=(240,226) 160x165  绘制=(170,242) 300x149  溢出 0→0  state=enemy round=15
+t= 248.5 框变化 #149 core=(241,226) 165x165  绘制=(195,237) 253x154  溢出 0→0  state=enemy round=15
+main: mode=core device=unknown touch=false frame=7550 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,304 joy=off
+main: 阶段 enemy → menu (round=15 hp=81)
+t= 256.5 状态=attack round=15 hp=81
+main: 阶段 menu → attack (round=15 hp=81)
+main: mode=core device=unknown touch=false frame=7701 pool=692 cmds=12 box=(241,226,165,165) hp=81 phase=attack soul=320,304 joy=off
+main: mode=core device=unknown touch=false frame=7852 pool=692 cmds=12 box=(241,226,165,165) hp=81 phase=attack soul=320,304 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=16 hp=81)
+t= 263.5 状态=enemy round=16 hp=81
+t= 263.5 框变化 #150 core=(240,226) 160x165  绘制=(241,226) 163x165  溢出 0→0  state=enemy round=16
+t= 263.6 框变化 #151 core=(239,226) 165x165  绘制=(240,226) 164x165  溢出 0→0  state=enemy round=16
+t= 263.7 框变化 #152 core=(121,276) 405x115  绘制=(198,244) 249x148  溢出 0→0  state=enemy round=16
+t= 265.4 框变化 #153 core=(171,276) 305x115  绘制=(139,276) 370x115  溢出 0→0  state=enemy round=16
+main: mode=core device=unknown touch=false frame=8003 pool=692 cmds=10 box=(171,276,305,115) hp=81 phase=enemy soul=321,383 joy=off
+t= 267.4 框变化 #154 core=(121,276) 405x115  绘制=(154,276) 340x115  溢出 0→0  state=enemy round=16
+t= 268.7 框变化 #155 core=(171,276) 305x115  绘制=(139,276) 370x115  溢出 0→0  state=enemy round=16
+t= 270.5 框变化 #156 core=(121,276) 405x115  绘制=(154,276) 340x115  溢出 0→0  state=enemy round=16
+t= 271.6 框变化 #157 core=(33,251) 575x140  绘制=(90,267) 465x124  溢出 0→0  state=enemy round=16
+main: mode=core device=unknown touch=false frame=8154 pool=692 cmds=10 box=(36,252,570,139) hp=81 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=8305 pool=692 cmds=10 box=(33,251,575,140) hp=81 phase=enemy soul=321,383 joy=off
+main: mode=core device=unknown touch=false frame=8456 pool=692 cmds=10 box=(33,251,575,140) hp=81 phase=enemy soul=321,383 joy=off
+main: 阶段 enemy → menu (round=16 hp=81)
+t= 284.9 状态=attack round=16 hp=81
+main: 阶段 menu → attack (round=16 hp=81)
+main: mode=core device=unknown touch=false frame=8607 pool=692 cmds=12 box=(33,251,575,140) hp=81 phase=attack soul=321,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=17 hp=81)
+main: mode=core device=unknown touch=false frame=8758 pool=692 cmds=10 box=(105,242,430,149) hp=81 phase=enemy soul=320,309 joy=off
+t= 291.9 状态=enemy round=17 hp=81
+t= 291.9 框变化 #158 core=(240,226) 160x165  绘制=(105,242) 430x149  溢出 0→0  state=enemy round=17
+t= 292.0 框变化 #159 core=(230,226) 180x165  绘制=(149,237) 342x154  溢出 0→0  state=enemy round=17
+t= 292.0 框变化 #160 core=(220,226) 200x165  绘制=(174,233) 293x158  溢出 0→0  state=enemy round=17
+t= 292.0 框变化 #161 core=(210,226) 220x165  绘制=(187,230) 267x161  溢出 0→0  state=enemy round=17
+t= 292.1 框变化 #162 core=(200,226) 240x165  绘制=(191,229) 258x162  溢出 0→0  state=enemy round=17
+t= 292.1 框变化 #163 core=(190,226) 260x165  绘制=(191,228) 258x163  溢出 0→0  state=enemy round=17
+t= 292.1 框变化 #164 core=(180,226) 280x165  绘制=(187,227) 266x164  溢出 0→0  state=enemy round=17
+t= 292.2 框变化 #165 core=(171,226) 299x165  绘制=(181,227) 278x164  溢出 0→0  state=enemy round=17
+t= 292.2 框变化 #166 core=(171,226) 305x165  绘制=(178,227) 287x164  溢出 0→0  state=enemy round=17
+main: mode=core device=unknown touch=false frame=8909 pool=692 cmds=10 box=(171,226,305,165) hp=81 phase=enemy soul=320,306 joy=off
+main: 阶段 enemy → menu (round=17 hp=81)
+t= 301.0 状态=attack round=17 hp=81
+main: 阶段 menu → attack (round=17 hp=81)
+main: mode=core device=unknown touch=false frame=9060 pool=692 cmds=12 box=(171,226,305,165) hp=81 phase=attack soul=320,306 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: mode=core device=unknown touch=false frame=9211 pool=692 cmds=12 box=(171,226,305,165) hp=81 phase=attack soul=320,306 joy=off
+main: 阶段 attack → enemy (round=18 hp=81)
+t= 308.0 状态=enemy round=18 hp=81
+t= 308.0 框变化 #167 core=(240,226) 160x165  绘制=(195,226) 254x165  溢出 0→0  state=enemy round=18
+t= 308.0 框变化 #168 core=(230,226) 180x165  绘制=(207,226) 228x165  溢出 0→0  state=enemy round=18
+t= 308.1 框变化 #169 core=(220,226) 200x165  绘制=(212,226) 218x165  溢出 0→0  state=enemy round=18
+t= 308.1 框变化 #170 core=(210,226) 220x165  绘制=(211,226) 219x165  溢出 0→0  state=enemy round=18
+t= 308.1 框变化 #171 core=(205,226) 235x165  绘制=(209,226) 225x165  溢出 0→0  state=enemy round=18
+t= 308.2 框变化 #172 core=(205,226) 237x165  绘制=(208,226) 229x165  溢出 0→0  state=enemy round=18
+main: mode=core device=unknown touch=false frame=9362 pool=692 cmds=10 box=(205,226,237,165) hp=81 phase=enemy soul=320,306 joy=off
+main: mode=core device=unknown touch=false frame=9513 pool=692 cmds=11 box=(205,226,237,165) hp=81 phase=enemy soul=320,306 joy=off
+main: 阶段 enemy → menu (round=18 hp=81)
+t= 319.0 状态=attack round=18 hp=81
+main: 阶段 menu → attack (round=18 hp=81)
+main: mode=core device=unknown touch=false frame=9664 pool=692 cmds=12 box=(205,226,237,165) hp=81 phase=attack soul=320,306 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → enemy (round=19 hp=81)
+t= 326.1 状态=enemy round=19 hp=81
+t= 326.1 框变化 #173 core=(240,226) 160x165  绘制=(217,226) 210x165  溢出 0→0  state=enemy round=19
+t= 326.1 框变化 #174 core=(241,226) 165x165  绘制=(226,226) 194x165  溢出 0→0  state=enemy round=19
+main: mode=core device=unknown touch=false frame=9815 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,306 joy=off
+main: mode=core device=unknown touch=false frame=9966 pool=692 cmds=11 box=(241,226,165,165) hp=81 phase=enemy soul=320,306 joy=off
+main: mode=core device=unknown touch=false frame=10117 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,383 joy=off
+main: mode=core device=unknown touch=false frame=10268 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,383 joy=off
+main: mode=core device=unknown touch=false frame=10419 pool=692 cmds=10 box=(241,226,165,165) hp=81 phase=enemy soul=320,383 joy=off
+main: 阶段 enemy → menu (round=19 hp=81)
+t= 350.1 状态=attack round=19 hp=81
+main: 阶段 menu → attack (round=19 hp=81)
+main: mode=core device=unknown touch=false frame=10570 pool=692 cmds=12 box=(241,226,165,165) hp=81 phase=attack soul=320,383 joy=off
+main: 攻击条超时 → 自动结算（防卡死）
+main: 阶段 attack → result (round=19 hp=81)
+main: mode=core device=unknown touch=false frame=10721 pool=692 cmds=5 box=(241,226,165,165) hp=81 phase=result_kill soul=320,383 joy=off
+t=357.3 结束（kill）
+--- 汇总 ---
+框变化次数 = 174
+绘制框最大溢出 = 0.0 px  (最差帧: none)  OK
+灵魂跑出框外最大 = 0.0 px  (最差帧: none)  OK
+错误数 = 0
+属性写入类型违规 = 0  OK
+日志关键字计数：draw ERR=0  WARN=1  inst NIL=0  inst ERR=0  require main 失败=0  攻击条超时=20
+整帧绘制失败(draw ERR) = 0  OK
+结局文字已渲染 = true  OK（结局画面在画文字，不是只有白闪）
+按钮行帧数 = 4225  与框重叠帧 = 0  行越界帧 = 0  偏离常量帧 = 0
+按钮行位置 == 屏幕中心(240) + 192，必要时被框下沿/世界底边修正 = OK（整场逐帧成立）
+按钮行始终落在世界 0..640/0..480 内 = OK
+按钮行不与战斗框重叠 = OK（唯一允许的重叠 = 终盘超大框：框底 478.5，下方只剩 1.5px，放不下 36px 的行；实测最大重叠 0.0px @ none）

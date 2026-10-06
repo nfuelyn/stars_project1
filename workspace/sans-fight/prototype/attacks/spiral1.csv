@@ -1,0 +1,42 @@
+# spiral1 —— 螺旋龙骨炮 · 轻档（内部回合 17，HUD 显示 ROUND 18 / 20）
+# 几何逐字取自原作 sans_final.csv 阶段④「旋转光束」：中心 (320,306)、Ang = -10·gt、
+#   半径 150→450（炮身在外圈 450、光束指向内侧）、SpinTime 0.5、BlastTime 0（瞬发）。
+#   位移公式一字未改：EndX/EndY = 单位向量×150，X/Y = 同一方向×450。
+# 三档螺旋**只改**「总转角上限 gt」「角速度增量上限 gin」「每发间隔」：
+#   spiral1  gt→140 / gin→1.40 / 0.09s     （框 305 宽，实测 103 发）
+#   spiral2  gt→160 / gin→1.70 / 0.075s    （框 237 宽，实测 104 发）
+#   spiral3  gt→190 / gin→1.70 / 0.06666s  （= 原作强度，实测 122 发，接原作阶段⑤力竭）
+# 发数是 core_selftest 的「全部脚本空跑」实测值（`实体：… 龙骨炮 N`），不是估算。
+# 光束判定是"从炮身沿 ang 射 2000px"的整条 AABB（core 的 GasterBlaster 判定），
+# 所以光束会**穿过框中心**：玩家要躲在两束光之间的缝里，而不是站在中间不动。
+# 框给 305 宽（比原版阶段④的 165 宽），轻档留出更多走位空间。
+0,CombatZoneResize,171,226,476,391,TLResume
+0,HeartTeleport,320,306
+0,HeartMode,0
+0,TLPause
+0,SansHead,BlueEye
+0,SansX,320
+0,Sound,GasterBlaster
+0,SET,gt,0
+0,SET,gin,1
+0,:Loop
+0,MUL,Ang,$gt,-10
+0,COS,X,$Ang
+0,SIN,Y,$Ang
+0,MUL,EndX,$X,150
+0,MUL,EndY,$Y,150
+0,MUL,X,$EndX,3
+0,MUL,Y,$EndY,3
+0,ADD,X,$X,320
+0,ADD,Y,$Y,306
+0,ADD,EndX,$EndX,320
+0,ADD,EndY,$EndY,306
+0,ADD,Ang,$Ang,180
+0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.5,0,0,5
+0,ADD,gt,$gt,$gin
+0,JMPNL,Tail,$gin,1.4
+0,ADD,gin,$gin,0.02
+0,:Tail
+0.09,JMPL,Loop,$gt,140
+0,SansHead,Default
+0,EndAttack

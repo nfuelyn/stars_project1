@@ -1,0 +1,18 @@
+# platforms4hard —— platforms4 的高难变体：平台更窄（31），三组骨阵的数量/间距/速度都加压
+#                  （右底 60×15 不变；左侧 12 根间距 65、中列 11 根间距 90、右列 12 根间距 65）
+# 数据来源：BTS（jcw87/c2-sans-fight, GPL-3.0）Files/sans_platforms4hard.csv 逐行转写，数值未改。
+0,CombatZoneResize,113,231,548,391,TLResume
+0,HeartTeleport,320,376
+0,HeartMode,1
+0,TLPause
+0,Platform,151,336,31,0,90,1
+0,HeartTeleport,175,327
+# ↓ 恢复 BTS 原版参数（2026-10-05 第二轮：用户要求“优先学习参考仓库的代码制作攻击模式”）。
+#   原来这里被改成“静止 29 根、只铺满框宽”，是为了绕开“骨墙 900px 横扫出框”；
+#   现在 core 按 BTS 的 CombatZoneClipped 语义**把竖骨裁进战斗框**（见 core.lua 的 clipVZone），
+#   所以 60 根 × 间距 15 的原版骨毯**保持原数值**也不会再画出框外 —— 数值不再改动。
+0,BoneVRepeat,528,366,40,0,60,60,15
+0,BoneVRepeat,283,268,40,3,90,12,65
+0,BoneVRepeat,363,325,40,1,120,11,90
+0,BoneVRepeat,443,268,40,3,90,12,65
+7.3,EndAttack

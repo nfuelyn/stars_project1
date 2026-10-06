@@ -1,0 +1,106 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 34,
+  "dt": 0.03333333333333333,
+  "frames": 1020,
+  "wallSeconds": 3.2,
+  "startedAt": "2026-10-05T10:36:39.516Z",
+  "finishedAt": "2026-10-05T10:36:42.778Z",
+  "final": {
+    "time": 34.00000000000063,
+    "frame": 1020,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 45,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-05-clipzone device=Mobile touch=true mode=core pool=692 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=692 cmds=34 box=(239,226,165,165) hp=88 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=692 cmds=10 box=(239,226,165,165) hp=76 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=453 pool=692 cmds=10 box=(240,226,164,165) hp=66 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=604 pool=692 cmds=10 box=(241,226,165,165) hp=54 phase=enemy soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=755 pool=692 cmds=11 box=(241,226,165,165) hp=43 phase=menu soul=320,304 joy=off",
+    "main: mode=core device=Mobile touch=true frame=906 pool=692 cmds=16 box=(133,251,375,140) hp=35 phase=enemy soul=321,383 joy=off"
+  ],
+  "logCount": 187,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    },
+    {
+      "t": 20,
+      "time": 20.033333333333488,
+      "frame": 601
+    },
+    {
+      "t": 30,
+      "time": 30.033333333333985,
+      "frame": 901
+    }
+  ],
+  "timeline": [
+    {
+      "t": 29,
+      "shot": "mobile-16-9-t29_00.png"
+    },
+    {
+      "t": 30,
+      "shot": "mobile-16-9-t30_00.png"
+    },
+    {
+      "t": 31,
+      "shot": "mobile-16-9-t31_00.png"
+    },
+    {
+      "t": 32,
+      "shot": "mobile-16-9-t32_00.png"
+    },
+    {
+      "t": 33,
+      "shot": "mobile-16-9-t33_00.png"
+    },
+    {
+      "t": 34,
+      "shot": "mobile-16-9-t34_00.png"
+    }
+  ]
+}
