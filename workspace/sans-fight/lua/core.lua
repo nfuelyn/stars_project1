@@ -674,7 +674,7 @@ CMD.SineBones = function(w, count, spacing, speed, height)
   end
 end
 
-CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery)
+CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery, outDur)
   -- 从战斗框侧面弹出的骨刺墙：先预警 warn 秒，再伸出 dist，停留 stay 秒后收回。
   -- 【2026-10-06 用户口径】新增第 6/7 个参数：把整条边切成 `lanes` 段，
   -- 位置满足 `i % gapEvery == 0` 的段实心、其余段**留空** —— 即「骨墙保留 2~3 个能钻过去的空间」。
@@ -683,7 +683,8 @@ CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery)
   local n = math.floor(tonumber(lanes) or 0)
   if n < 2 then
     w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
-                              warn = w:wn(warn), stay = tonumber(stay), t = 0, phase = 'warn' }
+                              warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
+                              t = 0, phase = 'warn' }
     return
   end
   local ge = math.floor(tonumber(gapEvery) or 2)
@@ -691,8 +692,8 @@ CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery)
   for i = 0, n - 1 do
     if i % ge == 0 then                      -- 实心段；其余段直接不生成 = 缺口
       w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
-                                warn = w:wn(warn), stay = tonumber(stay), t = 0, phase = 'warn',
-                                lane = i, lanes = n }
+                                warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
+                                t = 0, phase = 'warn', lane = i, lanes = n }
     end
   end
 end
@@ -1680,11 +1681,10 @@ end
 function Game:endSlam()
   self.soul.slammed = false
   self.soul.slamT = 0
-  self.soul.dir = 1
-  if self.world then
-    self.world.heart.slammed = false
-    self.world.heart.dir = 1
-  end
+  -- 【2026-10-06 用户口径修正】这里**不再**把 dir 还原成 1：
+  --   蓝心要「随拖拽旋转、重力随方向变化」，一直保留到**本回合结束**；
+  --   startEnemy 开新回合时会把 soul.mode / soul.dir 复位（见那里）。
+  if self.world then self.world.heart.slammed = false end
 end
 
 function Game:jump()
@@ -3057,6 +3057,7 @@ function M.render(g)
     soulX, soulY, soulMode = g.soul.x + BOX_OFF_X, g.soul.y + BOX_OFF_Y, g.soul.mode
   end
   push(cmds, { kind = 'soul', x = soulX, y = soulY, mode = soulMode,
+               dir = (g.soul and g.soul.dir) or 1,
                invuln = invuln, visible = not blink })
   -- HUD —— 位置照参考实现（BTS 的 Background 图层）：HP 文字 y≈402、血条 y≈416、按钮行 y=432。
   -- 也就是整行**紧贴选项栏上方**，不再占用屏幕顶部（顶部只留 Sans 的台词）。

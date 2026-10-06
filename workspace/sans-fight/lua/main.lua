@@ -877,9 +877,17 @@ local function drawSoul(cmd)
   -- 而碰撞/钳位用的是中心 ±8 —— 现在视觉、碰撞、钳位三者同一个尺寸。
   -- 圆瓣的 (cx,cy) 是**左上角**：想让它**中心**落在 (x∓3.5, y-2.5)，左上角还要各减半径 4.5。
   -- 旧写法把中心当左上角 → 两个瓣整体右下偏 (4.5,4.5)，心形变成歪的一坨（红蓝同款错）。
-  circle(x - 8, y - 7, 9, col)
-  circle(x - 1, y - 7, 9, col)
-  rtri(x, y + 3.5, 15, 9, 180, col)
+  -- 【2026-10-06 用户口径】蓝心**随 Sans 拖拽旋转**：尖朝向 = 当前重力方向 cmd.dir（0东/1南/2西/3北）。
+  local sdir = cmd.dir or 1
+  local AXD = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+  local AYD = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
+  local sax, say = AXD[sdir] or 0, AYD[sdir] or 1
+  local spx, spy = -say, sax                  -- 两瓣分开的方向（垂直于尖）
+  local lbx, lby = x - sax * 4.5, y - say * 4.5
+  circle(lbx + spx * 4.5 - 4.5, lby + spy * 4.5 - 4.5, 9, col)
+  circle(lbx - spx * 4.5 - 4.5, lby - spy * 4.5 - 4.5, 9, col)
+  rtri(x + sax * 3, y + say * 3, 18, 14,
+       (({ [0] = 90, [1] = 180, [2] = -90, [3] = 0 })[sdir]) or 180, col)
 end
 
 local function drawBox(cmd)

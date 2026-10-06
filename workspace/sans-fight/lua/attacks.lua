@@ -140,7 +140,7 @@ local M = {
 0,Sound,Flash
 0,CombatZoneResizeInstant,239,226,404,391
 0,HeartTeleport,320,376
-0,HeartMode,1
+0,HeartMode,0
 0,SansAnimation,HeadBob
 0.03333,BoneStab,1,48,0.6,1
 0,BoneStab,3,48,0.6,1
@@ -826,7 +826,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNG,27,$EndY,440
 0,SET,EndY,440
 0,ANGLE,Ang,$EndX,$EndY,$HeartX,$HeartY
-0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.46666,0.03333,1.5,5
+0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.46666,0.83333,1.5,5
 0.53333,JMPNZ,6,$Loop
 # 【2026-10-06】同上：末尾留 2.2s 让最后一发走完 0.46666 + 1.5 + 0.03333
 2.2,EndAttack
@@ -862,7 +862,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNG,27,$EndY,440
 0,SET,EndY,440
 0,ANGLE,Ang,$EndX,$EndY,$HeartX,$HeartY
-0,GasterBlaster,1,$X,$Y,$EndX,$EndY,$Ang,0.66666,0.03333,1.5,5
+0,GasterBlaster,1,$X,$Y,$EndX,$EndY,$Ang,0.66666,0.83333,1.5,5
 0.66666,JMPNZ,6,$Loop
 # 【2026-10-06】同上：末尾留 2.4s 让最后一发走完 0.66666 + 1.5 + 0.03333
 2.4,EndAttack
@@ -1106,7 +1106,8 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,12,0.4,0.25,5,2
+# 【2026-10-06 二次口径】尺寸再减半 dist 18→9、出现 warn 0.4→1.2、升起 out 0.22→1.02
+0,BoneStab,$Direction,9,1.2,0.25,5,2,1.02
 1.23333,JMPABS,6
 0,EndAttack
 ]==] },
