@@ -1039,111 +1039,44 @@ local function run()
   ok(#subBad == 0, '子面板矩形都在框内且在世界内' ..
      (#subBad > 0 and ('（异常：' .. table.concat(subBad, '; ') .. '）') or ''))
 
-  head('blue-jump：按住 0.25s 升到 3/5 框高、超时自然下落、松开匀速落下')
-  -- 用户第十/十一轮口径：跳跃时间 0.25s、跳跃高度 3/5 框高；**按住不动不能一直浮空**。
+  head('blue-jump：依据 blue_soul.lua —— 180 冲量 + 松键截断(30) + 分段重力')
+  -- 参考：D:\stars\blue_soul.lua（= 原作 Battle.xml 的 PlayerMovement）
+  --   起跳 = 沿逆重力给 HEART_JUMP_STRENGTH(180) 的瞬时冲量；
+  --   变高跳 = 松手瞬间若仍上冲且 > JUMPHOLD_CUTOFF(30)，沿重力分量钳到 -30；
+  --   重力分段 180/450/180/540。
   local function jumpCurve(hold)
     local gj = newGame({ scripts = A })
-    gj:startEnemyScript('sans_boneslideh')        -- 蓝魂、框 375x140
+    gj:startEnemyScript('sans_boneslideh')          -- 蓝魂、框 375x140
     for _ = 1, 20 do M.update(gj, {}, DT) end
     local y0 = gj.soul.y
     M.jump(gj)
+    local v0 = gj.soul.vy
     local peak, tUp = y0, 0
     local n = math.floor(hold / DT + 0.5)
     for _ = 1, n do
-      M.update(gj, { jumpHeld = true }, DT)
-      tUp = tUp + DT
+      M.update(gj, { jumpHeld = true }, DT); tUp = tUp + DT
       if gj.soul.y < peak then peak = gj.soul.y end
     end
+    M.update(gj, { jumpHeld = false }, DT)          -- 松手这一帧 = 截断帧
+    local vCut = gj.soul.vy
     local tDown = 0
-    for k = 1, 400 do
-      M.update(gj, { jumpHeld = false }, DT)
-      tDown = tDown + DT
+    for k = 1, 600 do
+      M.update(gj, { jumpHeld = false }, DT); tDown = tDown + DT
+      if gj.soul.y < peak then peak = gj.soul.y end
       if gj.soul.grounded and k > 1 then break end
     end
-    return y0 - peak, gj.box.h, tUp, tDown
+    return y0 - peak, gj.box.h, tUp, tDown, v0, vCut
   end
-  local rise025, boxH, up025, down025 = jumpCurve(0.25)
-  local rise20 = jumpCurve(2.0)
-  local rise01, _, up01, down01 = jumpCurve(0.1)
-  ok(math.abs(rise025 / boxH - 0.60) <= 0.04,
-     string.format('blue-jump：按住 0.25s 升到 3/5 框高（实测 %.1fpx / %.0f = %.3f）', rise025, boxH, rise025 / boxH))
-  ok(math.abs(rise01 / boxH - 0.24) <= 0.03,
-     string.format('blue-jump：匀速上升（按 0.1s = 0.24 框高，实测 %.1fpx / %.0f = %.3f）', rise01, boxH, rise01 / boxH))
-  ok(math.abs(rise025 - rise01 * 2.5) <= 4,
-     string.format('blue-jump：上升高度与按住时长成正比（0.1s→%.1f，0.25s→%.1f）', rise01, rise025))
-  ok(math.abs(rise20 - rise025) <= 1.0,
-     string.format('blue-jump：按 2s 也不会更高（0.25s→%.1f，2.0s→%.1f）', rise025, rise20))
-  ok(math.abs(down025 - 0.9) <= 0.1,
-     string.format('blue-jump：从 3/5 框高落回用 ~0.9s（下落速率仍是 0.5框高/0.75s，实测 %.3fs）', down025))
-  ok(math.abs(down01 - 0.24 * 0.75 / 0.5) <= 0.09,
-     string.format('blue-jump：下落速率恒定 = 0.5框高/0.75s（按 0.1s 上升的高度落回用 %.3fs）', down01))
-  -- 关键：按住不放要自然落回地面，不能一直浮空
-  local gHold = newGame({ scripts = A })
-  gHold:startEnemyScript('sans_boneslideh')
-  for _ = 1, 20 do M.update(gHold, {}, DT) end
-  local yGround = gHold.soul.y
-  M.jump(gHold)
-  for _ = 1, math.floor(2.0 / DT + 0.5) do M.update(gHold, { jumpHeld = true }, DT) end   -- 一直按住 2s
-  ok(gHold.soul.grounded and math.abs(gHold.soul.y - yGround) < 1.5,
-     string.format('blue-jump：按住不放会自然落回地面（2s 后 grounded=%s y=%.1f vs %.1f）',
-                   tostring(gHold.soul.grounded), gHold.soul.y, yGround))
-  -- 下降途中再按跳跃键不能重新上升（不能二段跳）
-  local gj2 = newGame({ scripts = A })
-  gj2:startEnemyScript('sans_boneslideh')
-  for _ = 1, 20 do M.update(gj2, {}, DT) end
-  M.jump(gj2)
-  for _ = 1, 6 do M.update(gj2, { jumpHeld = true }, DT) end
-  for _ = 1, 3 do M.update(gj2, { jumpHeld = false }, DT) end
-  local yRe = gj2.soul.y
-  local minY = yRe
-  for _ = 1, 15 do
-    M.update(gj2, { jumpHeld = true }, DT)
-    if gj2.soul.y < minY then minY = gj2.soul.y end
-  end
-  ok(minY >= yRe - 0.6,
-     string.format('blue-jump：下降途中按住跳跃键不会重新上升（最高只到 %.1f，起点 %.1f）', minY, yRe))
-  head('blue-jump-on-platform：空中板子与地面走同一个落地模型（原版 HeartCheckSolid）')
-  -- 原来的 bug（修改意见文档 R1/R2）：落地复位写在蓝魂分支里，而**脚本平台**的落地判定
-  -- 在分支之后才做 → 落在空中板子上时 jumping 一直是 true，第 2 跳被 Game:jump 拦掉。
-  do
-    local gp = newGame({ scripts = A, hp = 1000000 })
-    gp:startEnemyScript('platforms1')
-    local pf
-    for _ = 1, 400 do
-      M.update(gp, {}, DT)
-      for _, p in ipairs(gp.world.platforms) do
-        local px = p.x - 240
-        if px > gp.box.x and px + p.w < gp.box.x + gp.box.w and (p.speed or 0) > 0 then pf = p break end
-      end
-      if pf then break end
-    end
-    if not pf then
-      ok(false, 'blue-jump-on-platform：400 帧内没找到框内的移动脚本平台')
-    else
-      local px, py = pf.x - 240, pf.y - 226
-      gp.soul.x, gp.soul.y = px + pf.w / 2, py - 8
-      gp.prevX, gp.prevY = gp.soul.x, gp.soul.y
-      for _ = 1, 6 do M.update(gp, {}, DT) end
-      ok(gp.soul.grounded and math.abs(gp.soul.y - (py - 8)) < 2,
-        string.format('blue-jump-on-platform：能站在空中板子上（y=%.1f 板面=%.1f grounded=%s）',
-          gp.soul.y, py, tostring(gp.soul.grounded)))
-      gp.soul.jumping = false
-      M.jump(gp)
-      ok(gp.soul.vy < -1,
-        string.format('blue-jump-on-platform：板子上第 1 跳 vy=%.1f < 0', gp.soul.vy))
-      local landed = false
-      for k = 1, 200 do
-        M.update(gp, {}, DT)
-        if gp.soul.grounded and k > 2 then landed = true break end
-      end
-      ok(landed and gp.soul.jumping == false,
-        string.format('blue-jump-on-platform：落回板子后 jumping 必须复位（grounded=%s jumping=%s）',
-          tostring(gp.soul.grounded), tostring(gp.soul.jumping)))
-      M.jump(gp)
-      ok(gp.soul.vy < -1,
-        string.format('blue-jump-on-platform：板子上能连跳（第 2 跳 vy=%.1f < 0）', gp.soul.vy))
-    end
-  end
+  local riseShort, boxH, _, _, v0s, vCutShort = jumpCurve(0.05)
+  local riseLong, _, _, _, v0l = jumpCurve(1.2)
+  ok(v0s < -150 and v0s > -190,
+     string.format('blue-jump：起跳瞬时冲量 ~180 px/s（实测 %.1f）', v0s))
+  ok(math.abs(v0l - v0s) < 1e-6,
+     string.format('blue-jump：轻点/按住起跳初速相同（%.1f / %.1f）', v0s, v0l))
+  ok(riseLong > riseShort * 1.3,
+     string.format('blue-jump：按住比轻点跳得高（%.1f vs %.1f px）', riseLong, riseShort))
+  ok(vCutShort > -40 and vCutShort < 0,
+     string.format('blue-jump：松键截断把上冲速度钳到 -30（实测 %.1f）', vCutShort))
   head('platforms3-safe：ROUND 10 两根扫平台站立带的骨头已削短')
   -- 站立带 = 平台顶面 -SOUL_CLAMP(8) 为心，±SOUL_R(4)：y = py-12 .. py-4
   local csvP3

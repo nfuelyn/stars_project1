@@ -90,7 +90,14 @@ local LETHAL_H = 24               -- 与视觉一致：高过 24 才算"看得�
 local SOUL_R = 2                  -- 【差距文档 H-01】原版心贴图 16×16，但真正的判定物是
                                   -- `PlayerHitbox` = **4×4** 精灵（每帧跟随心），判定只用它。
                                   -- 我们原来 SOUL_R=4（8×8）比原版大一倍 → 擦边就掉血。现在照原版改成 4×4。
-local SOUL_CLAMP = 8              -- 框内钳位半径 = 心形视觉半宽（±8）：保证心本身不画出框外
+local SOUL_CLAMP = 8              -- 框内钳位半径 = 心形视觉半宽（±8）
+-- 【blue_soul.lua / 原作 PlayerMovement 常量】
+local HEART_JUMP = 180            -- HEART_JUMP_STRENGTH：起跳瞬时冲量 px/s
+local HEART_CUTOFF = 30           -- HEART_JUMPHOLD_CUTOFF：松键截断后保留的上冲速度
+local GRAVITY_UP_FAST = 180       -- 分段重力：高速上冲
+local GRAVITY_UP_SLOW = 450       -- 分段重力：中速上升
+local GRAVITY_APEX    = 180       -- 分段重力：顶点附近
+local GRAVITY_FALL    = 540       -- 分段重力：下落              -- 框内钳位半径 = 心形视觉半宽（±8）：保证心本身不画出框外
 local SOUL_SPEED = 150              -- 【差距文档 V-03 / 附录B】原版红模式移速 = 150 px/s
 local SOUL_SPEED_SLOW = 75          -- 按住取消键（取消/后退）时减速到 75 px/s
 local KR_PER_HIT = 6              -- 原版 Karma：骨头 6 / 龙骨炮 10（见 Battle.xml 的 Karma 实例变量）
@@ -1726,10 +1733,9 @@ function Game:jump()
   local surface, gx, gy, soulA = self:groundQuery()
   local onSolid = (soulA + SOUL_CLAMP) >= (surface - 2)
   if onSolid or coyote then
-    -- 【方案甲 A-8】沿**逆重力方向**起跳（dir=1 时就是原来的向上跳，行为不变）
-    local jv = JUMP_HEIGHT * self.box.h / JUMP_RISE_T
-    self.soul.vx = (self.soul.vx or 0) - gx * jv
-    self.soul.vy = (self.soul.vy or 0) - gy * jv
+    -- 【blue_soul.lua】起跳 = 沿**逆重力方向**给一个瞬时冲量 HEART_JUMP_STRENGTH = 180 px/s
+    self.soul.vx = (self.soul.vx or 0) - gx * HEART_JUMP
+    self.soul.vy = (self.soul.vy or 0) - gy * HEART_JUMP
     self.soul.grounded = false
     self.soul.jumpBase = self.soul.y          -- 起跳点（算上升高度）
     self.soul.jumping = true
@@ -2150,6 +2156,10 @@ function Game:update(dt)
   --   这正是「ws 对应心尖为正向的左右移动」。红魂不受影响（保持屏幕坐标系）。
   local k = self.keys
   local vx, vy = 0, 0
+  -- 【blue_soul.lua】蓝心的横向是「清零垂直分量后直接赋值 ±150」，在蓝心分支里做，
+  --   这里跳过，避免叠加成 2 倍位移。
+  local blueHere = (self.soul.mode == 'blue' and not self.soul.wall)
+  if not blueHere then
   if self.soul.mode == "blue" and not self.soul.wall then
     local DXd = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
     local DYd = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
@@ -2166,6 +2176,7 @@ function Game:update(dt)
     if k.right then vx = vx + 1 end
     if k.up then vy = vy - 1 end
     if k.down then vy = vy + 1 end
+  end
   end
   if vx ~= 0 or vy ~= 0 then
     local len = math.sqrt(vx * vx + vy * vy)
@@ -2272,28 +2283,63 @@ function Game:update(dt)
     --   * 松开 → **立刻停止上升**，等速下降（速度 = 0.5×框高 / 0.75s）；
     --   * 松手后这一次跳跃被「剪断」（jumpCut）→ **下降途中再按跳跃键不会重新上升**（不能二段跳）；
     --   * 另有「起跳点上方 3/5 框高」和战斗框上沿两道兜底。
-    local riseSpeed = JUMP_HEIGHT * self.box.h / JUMP_RISE_T
-    local fallSpeed = 0.5 * self.box.h / JUMP_FALL_T   -- 下落速率不变（0.5 框高 / 0.75s）
-    local maxRise = JUMP_HEIGHT * self.box.h
-    if not self.jumpHeld then self.soul.jumpCut = true end
-    local risen = (self.soul.jumpBase or self.soul.y) - self.soul.y
-    local heldT = self.soul.jumpHeldT or 0
-    if self.soul.jumping and self.jumpHeld and not self.soul.jumpCut
-       and heldT < JUMP_RISE_T - 1e-9 and risen < maxRise - 0.01 then
-      self.soul.vy = -riseSpeed
-      self.soul.jumpHeldT = heldT + dt
-    else
-      self.soul.vy = fallSpeed                   -- 超时 / 松手 / 已剪断：等速下降（自然下落）
+    -- 【2026-10-06 · 完全依据 D:\\stars\\blue_soul.lua（= 原作 PlayerMovement）重写】
+    --   ① 重力**分段**：按「施加本帧重力之前」的沿重力速度 DownSpeed 选档（px/s²）
+    --        DownSpeed <= -120            → 180   （高速上冲，保持冲劲）
+    --        -120 < DownSpeed <= -30      → 450   （中速上升，迅速刹车）
+    --        -30  < DownSpeed <=  15      → 180   （顶点附近，滞空）
+    --        其它（> 15）                  → 540   （下落，重）
+    --   ② 松键截断（HEART_JUMPHOLD_CUTOFF = 30）：松手瞬间若仍上冲且速度 > 30，
+    --      把沿重力分量**直接钳到 -30** —— 轻点=小跳、按住=满跳，**不再用按住计时**。
+    --   ③ 横向：先清零「垂直」分量，再按轴直接赋值 ±150（按住 Cancel = 75）。
+    --      竖直重力用左右键；水平重力用上下键（与原版一致）。
+    --   ④ 前方 0.2px 有固体就不加重力，避免把灵魂压进地面/平台。
+    local DXg = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+    local DYg = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
+    local gdir = self.soul.dir or 1
+    local ugx, ugy = DXg[gdir] or 0, DYg[gdir] or 1
+    local function alongG(a, b) return (a or 0) * ugx + (b or 0) * ugy end
+    local function setAlongG(target)
+      local cur = alongG(self.soul.vx, self.soul.vy)
+      local dlt = target - cur
+      self.soul.vx = (self.soul.vx or 0) + ugx * dlt
+      self.soul.vy = (self.soul.vy or 0) + ugy * dlt
     end
-    -- HeartMaxFallSpeed：脚本可再压一档（原作「砸击」的三档速度；负值 = 反向重力走廊）
+    local dsp = alongG(self.soul.vx, self.soul.vy)
+    -- ② 松键截断
+    if self.soul.jumping and not self.jumpHeld and dsp < -HEART_CUTOFF then
+      setAlongG(-HEART_CUTOFF); dsp = -HEART_CUTOFF
+    end
+    -- ① 分段重力
+    local grav = GRAVITY_FALL
+    if dsp <= -120 then grav = GRAVITY_UP_FAST
+    elseif dsp <= -30 then grav = GRAVITY_UP_SLOW
+    elseif dsp <= 15 then grav = GRAVITY_APEX end
+    -- ④ 前方 0.2px 有固体（框边/平台）就不加重力
+    local sB, gBx, gBy, sAx = self:groundQuery()
+    if (sAx + 0.2) < sB then setAlongG(dsp + grav * dt) end
+    -- MaxFallSpeed（默认 750，脚本可改）
     local mf = self.soul.maxFall
-    if mf and self.soul.vy > mf then self.soul.vy = mf end
+    if mf == nil or mf == 0 then mf = 750 end
+    local dsp2 = alongG(self.soul.vx, self.soul.vy)
+    if dsp2 > mf then setAlongG(mf) end
+    -- ③ 横向：清零垂直分量 + 直接赋值
+    local hsp = (self.keys and self.keys.cancel) and SOUL_SPEED_SLOW or SOUL_SPEED
+    if ugy ~= 0 then
+      self.soul.vx = 0
+      if self.keys.left ~= self.keys.right then
+        self.soul.vx = self.keys.left and -hsp or hsp
+      end
+    else
+      self.soul.vy = 0
+      if self.keys.up ~= self.keys.down then
+        self.soul.vy = self.keys.up and -hsp or hsp
+      end
+    end
+    -- 位移（1px 步进的碰撞由 groundQuery + 边界钳位等价实现）
+    self.soul.x = self.soul.x + self.soul.vx * dt
     self.soul.y = self.soul.y + self.soul.vy * dt
     self.soul.grounded = false
-    local ceilY = self.box.y + SOUL_CLAMP
-    if self.soul.y <= ceilY then
-      self.soul.y = ceilY; self.soul.vy = 0        -- 顶在框沿：按住也不越界
-    end
     -- 【统一落地】框边与平台一个模子（对应原版 HeartCheckSolid）：
     --   这里原来是「框底 floorY」+「内置平台 for 循环」两套判定，而**脚本平台**要等
     --   分支之后的循环才判 → 落在空中板子上时下面的复位已经跑过了，jumping 一直留 true，

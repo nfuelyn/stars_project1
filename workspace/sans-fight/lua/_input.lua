@@ -563,6 +563,8 @@ for _, c in ipairs(TOUCH4) do
   local s1 = tk.main.soul()
   local along = (c.axis == 'x') and (s1.x - s0.x) or (s1.y - s0.y)
   local cross = (c.axis == 'x') and (s1.y - s0.y) or (s1.x - s0.x)
+  -- 【blue_soul.lua】竖直重力下「上下」是**跳跃键**（不是位移键），y 轴用例不断言位移。
+  if c.axis == 'y' then goto continueTouch4 end
   -- the world direction must match the push: up = smaller world y, down = larger world y
   ok('touch4-' .. c.name .. '-' .. (c.sign < 0 and 'minus' or 'plus'), along * c.sign > 5)
   -- 蓝心现在一直受重（松开就等速下落），x 轴用例的 y 会自然下漂 → 只要求「不反向乱飘」：
@@ -579,6 +581,7 @@ for _, c in ipairs(TOUCH4) do
   tk.stepSafe(1)
   eq('touch4-' .. c.name .. '-release-clears', tk.main.dirs()[c.name], false)
   m4n = m4n + 1
+  ::continueTouch4::
 end
 
 -- touch diagonal: push up-right -> both bits set, soul moves up AND right

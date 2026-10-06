@@ -279,10 +279,10 @@ $Wait2,SET,LastDir,$Direction
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,320,376
-0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
-0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
+0,BoneVRepeat,128,341,22,0,240,4,32
+0,BoneV,64,286,50,0,240
+0,BoneVRepeat,512,341,22,2,240,4,32
+0,BoneV,576,286,50,2,240
 0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
@@ -392,7 +392,7 @@ $Wait2,SET,LastDir,$Direction
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
 
-0,BoneVRepeat,121,364,30,2,0,25,16
+0,BoneVRepeat,121,364,15,2,0,25,32
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -482,10 +482,10 @@ $Wait2,SET,LastDir,$Direction
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,320,376
-0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
-0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
+0,BoneVRepeat,128,341,22,0,240,4,32
+0,BoneV,64,286,50,0,240
+0,BoneVRepeat,512,341,22,2,240,4,32
+0,BoneV,576,286,50,2,240
 0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
@@ -567,7 +567,7 @@ $Wait2,SET,LastDir,$Direction
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
 
-0,BoneVRepeat,121,364,30,2,0,25,16
+0,BoneVRepeat,121,364,15,2,0,25,32
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
