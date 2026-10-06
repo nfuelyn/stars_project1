@@ -719,7 +719,9 @@ local function run()
   w:update(DT)
   ok(w.slamDamage == false, 'SansSlamDamage 0 → w.slamDamage=false')
   ok(w.heart.mode == 1 and w.heart.maxFall == 300 and w.heart.dir == 0, '砸击参数已写入（mode/maxFall/dir）')
-  ok(w.heart.vx == 300 and w.heart.vy == 0, 'SansSlam 0（东）→ vx=+maxFall、vy=0')
+  -- 【2026-10-06 用户口径】拖拽改成「瞬移到那一侧的框边」：不再有 +maxFall 初速，位置直接贴边。
+  local zz = w.zone
+  ok(w.heart.x == zz.r - 8 and w.heart.vy == 0, 'SansSlam 0（东）→ 心瞬移到右边框（z.r-8），vy=0')
 
   head('extra-cmd-coverage：命令/运算/跳转覆盖表')
   local expect = {
