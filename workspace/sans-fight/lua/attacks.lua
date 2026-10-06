@@ -1076,7 +1076,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPREL,1
 0.26666,SansSlam,$Direction
 0.2,BoneStab,$Direction,9,1.2,0.2,5,2,1.02
-0.43333,JMPABS,6
+0.93333,JMPABS,6
 0,EndAttack
 ]==] },
   { name = "sans_bonestab3", csv = [==[

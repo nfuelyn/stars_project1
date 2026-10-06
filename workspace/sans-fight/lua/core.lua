@@ -1566,7 +1566,9 @@ function Game:startEnemy(n)
     end
     if real == false then real = nil end
     if real and (need == nil or real > need) then need = real end
-    if need and (need + DT) > self.enemyDur then self.enemyDur = need + DT end
+    -- 【2026-10-06】留 2.5s 余量：simulateLength 对「循环里带变量」的行会低估，
+    --   余量不足时脚本会被 enemyDur 在播完前掐掉（用户报的「一轮没打完就结束」）。
+    if need and (need + 2.5) > self.enemyDur then self.enemyDur = need + 2.5 end
   end
 
   -- 【第三轮 N8】ROUND 0 同时挂着 sans_intro 脚本，内置「意外攻击」地面骨会让场上有两套弹幕。
@@ -2764,8 +2766,14 @@ function Game:update(dt)
     self:endEnemy()
     return
   end
-  -- enemyDur 降级为「安全上限」：脚本因故没 EndAttack 时兜底
-  if self.enemyT >= self.enemyDur then self:endEnemy() end
+  -- 【2026-10-06 用户口径·重点】带脚本的回合**必须把脚本播完**，不许因为「超过单回合时长」被强制截止：
+  --   enemyDur 只对**内置生成器**的回合兜底；挂了脚本的回合一律等脚本自己 EndAttack（world.ended）。
+  --   另留 180s 硬顶，只用于防「脚本真的死循环」，正常关卡永远碰不到。
+  if self.world then
+    if self.enemyT >= 180 then self:endEnemy() end
+  elseif self.enemyT >= self.enemyDur then
+    self:endEnemy()
+  end
 end
 
 -- 输入消费（按下沿 + 边沿动作）
