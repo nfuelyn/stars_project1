@@ -138,7 +138,8 @@ local lastPhase = nil
 local attackT = 0        -- 攻击条已持续时长（防卡死保险用）
 local lastMenu, lastSub, lastBar = nil, nil, nil
 local titlePrevL, titlePrevR = false, false     -- 标题页左右选档的边沿检测
-local prevUp = false           -- 蓝魂跳跃用：「上」的按下沿检测（见 OnLevelUpdate）
+local prevUp = false           -- （保留：其它地方仍在用）
+local prevJumpKey = false      -- 【原版】跳跃键 = 与重力反向的那个键，检测它的按下沿
 local drawnKinds = {}          -- 上一帧真正画出去的命令种类（回归用）
 local drawnBox = false         -- 上一帧是否画了战斗框（标题页必须为 false）
 local pendingPhase = nil       -- 上一帧的相位（相位一变就清掉触摸端的待确认选中）
@@ -1898,18 +1899,25 @@ function M.OnLevelUpdate(dt)
     --      不掩的话蓝魂按住上会"飘"，与「只读左右」的语义不符。
     -- 红魂（red）完全不走这一支：「上」照旧是正常上移，W 不会触发跳跃。
     local blue = (state.state == 'enemy') and state.soul ~= nil and state.soul.mode == 'blue'
-    local upEdge = input.up and not prevUp
-    prevUp = input.up
     local coreInput = input
     if blue then
-      if upEdge then
+      -- 【2026-10-06 依据 blue_soul.lua / 原作 PlayerMovement】
+      --   ① 跳跃键 = **与重力反向的那个键**（dir=1南→上；dir=0东→左；dir=2西→右；dir=3北→下）
+      --   ② 反重力方向给 180px/s 冲量（core 的 Game:jump 里做）
+      --   ③ 上/下键**必须透传**给 core —— 竖直重力下它们是跳跃键（core 的横向只读左右，不会误用），
+      --      水平重力下它们就是**横向移动键**（旧实现把 up/down 掩成 false →
+      --      终盘蓝心向右坠落时上下键完全没反应，用户报的「横向没法移动」就是这个）。
+      local JKEY = { [0] = 'left', [1] = 'up', [2] = 'right', [3] = 'down' }
+      local jk = JKEY[state.soul.dir or 1] or 'up'
+      local jNow = input[jk] and true or false
+      if jNow and not prevJumpKey then
         pcall(function() core.jump(state) end)
-        print('main: 蓝魂跳跃（上键按下沿 → core.jump）')
+        print('main: 蓝魂跳跃（' .. jk .. ' 按下沿 → core.jump，dir=' .. tostring(state.soul.dir) .. '）')
       end
-      coreInput = { left = input.left, right = input.right, up = false, down = false,
-                    -- 【J5】确认键也算「按住跳跃」：蓝魂态下上键被掩成 false，只留按下沿，
-                    -- 若只给 input.up，用 Enter/Z/J 起跳会被同帧的物理剪断（灵魂原地落回）。
-                    jumpHeld = (input.up or confirmHeld),
+      prevJumpKey = jNow
+      coreInput = { left = input.left, right = input.right, up = input.up, down = input.down,
+                    -- 【J5】确认键也算「按住跳跃」：只给按下沿会被同帧物理剪断（灵魂原地落回）
+                    jumpHeld = (jNow or confirmHeld),
                     confirm = input.confirm, cancel = input.cancel }
     end
     local ok, out = pcall(function() return core.update(state, coreInput, dt) end)

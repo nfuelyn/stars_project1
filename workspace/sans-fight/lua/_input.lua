@@ -679,7 +679,9 @@ do
   pk.stepSafe(1)
   eq('pc4-blue-jump-vy-negative', pk.main.state().soul.vy < -50, true)    -- core.jump fired（上升速度=框高×0.5/1s）
   eq('pc4-blue-jump-airborne', pk.main.state().soul.grounded, false)
-  eq('pc4-blue-core-reads-lr-only', pk.main.state().keys.up, false)       -- up is masked for core
+  -- 【2026-10-06 依据 blue_soul.lua】竖直重力下 core 不读上下（横向只读左右），但**必须透传**：
+  --   水平重力（终盘长框段 dir=0）时上下键就是横向移动键。旧断言要求被掩成 false，已过时。
+  eq('pc4-blue-core-reads-lr-only', pk.main.state().keys.up, true)
   eq('pc4-blue-input-bit-still-set', pk.main.dirs().up, true)             -- ... but the bit exists
   pk.stepSafe(8)
   ok('pc4-blue-jump-lifts-y', pk.main.soul().y < y0 - 10)
@@ -710,7 +712,8 @@ do
   eq('touch4-blue-joy-up-bit', d.up, true)
   eq('touch4-blue-jump-vy-negative', tk.main.state().soul.vy < -50, true)
   eq('touch4-blue-jump-airborne', tk.main.state().soul.grounded, false)
-  eq('touch4-blue-core-reads-lr-only', tk.main.state().keys.up, false)
+  -- 【2026-10-06】同上：上下键现在是透传的（水平重力下作横移用）
+  eq('touch4-blue-core-reads-lr-only', tk.main.state().keys.up, true)
   eq('touch4-blue-can-still-move-x', tk.main.state().keys.right, false)
   tk.stepSafe(8)
   ok('touch4-blue-jump-lifts-y', tk.main.soul().y < y0 - 10)
