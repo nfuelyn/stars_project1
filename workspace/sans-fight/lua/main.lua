@@ -1088,7 +1088,10 @@ local function drawWall(cmd)
   if hCur <= 1 then return end
   for L = 0, lanes - 1 do
     if not (L >= gapS and L < gapS + gapW) then
-      drawBone({ x = cmd.x + L * laneW, y = cmd.y + cmd.h - hCur, w = laneW, h = hCur,
+      -- 【2026-10-06 用户口径】每根窄于它那一道并居中：相邻两根间留 WALL_GAP 的缝，
+      --   缝宽(24) > 灵魂视觉宽(16) → 可钻（core 碰撞用同一口径）。
+      local bw = cmd.boneW or laneW
+      drawBone({ x = cmd.x + L * laneW + (laneW - bw) / 2, y = cmd.y + cmd.h - hCur, w = bw, h = hCur,
                  vertical = true, color = 0 })
     end
   end

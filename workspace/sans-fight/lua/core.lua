@@ -90,7 +90,10 @@ local LETHAL_H = 24               -- 与视觉一致：高过 24 才算"看得�
 local SOUL_R = 2                  -- 【差距文档 H-01】原版心贴图 16×16，但真正的判定物是
                                   -- `PlayerHitbox` = **4×4** 精灵（每帧跟随心），判定只用它。
                                   -- 我们原来 SOUL_R=4（8×8）比原版大一倍 → 擦边就掉血。现在照原版改成 4×4。
-local SOUL_CLAMP = 8              -- 框内钳位半径 = 心形视觉半宽（±8）
+local SOUL_CLAMP = 8              -- 框内钳位半径 = 心形视觉半宽（±8）→ 灵魂视觉宽 16
+-- 【2026-10-06 用户口径】内置骨墙：相邻两根骨头之间的缝必须能容下灵魂。
+--   灵魂视觉宽 = 2*SOUL_CLAMP = 16px，这里留 24px。
+local WALL_GAP = 24              -- 框内钳位半径 = 心形视觉半宽（±8）
 -- 【blue_soul.lua / 原作 PlayerMovement 常量】
 local HEART_JUMP = 180            -- HEART_JUMP_STRENGTH：起跳瞬时冲量 px/s
 local HEART_CUTOFF = 30           -- HEART_JUMPHOLD_CUTOFF：松键截断后保留的上冲速度
@@ -2003,7 +2006,11 @@ function Game:spawnWall(gapW)
     gapStart = math.floor(self.rng() * (lanes - gapW + 1))
   end
   if self.round == 2 then self.firstBarrierDone = true end
+  -- 【2026-10-06】每根骨头比它那一道窄 WALL_GAP，缝隙居中 → 相邻两根之间恒有一条能过灵魂的缝。
+  local boneW = laneW - WALL_GAP
+  if boneW < 10 then boneW = math.max(6, laneW * 0.5) end
   self.walls[#self.walls + 1] = { t = 0, phase = 'warn', lanes = lanes, laneW = laneW,
+                                  boneW = boneW,
                                   gapStart = gapStart, gapW = gapW, h = 0 }
 end
 
@@ -2724,9 +2731,11 @@ function Game:update(dt)
       if W.phase ~= 'warn' and not (W.phase == 'retract' and W.h < LETHAL_H) then
         for L = 0, W.lanes - 1 do
           if not (L >= W.gapStart and L < W.gapStart + W.gapW) then
-            local rc = { x = self.box.x + L * W.laneW,
+            -- 【与渲染同口径】骨头窄于道宽并居中 → 缝也能钻
+            local bw = W.boneW or W.laneW
+            local rc = { x = self.box.x + L * W.laneW + (W.laneW - bw) / 2,
                          y = self.box.y + self.box.h - W.h,
-                         w = W.laneW, h = W.h }
+                         w = bw, h = W.h }
             if rectHit(self.soul.x, self.soul.y, SOUL_R, rc) then self:hurt('hit', 10) end
           end
         end
@@ -3039,7 +3048,7 @@ function M.render(g)
   -- 骨墙（原地升降 + 缺口）
   for _, W in ipairs(fieldOn and g.walls or {}) do
     push(cmds, { kind = 'wall', x = boxAbs.x, y = boxAbs.y, w = boxAbs.w, h = boxAbs.h,
-                 lanes = W.lanes, gapStart = W.gapStart, gapW = W.gapW,
+                 lanes = W.lanes, boneW = W.boneW, gapStart = W.gapStart, gapW = W.gapW,
                  hCur = W.h, phase = W.phase, boxY = boxAbs.y, boxH = boxAbs.h })
   end
   -- 平台（内置 blue_soul 模式，框内相对坐标 -> 绝对）

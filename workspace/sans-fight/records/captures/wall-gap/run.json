@@ -1,0 +1,73 @@
+{
+  "canvas": "mobile-16-9",
+  "seconds": 5,
+  "dt": 0.03333333333333333,
+  "frames": 150,
+  "wallSeconds": 1.6,
+  "startedAt": "2026-10-06T11:45:06.342Z",
+  "finishedAt": "2026-10-06T11:45:08.025Z",
+  "final": {
+    "time": 4.999999999999992,
+    "frame": 150,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 511,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 720,
+    "canvasId": "mobile-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0",
+    "main start: build=2026-10-06-bluesoul device=Mobile touch=true mode=core pool=2018 flash=true cursor=true"
+  ],
+  "logCount": 77,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 2.9,
+      "shot": "mobile-16-9-t2_90.png"
+    },
+    {
+      "t": 3.1,
+      "shot": "mobile-16-9-t3_10.png"
+    },
+    {
+      "t": 3.3,
+      "shot": "mobile-16-9-t3_30.png"
+    }
+  ]
+}
