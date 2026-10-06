@@ -567,7 +567,9 @@ $Wait2,SET,LastDir,$Direction
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
 
-0,BoneVRepeat,121,364,30,2,0,25,16
+# 【2026-10-06 用户口径·round22】贴地那排骨头：25 根 × 间距 16（缝仅 6px，灵魂宽 16 钻不过去）
+#   → 10 根 × 间距 40（缝 30px，能容下灵魂），高 30 → 15（大小减半）；横向覆盖宽度不变。
+0,BoneVRepeat,121,364,15,2,0,10,40
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
