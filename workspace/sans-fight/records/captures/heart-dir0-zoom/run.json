@@ -1,0 +1,72 @@
+{
+  "canvas": "mobile-4-3",
+  "seconds": 13,
+  "dt": 0.03333333333333333,
+  "frames": 390,
+  "wallSeconds": 4.8,
+  "startedAt": "2026-10-06T13:57:43.881Z",
+  "finishedAt": "2026-10-06T13:57:48.897Z",
+  "final": {
+    "time": 12.999999999999964,
+    "frame": 390,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 483,
+    "paintItems": 0,
+    "canvasWidth": 1280,
+    "canvasHeight": 960,
+    "canvasId": "mobile-4-3"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1280x960 scale=2.000 ox=0.0 oy=0.0",
+    "main start: build=2026-10-06-bluesoul device=Mobile touch=true mode=core pool=2018 flash=true cursor=true",
+    "main: mode=core device=Mobile touch=true frame=151 pool=2023 cmds=12 box=(241,226,165,165) hp=86 phase=enemy soul=249,383 joy=off",
+    "main: mode=core device=Mobile touch=true frame=302 pool=2024 cmds=14 box=(241,226,165,165) hp=72 phase=enemy soul=398,383 joy=off"
+  ],
+  "logCount": 108,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    },
+    {
+      "t": 10,
+      "time": 10.033333333333308,
+      "frame": 301
+    }
+  ],
+  "timeline": [
+    {
+      "t": 11.2,
+      "shot": "mobile-4-3-t11_20.png"
+    }
+  ]
+}

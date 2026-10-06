@@ -892,8 +892,11 @@ local function drawSoul(cmd)
   local lbx, lby = x - sax * 2.5, y - say * 2.5
   circle(lbx + spx * 3.5 - 4.5, lby + spy * 3.5 - 4.5, 9, col)
   circle(lbx - spx * 3.5 - 4.5, lby - spy * 3.5 - 4.5, 9, col)
-  rtri(x + sax * 3.5, y + say * 3.5, 15, 9,
-       (({ [0] = 90, [1] = 180, [2] = -90, [3] = 0 })[sdir]) or 180, col)
+  -- 【2026-10-06 用户口径】三角角度装反了 180°。引擎 SetLocalRotation 的约定：
+  --   0°=尖朝上、90°=朝左、180°=尖朝下、270°(= -90°)=尖朝右
+  --   （对照 drawStab：左边框的骨刺用 deg=90 朝左 ✓）。所以 dir=0(东/朝右) 要用 -90、dir=2(西) 用 90。
+  local TIPANG = { [0] = -90, [1] = 180, [2] = 90, [3] = 0 }
+  rtri(x + sax * 3.5, y + say * 3.5, 15, 9, TIPANG[sdir] or 180, col)
   return
 end
 
