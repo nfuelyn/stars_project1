@@ -515,8 +515,8 @@ local function run()
   head('r14-blaster：ROUND 14 单发龙骨炮 SpinTime 1.5 + 到位再等 1s')
   local csvR14
   for _, sc in ipairs(A) do if sc.name == 'randomblaster1' then csvR14 = sc.csv end end
-  ok(csvR14 ~= nil and csvR14:find('GasterBlaster,0,%$X,%$Y,%$EndX,%$EndY,%$Ang,0.46666,0.03333', 1, false) ~= nil,
-     'r14-blaster：已按回合差异文档 2.5 回原版（SpinTime=0.46666 / BlastTime=0.03333 / 15 发）')
+  ok(csvR14 ~= nil and csvR14:find('GasterBlaster,0,%$X,%$Y,%$EndX,%$EndY,%$Ang,0.46666,0.83333,1.5,5', 1, false) ~= nil,
+     'r14-blaster：round16 口径（SpinTime=0.46666 / BlastTime=0.83333=滞留+0.8s / HoldTime=1.5 / ExtraWidth=5）')
 
   head('G6/G8：KR 上限与保底、round 与 fightCount 双计数器不漂移')
   -- G6：KR 每次命中 +6/+10，上限 40；烧血保底 hp>1（KR 永远烧不到 0 血）
