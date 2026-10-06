@@ -2766,14 +2766,11 @@ function Game:update(dt)
     self:endEnemy()
     return
   end
-  -- 【2026-10-06 用户口径·重点】带脚本的回合**必须把脚本播完**，不许因为「超过单回合时长」被强制截止：
-  --   enemyDur 只对**内置生成器**的回合兜底；挂了脚本的回合一律等脚本自己 EndAttack（world.ended）。
-  --   另留 180s 硬顶，只用于防「脚本真的死循环」，正常关卡永远碰不到。
-  if self.world then
-    if self.enemyT >= 180 then self:endEnemy() end
-  elseif self.enemyT >= self.enemyDur then
-    self:endEnemy()
-  end
+  -- 【2026-10-06 用户口径·重点】不能再让「单回合时长」把还没播完的脚本掐掉：
+  --   ① startEnemy 里把 enemyDur 放宽到 need + 2.5s（见那里）；
+  --   ② 这里仍是**上限**语义 —— 但脚本一旦 EndAttack，上面的 world.ended 分支会立刻收尾，
+  --      所以 2.5s 余量只是防「simulateLength 低估」，不会变成每回合空等。
+  if self.enemyT >= self.enemyDur then self:endEnemy() end
 end
 
 -- 输入消费（按下沿 + 边沿动作）
