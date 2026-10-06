@@ -1193,9 +1193,10 @@ local function run()
   table.sort(ab, function(x, y) return x.name < y.name end)
   ok(#ab == 3, 'A-9：三个 bonestab 脚本都在（' .. #ab .. '）')
   -- 【用户验收】伸出范围缩小（25/25/29 → 16/16/18）、bonestab3 给 0.25 停留：原版范围太深躲不开
-  -- 【2026-10-06 用户口径】sans_bonestab3（内部 22）骨墙削薄 + 降次数 + 留 2 个缺口：
+  -- 【2026-10-06 用户口径】三个 bonestab 的「升起骨墙」统一削薄 + 留 2 个缺口（dist 16/18→9、warn→1.2）；
+  --   sans_bonestab3 另外降次数（Loop 9→6）+ 周期 +1s：
   --   dist 18→12、Loop 9→6、周期 0.23333→1.23333，BoneStab 追加 lanes=5 / gapEvery=2。
-  local want = { '16,0.4,0.33333', '16,0.3,0.2', '9,1.2,0.25' }
+  local want = { '9,1.2,0.33333', '9,1.2,0.2', '9,1.2,0.25' }
   for k, sc in ipairs(ab) do
     local got = tostring(sc.csv):match('BoneStab,[^\n]-,(%d+%.?%d*,%d+%.?%d*,%d+%.?%d*)')
     ok(got == want[k], string.format('A-9：%s 参数 = %s（期望 %s）', sc.name, tostring(got), want[k]))

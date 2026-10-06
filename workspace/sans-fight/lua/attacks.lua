@@ -391,8 +391,8 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-# 【2026-10-06·round22】下方那一排骨头：高 30→15（尺寸减半）、25 根×间距16 → 13 根×间距32（密度减半、覆盖宽度不变）
-0,BoneVRepeat,121,364,15,2,0,13,32
+
+0,BoneVRepeat,121,364,30,2,0,25,16
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -566,8 +566,8 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-# 【2026-10-06·round22】下方那一排骨头：高 30→15（尺寸减半）、25 根×间距16 → 13 根×间距32（密度减半、覆盖宽度不变）
-0,BoneVRepeat,121,364,15,2,0,13,32
+
+0,BoneVRepeat,121,364,30,2,0,25,16
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -1046,7 +1046,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,16,0.4,0.33333
+0.2,BoneStab,$Direction,9,1.2,0.33333,5,2,1.02
 0.6,JMPABS,6
 0,EndAttack
 ]==] },
@@ -1075,7 +1075,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,16,0.3,0.2
+0.2,BoneStab,$Direction,9,1.2,0.2,5,2,1.02
 0.43333,JMPABS,6
 0,EndAttack
 ]==] },

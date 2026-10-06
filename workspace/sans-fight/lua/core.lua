@@ -2132,11 +2132,29 @@ function Game:update(dt)
 
   -- 灵魂移动
   local k = self.keys
+  -- 【2026-10-06 用户口径】蓝心的输入坐标系**跟着重力方向转**：
+  --   W/S = 沿心尖方向（远离重力 / 朝重力），A/D = 垂直于心尖。
+  --   dir=1（南）时就是原来的 WASD；dir=0（东、心尖朝右）时 W 向右、S 向左 ——
+  --   这正是「ws 对应心尖为正向的左右移动」。红魂不受影响（保持屏幕坐标系）。
+  local k = self.keys
   local vx, vy = 0, 0
-  if k.left then vx = vx - 1 end
-  if k.right then vx = vx + 1 end
-  if k.up then vy = vy - 1 end
-  if k.down then vy = vy + 1 end
+  if self.soul.mode == "blue" and not self.soul.wall then
+    local DXd = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+    local DYd = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
+    local d = self.soul.dir or 1
+    local gx, gy = DXd[d] or 0, DYd[d] or 1
+    local ux, uy = -gx, -gy            -- 「远离重力」= 心尖的反方向
+    local rx, ry = gy, -gx             -- 垂直方向（dir=1 时 = +x = 右）
+    local fwd = ((k.up and 1 or 0) - (k.down and 1 or 0))
+    local side = ((k.right and 1 or 0) - (k.left and 1 or 0))
+    vx = ux * fwd + rx * side
+    vy = uy * fwd + ry * side
+  else
+    if k.left then vx = vx - 1 end
+    if k.right then vx = vx + 1 end
+    if k.up then vy = vy - 1 end
+    if k.down then vy = vy + 1 end
+  end
   if vx ~= 0 or vy ~= 0 then
     local len = math.sqrt(vx * vx + vy * vy)
     if len == 0 then len = 1 end
