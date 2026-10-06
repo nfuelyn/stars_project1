@@ -876,3 +876,42 @@ node tools/play-capture.mjs --canvas pc-16-9 --round 4 --seconds 9.4 --shots 8.1
 `_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（501,450 B）/ `verify-client-pool` 10 项契约全过。
 `_flow` 整场到结局：`draw ERR = 0`、`结局文字已渲染 = true`、`灵魂跑出框外最大 0.0px`。
 `_geometry` **29 PASS / 0 FAIL**（绘制 == 判定逐帧对账，55715 条）。
+
+## 第八轮验收：round8~22 逐条修正（2026-10-06）
+
+| 编号（HUD） | 内部 | 脚本 | 改动 |
+| --- | --- | --- | --- |
+| round8 / round10 | 7 / 9 | platforms4 / platforms4hard | **修 repeatBones 公式**（见下），右侧 x=443 那列恢复成真正「向上走的竖列」 |
+| round9 | 8 | platformblaster | 两发 SpinTime 统一 0.56666（原来第二发是 1.56666）；都加 HoldTime 1.5；Y 随机区间 40→60（285..345，覆盖上下两排板面之间） |
+| round16 / round20 | 15 / 19 | randomblaster1 / 2 | 加 HoldTime 1.5；ExtraWidth 5（光束双向 +5px）；末尾留白 2.2/2.4s 让最后一发打得出来 |
+| round17 | 16 | multi2 | Attack6 八发全部加 HoldTime 1.5；两段 1.2 → 2.6s |
+| round18 / round19 | 17 / 18 | sans_bonestab1 / 2 | **甩击结束还原重力方向**（见下） |
+| round22 | 21 | multi3 | Attack0/4/5 降密度降尺寸（4→3 根 @16→30、11/10→7 根 @24→40、25→16 根 @16→26；高 45→35/100→70/55→45/15→12/30→26），段长各 +1s |
+
+### 两个真 bug（都是根因，不是调参）
+
+1. **`repeatBones` 位移公式错**（`core.lua`）：BTS 的 BoneHRepeat/BoneVRepeat 逐个 loopindex 是
+   `X = StartX − cos(Dir·90)·Spacing·i`、`Y = StartY − sin(Dir·90)·Spacing·i`（两个函数同一套）。
+   旧实现只挑一个轴、还把 `dir=0/1` 一律当 −1 → **dir=1/3 的竖骨列被摊成一横行**。
+   这正是用户说的「右侧本来该有循环向上移动的骨头，结果走一趟就消失」。现已逐字对齐原作。
+2. **脚本执行器只转发前 8 个参数**（`World:exec` 的 `fn(self, a[1] … a[8])`）：
+   `GasterBlaster` 的 **BlastTime(9) / HoldTime(10) / ExtraWidth(11) 从来没进过函数** ——
+   所以 ① 所有光束实际只存在 1 帧（`g.blast` 为 nil → 立刻 done）；② 脚本里写的「光束双向 +5px」没生效；
+   ③ 刚加的「落定后停 1.5s」也传不进去。现改为按实际个数转发（最多 12 个）。
+   顺带把 `hold = tonumber(hold) or 0` 改成保留 nil —— 写成 `or 0` 会让 HoldTime 的默认值（0.05s）失效。
+
+### 甩击锁控制（round18/19）
+
+`SansSlam` 会把 `soul.dir` 改成甩出方向，而**旧实现从不还原** → 蓝心被「钉」在那一侧的框边上
+（一直按住反方向也纹丝不动），玩家看到的就是「拖拽之后控制被锁死」。
+新增 `Game:endSlam()`：甩击结束（超时 / 撞墙 / 落平台 / 起跳）时把 `soul.dir` 与 `world.heart.dir`
+都还原成 1（南），并把 `slammed / slamT` 清零。探针实测：round18/19 期间「改过方向 = true，之后还原 dir=1 且未在甩 = true」。
+
+### 验收（2026-10-06）
+
+- `verify-all --quick` **8 / 8**：`_check` OK / `_rounds` 58 PASS / `core_selftest` 284 PASS / `_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（504,222 B）/ `verify-client-pool` 10 项契约全过。
+- `_flow` 整场到结局：`draw ERR = 0`、`结局文字已渲染 = true`、`灵魂跑出框外最大 0.0px`。
+- 探针：`lua/_probe_rounds.lua`（落定→开火间隔 + 甩击方向还原）、`lua/_probe_cols.lua`（骨列/骨毯定位）。
+
+**注**：离线探针的 `M.update` 每步推进的是 1/60 秒的**计数**、而世界内部按 1/30 推进（与试玩页一致），
+所以探针里读到的 0.767 就是真实 1.5s —— 别再拿探针的 t 当秒用（这一轮踩过）。

@@ -628,14 +628,19 @@ end
 
 local function repeatBones(w, axis, x, y, size, dir, speed, count, spacing, color)
   local d, sp, n, s = tonumber(dir), tonumber(spacing), tonumber(count), tonumber(size)
+  -- 【2026-10-06 对照原作修正】BTS 的 BoneHRepeat/BoneVRepeat 逐个 loopindex 的偏移是
+  --     X = StartX - cos(Direction*90)*Spacing*loopindex
+  --     Y = StartY - sin(Direction*90)*Spacing*loopindex
+  --   （见 Event sheets/Battle.xml，两个函数共用同一套公式）。
+  -- 旧实现只挑一个轴、还把 dir=0/1 一律当 -1，于是 dir=1/3 的**竖骨列**被摊成一横行 ——
+  -- round8/10 右侧那列「往上走的骨头」就成了整排横着一起飘过去、一趟就没了。
+  local CA = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+  local SA = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
+  local ca, sa = CA[d] or 0, SA[d] or 0
   for i = 0, n - 1 do
-    -- 【真 bug（本轮修）】骨群要排在**来向**（领头骨后面），才会一根接一根到达；
-    -- 旧实现四种方向全反了（东行往东排、西行往西排…）→ 起手整排骨同时压在框里，
-    -- 玩家看到的是「两侧骨头一上来就铺满屏」而不是交错飞入（用户实测反馈）。
-    -- 规则：往运动方向**相反**的一侧排开 —— 东行往西、西行往东、南行往北、北行往南。
-    local off = ((d == 0 or d == 1) and -1 or 1) * i * sp
-    if axis == 'v' then pushBone(w, tonumber(x) + off, y, s, 'v', d, speed, color)
-    else pushBone(w, tonumber(x), tonumber(y) + off, s, 'h', d, speed, color) end
+    local bx = tonumber(x) - ca * i * sp
+    local by = tonumber(y) - sa * i * sp
+    pushBone(w, bx, by, s, axis, d, speed, color)   -- pushBone 内部按 axis 决定 w/h
   end
 end
 CMD.BoneVRepeat = function(w, x, y, h, dir, speed, count, spacing, color)
@@ -709,7 +714,10 @@ CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold,
     size = sz, x = tonumber(sx), y = tonumber(sy),
     sx = tonumber(sx), sy = tonumber(sy), ex = ex2, ey = ey2,
     ang = a0, ang0 = a0, endAng = tonumber(endAng), spin = tonumber(spin),
-    blast = bt, persistent = persistent, hold = tonumber(hold) or 0, t = 0,
+    blast = bt, persistent = persistent,
+    -- 【2026-10-06】hold 不传时保持 nil —— 写成 `or 0` 会让 HoldTime 的默认值（0.05s）失效，
+    -- 于是「落定后延时 1.5s」这类参数一旦漏传就变成同帧开火。
+    hold = tonumber(hold), t = 0,
     -- 【方案A】全流程龙骨炮统一走原版像素烘焙（fitdata.blaster_block2，每发 112~126 rrect）：
     bake = true,
     -- 光束宽度：Size 0/1/2 = 20/36/56；骷髅缩放：0.8/1.0/1.3
@@ -848,7 +856,14 @@ function World:exec(line)
   if not fn then say(self, 'unknown ' .. tostring(c)); return nil end
   local a = {}
   for i = 1, #line.args do a[i] = self:val(line.args[i]) end
-  fn(self, a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8])
+  -- 【2026-10-06 修 · 真 bug】原来只转发**前 8 个**参数，凡是第 9 个及其以后的都被丢掉：
+  --   GasterBlaster 的 BlastTime(9) / HoldTime(10) / ExtraWidth(11) 全部没进过函数，
+  --   于是 ① 所有光束的实际存在时间都退化成 1 帧（`g.blast` 为 nil → 立刻 done）；
+  --         ② 脚本里写的「光束双向扩大 5px」根本没生效；
+  --         ③ 刚加的「落定后停 1.5s」也传不进去（探针实测落定→开火恒 0.033s）。
+  --   按实际个数转发，多传的 nil 与不传等价，对老脚本无影响。
+  fn(self, a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8],
+        a[9], a[10], a[11], a[12])
   return nil
 end
 
@@ -1037,7 +1052,11 @@ function World:update(dt)
     elseif g.state == 'spinning' then
       g.ang = g.endAng
       -- HoldTime（本项目扩展，第 10 个参数）：转到位后再停 hold 秒才发射
-      if g.t >= 0.05 + (g.hold or 0) then g.state = 'fire'; g.t = 0 end
+      -- 【2026-10-06】以前写成 `0.05 + hold`，用户口径「落定后延时 1.5s」就对不齐；
+      -- 现在 hold 就是**落定后的停留秒数**，不传则保留原来的 0.05s 最小停留。
+      local holdT = g.hold
+      if holdT == nil then holdT = 0.05 end
+      if g.t >= holdT then g.state = 'fire'; g.t = 0 end
     elseif g.state == 'fire' and not g.persistent and g.t >= (g.blast or 0) then
       g.state = 'done'
     end
@@ -1621,6 +1640,20 @@ function Game:groundQuery()
   return surface, gx, gy, soulA, hitPf
 end
 
+-- 【round18/19 验收】甩击结束就把**重力方向还回去**（dir=1 南）。
+--   原来 SansSlam 改过 soul.dir 之后一直不还原，蓝心就被「钉」在甩出去那一侧的框边上
+--   （一直按住反方向也纹丝不动）—— 玩家看到的就是「拖拽之后控制被锁死」。
+--   两侧都要清：update 里的双坐标同步每帧会把 world.heart.dir 抄回 soul.dir。
+function Game:endSlam()
+  self.soul.slammed = false
+  self.soul.slamT = 0
+  self.soul.dir = 1
+  if self.world then
+    self.world.heart.slammed = false
+    self.world.heart.dir = 1
+  end
+end
+
 function Game:jump()
   if self.state ~= 'enemy' or self.soul.mode ~= 'blue' then return end
   if self.soul.wall then
@@ -1631,8 +1664,7 @@ function Game:jump()
     return
   end
   -- 【用户验收】起跳即脱离甩击状态（World 侧的标记一起清，否则脏标记会把它同步回来）
-  self.soul.slammed = false
-  if self.world then self.world.heart.slammed = false end
+  self:endSlam()      -- 起跳即脱离甩击，并把重力方向还原（含 world 侧）
   if self.soul.jumping then return end      -- 空中不再触发：按住不放也不会反复起跳（边沿语义兜底）
   -- 【平台起跳】平台只有 7px 厚、且边移动边判定，起跳那一帧 grounded 可能刚好闪断。
   -- 加 0.12s 的 coyote time：离地 0.12s 内仍然算「站在地上」。
@@ -2113,7 +2145,7 @@ function Game:update(dt)
     if self.soul.slammed then
       -- 【用户验收】被甩后必须还能跳：1.2s 超时自动解除；落到平台上也算落地
       self.soul.slamT = (self.soul.slamT or 0) + dt
-      if self.soul.slamT > 1.2 then self.soul.slammed = false; if self.world then self.world.heart.slammed = false end end
+      if self.soul.slamT > 1.2 then self:endSlam() end
       local DX = { [0]=1, [1]=0, [2]=-1, [3]=0 }
       local DY = { [0]=0, [1]=1, [2]=0,  [3]=-1 }
       local gx = DX[self.soul.dir or 1] or 0
@@ -2148,7 +2180,7 @@ function Game:update(dt)
         if hitL or hitR then self.soul.vx = 0 end
         if hitT or hitB then self.soul.vy = 0 end
         self.soul.grounded = true
-        if self.world then self.world.heart.slammed = false end
+        self:endSlam()
       end
       if self.soul.grounded then
         self.soul.jumping = false; self.soul.jumpCut = false; self.soul.jumpBase = nil; self.soul.jumpBaseBoxY = nil
@@ -2159,8 +2191,8 @@ function Game:update(dt)
         if (self.soul.vy or 0) > 0 and (self.prevY + SOUL_CLAMP) <= (pf.y + 2)
            and (self.soul.y + SOUL_CLAMP) >= pf.y
            and self.soul.x >= (pf.x - 4) and self.soul.x <= (pf.x + pf.w + 4) then
-          self.soul.y = pf.y - SOUL_CLAMP; self.soul.vy = 0; self.soul.slammed = false; self.soul.grounded = true
-          if self.world then self.world.heart.slammed = false end
+          self.soul.y = pf.y - SOUL_CLAMP; self.soul.vy = 0; self.soul.grounded = true
+          self:endSlam()
         end
       end
     else

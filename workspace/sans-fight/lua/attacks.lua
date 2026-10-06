@@ -407,17 +407,17 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,320,304
 0,RND,Rot,2
 0,JMPZ,Attack6Other,$Rot
-0,GasterBlaster,1,191,306,191,306,0,0.6,0.26666
-0,GasterBlaster,1,321,166,321,166,90,0.6,0.26666
-0,GasterBlaster,1,449,306,449,306,180,0.6,0.26666
-0,GasterBlaster,1,321,446,321,446,270,0.6,0.26666
-1.2,JMPABS,RndAttack
+0,GasterBlaster,1,191,306,191,306,0,0.6,0.26666,1.5
+0,GasterBlaster,1,321,166,321,166,90,0.6,0.26666,1.5
+0,GasterBlaster,1,449,306,449,306,180,0.6,0.26666,1.5
+0,GasterBlaster,1,321,446,321,446,270,0.6,0.26666,1.5
+2.6,JMPABS,RndAttack
 0,:Attack6Other
-0,GasterBlaster,1,191,176,191,176,45,0.6,0.26666
-0,GasterBlaster,1,451,176,451,176,135,0.6,0.26666
-0,GasterBlaster,1,451,436,451,436,225,0.6,0.26666
-0,GasterBlaster,1,191,436,191,436,315,0.6,0.26666
-1.2,JMPABS,RndAttack
+0,GasterBlaster,1,191,176,191,176,45,0.6,0.26666,1.5
+0,GasterBlaster,1,451,176,451,176,135,0.6,0.26666,1.5
+0,GasterBlaster,1,451,436,451,436,225,0.6,0.26666,1.5
+0,GasterBlaster,1,191,436,191,436,315,0.6,0.26666,1.5
+2.6,JMPABS,RndAttack
 0,:Attack7
 0,CombatZoneResizeInstant,179,226,404,391
 0,HeartMode,0
@@ -481,11 +481,13 @@ $Wait2,SET,LastDir,$Direction
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,320,376
-0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
-0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
-0.9,JMPABS,RndAttack
+# 【2026-10-06 用户口径·round22】降低骨头伸出密度与粗细，段长 +1s：
+#   4 根 × 间距 16（太密）→ 3 根 × 30；高 45→35、高 100→70；0.9s → 1.9s。
+0,BoneVRepeat,128,341,35,0,240,3,30
+0,BoneV,64,286,70,0,240
+0,BoneVRepeat,512,341,35,2,240,3,30
+0,BoneV,576,286,70,2,240
+1.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
@@ -551,26 +553,29 @@ $Wait2,SET,LastDir,$Direction
 0,RND,Side,2
 0,JMPZ,Attack4Other,$Side
 0,HeartTeleport,506,376
-0,BoneVRepeat,200,331,55,0,360,11,24
-0,BoneVRepeat,-64,371,15,0,360,10,24
-1.2,JMPABS,RndAttack
+# 【2026-10-06 用户口径·round22】骨流降密度：11/10 根 × 间距 24 → 7 根 × 40，高 55→45 / 15→12，1.2s → 2.2s。
+0,BoneVRepeat,200,331,45,0,360,7,40
+0,BoneVRepeat,-64,371,12,0,360,7,40
+2.2,JMPABS,RndAttack
 0,:Attack4Other
 0,HeartTeleport,149,376
-0,BoneVRepeat,440,331,55,2,360,11,24
-0,BoneVRepeat,704,371,15,2,360,10,24
-1.2,JMPABS,RndAttack
+# 【2026-10-06 用户口径·round22】同上（镜像侧）。
+0,BoneVRepeat,440,331,45,2,360,7,40
+0,BoneVRepeat,704,371,12,2,360,7,40
+2.2,JMPABS,RndAttack
 0,:Attack5
 0,CombatZoneResizeInstant,121,276,526,391
 0,HeartMode,1
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-0,BoneVRepeat,121,364,30,2,0,25,16
+# 【2026-10-06 用户口径·round22】静止矮骨地板降密度：25 根 × 间距 16（几乎连成墙）→ 16 根 × 26，高 30→26；1.2s → 2.2s。
+0,BoneVRepeat,121,364,26,2,0,16,26
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
 0,BoneV,1,319,65,0,240
-1.2,JMPABS,RndAttack
+2.2,JMPABS,RndAttack
 0,:Attack5Other
 0,BoneV,119,280,35,0,240
 0,BoneV,639,319,65,2,240
@@ -636,15 +641,17 @@ $Wait2,SET,LastDir,$Direction
 0,SET,Loop,5
 0,SUB,Loop,$Loop,1
 0,RND,Y,3
-0,MUL,Y,$Y,40
+0,MUL,Y,$Y,60
 0,ADD,Y,$Y,285
-0,GasterBlaster,0,0,0,73,$Y,0,0.56666,0.1
+0,GasterBlaster,0,0,0,73,$Y,0,0.56666,0.1,1.5
 0.9,RND,Y,3
-0,MUL,Y,$Y,40
+0,MUL,Y,$Y,60
 0,ADD,Y,$Y,285
-0,GasterBlaster,0,640,0,563,$Y,180,1.56666,0.1
+0,GasterBlaster,0,640,0,563,$Y,180,0.56666,0.1,1.5
 0.9,JMPNZ,8,$Loop
-0,EndAttack
+# 【2026-10-06】末尾留 2.2s：两发都要走完「落定 → 停 1.5s → 发射 0.1s」，
+#   不留白的话 EndAttack 会先把还在等待里的龙骨炮 done 掉（只有前几发真打得出来）。
+2.2,EndAttack
 ]==] },
   { name = "platformblasterfast", csv = [==[
 # platformblasterfast —— platformblaster 的加速版：循环 6 次、两侧间隔由 0.9 压到 0.7
@@ -824,9 +831,10 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNG,27,$EndY,440
 0,SET,EndY,440
 0,ANGLE,Ang,$EndX,$EndY,$HeartX,$HeartY
-0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.46666,0.03333
+0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.46666,0.03333,1.5,5
 0.53333,JMPNZ,6,$Loop
-0,EndAttack
+# 【2026-10-06】同上：末尾留 2.2s 让最后一发走完 0.46666 + 1.5 + 0.03333
+2.2,EndAttack
 ]==] },
   { name = "randomblaster2", csv = [==[
 # randomblaster2 —— randomblaster1 的后期版本：炮更大（Size1）、蓄力更久（Spin 0.66666）
@@ -859,9 +867,10 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNG,27,$EndY,440
 0,SET,EndY,440
 0,ANGLE,Ang,$EndX,$EndY,$HeartX,$HeartY
-0,GasterBlaster,1,$X,$Y,$EndX,$EndY,$Ang,0.66666,0.03333
+0,GasterBlaster,1,$X,$Y,$EndX,$EndY,$Ang,0.66666,0.03333,1.5,5
 0.66666,JMPNZ,6,$Loop
-0,EndAttack
+# 【2026-10-06】同上：末尾留 2.4s 让最后一发走完 0.66666 + 1.5 + 0.03333
+2.4,EndAttack
 ]==] },
   { name = "sans_bluebone", csv = [==[
 # sans_bluebone —— 蓝骨（Color 1，高 100）与白骨（Color 0，高 20）成对横穿
