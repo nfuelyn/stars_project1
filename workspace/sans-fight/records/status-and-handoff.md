@@ -802,3 +802,77 @@ node tools/run-lua.mjs lua/_probe_pool2.lua   # 真实 main.lua 的控件池峰�
 `_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（495,446 B）/ `verify-client-pool` 10 项契约全过。
 `node tools/run-lua.mjs lua/_flow.lua` → 整场跑到结局（t=445.3s）：`draw ERR = 0`、`结局文字已渲染 = true`、
 `灵魂跑出框外最大 0.0px`、按钮行三断言全过。
+
+## 蓝心跳跃修正（统一落地模型）+ 删去方向箭头（2026-10-06）
+
+依据：`D:\stars\Sans_Fight_蓝心跳跃修正与延时政策.md`（对照原版 `Battle.xml` 的
+`HeartJump` / `HeartCheckSolid`）。**§0 政策同时生效：从本文起不再对攻击延时提任何要求**，
+脚本里已调过的 `SpinTime / HoldTime / Loop / delay / Ramp / ExtraWidth` 全部保留。
+
+### 问题（文档 R1/R2/R3）
+
+- **R1/R2**：能不能落地是**三套判定**——蓝魂分支里的「框底 `floorY`」、分支里的「内置平台 for 循环」、
+  分支之后的「脚本平台循环」。而 `jumping` 的复位只写在分支里（在脚本平台判定**之前**），
+  于是落在空中板子上时 `jumping` 一直留 `true`，第 2 跳被 `Game:jump` 的
+  `if self.soul.jumping then return end` 直接拦掉。
+- **R3**：用**确认键**起跳时，适配层只给 `jumpHeld = input.up`；同一帧的蓝魂物理看不到「按住」，
+  立刻 `jumpCut = true` 并把 `vy` 覆盖成 `fallSpeed` → 灵魂原地落回。
+
+### 改了什么
+
+| 文件 | 改动 |
+| --- | --- |
+| `lua/core.lua` | 新增 **`Game:groundQuery()`**：框边「远边」+ 内置平台 + 脚本平台**一起**算，沿重力方向取最近支撑面（= 原版 `HeartCheckSolid`） |
+| `lua/core.lua` 蓝魂分支 | 删掉 `floorY` + 内置平台循环 + 复位，换成 `groundQuery` 的统一落地块；**落地复位只此一处**（框底/内置平台/脚本平台都走这里） |
+| `lua/core.lua` 分支之后 | 平台循环只给「其它模式」兜底（红魂 / 箭头模块 `soul.wall` / 被甩 `slammed`），蓝魂常规物理不再重复处理 |
+| `lua/core.lua` `applyInput` | `self.jumpHeld = (input.jumpHeld or input.confirm)` —— 确认键也是跳跃键 |
+| `lua/core.lua` `Game:jump` | 改用 `groundQuery` 判「能不能跳」（不再读被落地顺序影响的 `soul.grounded`） |
+| `lua/main.lua` | 新增 `confirmHeld` + 绑定 `KeyboardMenuConfirmKeyUp` / `KeyboardNormalAttackKeyUp`；`jumpHeld = (input.up or confirmHeld)` |
+| `lua/main.lua` | **删去砸击方向提示箭头**（Sans 右侧的橙色矩形+三角）—— 用户口径「删去先前指示方向的箭头模型」 |
+| `lua/core_selftest.lua` | 新增 `blue-jump-on-platform` 段 4 条断言（284 PASS） |
+| `tools/play-capture.mjs` | 新增 `--jump-at <秒>`：在真机无头试玩里按一次确认键，用来复现/验收蓝心起跳 |
+
+### 与文档示例代码的三处**有意偏离**（示例代码本身有坑）
+
+1. **平台支撑面取「近面」而不是「远面」**。文档示例的 `far = math.max(四角 along)` 对**战斗框**是对的
+   （边界，人留在框内 → 落远边），但对**平台**会取到底面 `py+ph`，灵魂会沉进板子里 7px。
+   平台是实体、人站在面上 → 取 `math.min(四角 along)`（下落时 = 顶面 `py`）。
+2. **多了「必须吸附到面」这一步**（`d` 正负都要补偿）。只补 `d>0` 的话，灵魂每帧被 `fallSpeed` 推下去一点，
+   几帧后支撑面就掉出 2px 容差 → `grounded` 闪成 `false`（实测第 3 帧就掉下去）。
+3. **多了两个守卫**：`refA = min(当前, 上一帧)`（高速下落 750px/s ≈ 25px/帧 会一帧穿过 7px 平台），
+   以及 `va >= -1`（起跳第一帧 `va` 很负，不能把刚起跳判成落地）。
+   另外保留了文档漏掉的 `soul.wall` 分支 —— 箭头模块的「跳跃 = 反方向冲刺」靠它，删掉会坏。
+
+### 验收（文档 §4 的 J1–J6 全部通过）
+
+```powershell
+node tools/run-lua.mjs lua/_probe_groundjump.lua   # J1
+node tools/run-lua.mjs lua/_probe_platjump.lua     # J2 / J3 / J5
+node tools/run-lua.mjs lua/_probe_jumpcheck.lua    # J4（平台带走）/ J6（四向重力起跳）
+```
+
+| 编号 | 断言 | 结果 |
+| --- | --- | --- |
+| J1 | 地面连续两跳 | 第 1/2 跳 `vy=-336` ✅ |
+| J2 | 空中板子连续两跳 | 第 1/2 跳 `vy=-336`（修复前第 2 跳 `vy=0`）✅ |
+| J3 | 落在脚本平台后 `jumping` | `false`（修复前恒 `true`）✅ |
+| J4 | 平台带走 | 30 帧平台 `+36.00px` / 灵魂 `+36.00px` ✅ |
+| J5 | 确认键起跳 | `confirm=true` 即 `vy=-336`，不再同帧落回 ✅ |
+| J6 | 方向重力起跳 | `dir=0/1/2/3` 沿重力分量全 `-336` ✅ |
+
+真机无头复核（`--canvas pc-16-9`，键盘分支才绑键）：
+
+```powershell
+node tools/play-capture.mjs --canvas pc-16-9 --round 4 --seconds 9.4 --shots 8.1,8.6 --jump-at 8.2
+```
+
+截图：`records/captures/bluesoul-jump-fix/blue-soul-before-jump.png`（心被底部骨排挡住）
+→ `blue-soul-jump-confirm-key.png`（按 Enter 后 0.4s，蓝心已升到框中部）。
+同一目录还有 `sans-no-direction-arrow.png` —— 方向箭头已删除，只剩 Sans 手势。
+
+### 回归结果（2026-10-06）
+
+`verify-all --quick` → **8 / 8**：`_check` OK /`_rounds` 58 PASS /`core_selftest` **284 PASS** /
+`_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（501,450 B）/ `verify-client-pool` 10 项契约全过。
+`_flow` 整场到结局：`draw ERR = 0`、`结局文字已渲染 = true`、`灵魂跑出框外最大 0.0px`。
+`_geometry` **29 PASS / 0 FAIL**（绘制 == 判定逐帧对账，55715 条）。

@@ -1571,11 +1571,58 @@ function Game:move(dx, dy)
   self.soul.x = clamp(self.soul.x + dx, self.box.x + SOUL_CLAMP, self.box.x + self.box.w - SOUL_CLAMP)
   self.soul.y = clamp(self.soul.y + dy, self.box.y + SOUL_CLAMP, self.box.y + self.box.h - SOUL_CLAMP)
 end
+-- 【统一落地模型】对应原版 HeartCheckSolid(cos(Angle), sin(Angle))：
+--   战斗框的「远边」（地面）与**所有平台**（内置 R6 + 脚本 Platform）一起算，
+--   沿重力方向取**最近的支撑面** —— 框底和空中板子从此是同一个模子。
+--   （原版出处：Event sheets/Battle.xml 的 HeartJump / HeartCheckSolid；
+--     工作区之前是「框底 floorY」+「内置平台」+「脚本平台」三套判定，天然会不一致。）
+-- 返回：支撑面 surface（沿重力轴的坐标）/ 重力方向 gx,gy / 灵魂沿重力轴坐标 soulA / 踩到的平台 pf（框边为 nil）
+function Game:groundQuery()
+  local DX = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+  local DY = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
+  local dir = self.soul.dir or 1
+  local gx, gy = DX[dir] or 0, DY[dir] or 1
+  local function along(x, y) return x * gx + y * gy end
+
+  local b, r = self.box, SOUL_CLAMP
+  local soulA = along(self.soul.x, self.soul.y)
+  -- 本帧「扫过」的最靠前位置：取 prev 与当前里更靠前的那个做参照。
+  -- 不这么做的话，高速下落（HeartMaxFallSpeed 750 ≈ 25px/帧）会一帧穿过 7px 厚的平台。
+  local prevA = along(self.prevX or self.soul.x, self.prevY or self.soul.y)
+  local refA = math.min(soulA, prevA)
+
+  -- ① 战斗框：沿重力方向的「远边」就是地面（dir=1 → 框底；dir=3 → 框顶）
+  local surface = math.max(along(b.x, b.y), along(b.x + b.w, b.y),
+                           along(b.x, b.y + b.h), along(b.x + b.w, b.y + b.h))
+  local hitPf = nil
+
+  -- ② 平台：横向必须与灵魂重叠；支撑面取**朝向灵魂的那一面**
+  --    （下落时 = 顶面 py；反向重力时 = 底面 py+ph，即四角 along 的最小值）。
+  --    注意平台与战斗框不同：框是边界（人留在框内 → 取远边），平台是实体（人站在面上 → 取近面）。
+  local lists = { { list = self.platforms or {}, ox = 0, oy = 0 } }
+  if self.world and self.world.platforms then
+    lists[#lists + 1] = { list = self.world.platforms, ox = BOX_OFF_X, oy = BOX_OFF_Y }
+  end
+  for _, spec in ipairs(lists) do
+    for _, pf in ipairs(spec.list) do
+      local px, py = pf.x - spec.ox, pf.y - spec.oy
+      local pw, ph = pf.w or 0, pf.h or 4
+      local lateral
+      if gy ~= 0 then lateral = (self.soul.x + r > px) and (self.soul.x - r < px + pw)
+      else             lateral = (self.soul.y + r > py) and (self.soul.y - r < py + ph) end
+      if lateral then
+        local near = math.min(along(px, py), along(px + pw, py),
+                              along(px, py + ph), along(px + pw, py + ph))
+        -- 只接受「在本帧扫过位置的前方（容许 2px）且比当前候选更近」的支撑面
+        if near >= refA + r - 2 and near <= surface then surface, hitPf = near, pf end
+      end
+    end
+  end
+  return surface, gx, gy, soulA, hitPf
+end
+
 function Game:jump()
   if self.state ~= 'enemy' or self.soul.mode ~= 'blue' then return end
-  -- 【平台起跳】平台只有 4px 厚、且边移动边判定，起跳那一帧 rooted 状态可能刚好闪断。
-  -- 加 0.12s 的 coyote time：离地 0.12s 内仍然算「站在地上」，平台上一定能起跳。
-  local coyote = (self.soul.groundT or 99) <= 0.12
   if self.soul.wall then
     -- 【箭头模块】墙模式下「跳跃」= 朝**箭头方向的反方向**冲刺一段（拖到左边 → 向右）。
     -- 距离与普通蓝心跳跃一致：0.5 框高 / JUMP_RISE_T。
@@ -1587,15 +1634,18 @@ function Game:jump()
   self.soul.slammed = false
   if self.world then self.world.heart.slammed = false end
   if self.soul.jumping then return end      -- 空中不再触发：按住不放也不会反复起跳（边沿语义兜底）
-  if self.soul.grounded or coyote then
+  -- 【平台起跳】平台只有 7px 厚、且边移动边判定，起跳那一帧 grounded 可能刚好闪断。
+  -- 加 0.12s 的 coyote time：离地 0.12s 内仍然算「站在地上」。
+  local coyote = (self.soul.groundT or 99) <= 0.12
+  -- 能不能跳 = 原版 HeartCheckSolid(cos(Angle), sin(Angle)) == 1 —— 框边与平台同一个模子，
+  -- 不再读 self.soul.grounded（那个标记会被落地顺序影响，正是「空中板子跳不起来」的根因）。
+  local surface, gx, gy, soulA = self:groundQuery()
+  local onSolid = (soulA + SOUL_CLAMP) >= (surface - 2)
+  if onSolid or coyote then
     -- 【方案甲 A-8】沿**逆重力方向**起跳（dir=1 时就是原来的向上跳，行为不变）
-    local DX = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
-    local DY = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
-    local jdx = DX[self.soul.dir or 1] or 0
-    local jdy = DY[self.soul.dir or 1] or 1
     local jv = JUMP_HEIGHT * self.box.h / JUMP_RISE_T
-    self.soul.vx = (self.soul.vx or 0) - jdx * jv
-    self.soul.vy = (self.soul.vy or 0) - jdy * jv
+    self.soul.vx = (self.soul.vx or 0) - gx * jv
+    self.soul.vy = (self.soul.vy or 0) - gy * jv
     self.soul.grounded = false
     self.soul.jumpBase = self.soul.y          -- 起跳点（算上升高度）
     self.soul.jumping = true
@@ -2139,20 +2189,42 @@ function Game:update(dt)
     self.soul.y = self.soul.y + self.soul.vy * dt
     self.soul.grounded = false
     local ceilY = self.box.y + SOUL_CLAMP
-    local floorY = self.box.y + self.box.h - SOUL_CLAMP
     if self.soul.y <= ceilY then
       self.soul.y = ceilY; self.soul.vy = 0        -- 顶在框沿：按住也不越界
     end
-    if self.soul.y >= floorY then
-      self.soul.y = floorY; self.soul.vy = 0; self.soul.grounded = true
-    end
-    for _, pf in ipairs(self.platforms or {}) do
-      if self.soul.vy > 0 and (self.prevY + SOUL_CLAMP) <= (pf.y + 2)
-         and (self.soul.y + SOUL_CLAMP) >= pf.y
-         and self.soul.x >= (pf.x - 4) and self.soul.x <= (pf.x + pf.w + 4) then
-        self.soul.y = pf.y - SOUL_CLAMP; self.soul.vy = 0; self.soul.grounded = true
+    -- 【统一落地】框边与平台一个模子（对应原版 HeartCheckSolid）：
+    --   这里原来是「框底 floorY」+「内置平台 for 循环」两套判定，而**脚本平台**要等
+    --   分支之后的循环才判 → 落在空中板子上时下面的复位已经跑过了，jumping 一直留 true，
+    --   于是板子上第 2 跳被 Game:jump 的 `if self.soul.jumping then return end` 直接拦掉。
+    local surface, gx, gy, soulA, hitPf = self:groundQuery()
+    local lead = soulA + SOUL_CLAMP                 -- 灵魂沿重力方向的前缘
+    -- 只清「沿重力方向」的速度，保留切向输入（横向走路不该被落地吃掉）
+    local va = (self.soul.vx or 0) * gx + (self.soul.vy or 0) * gy
+    -- 落地三条件：① 前缘贴到/跨过支撑面（2px 容差）
+    --             ② 不是正沿逆重力方向离开（起跳第一帧 va 很负，不能把刚起跳判成落地）
+    --             ③ 支撑面在重力方向的前方（避免灵魂在平台**下面**时被吸附）
+    if lead >= surface - 2 and va >= -1 then
+      -- 必须**吸附到面**（d 正负都要），否则每帧被 fallSpeed 推下去一点，
+      -- 累积几帧后支撑面就掉出 2px 容差 → grounded 闪成 false（实测第 3 帧就掉下去）
+      local d = surface - lead
+      if d ~= 0 then
+        self.soul.x = self.soul.x + gx * d
+        self.soul.y = self.soul.y + gy * d
+      end
+      if va > 0 then
+        self.soul.vx = self.soul.vx - gx * va
+        self.soul.vy = self.soul.vy - gy * va
+      end
+      self.soul.grounded = true
+      -- 站到移动平台上就**随平台一起走**（原作：站上去就被带着，不用一直按方向键）
+      if hitPf then
+        local pvx = hitPf.vx or ((hitPf.dir == 0 and (hitPf.speed or 0)) or (hitPf.dir == 2 and -(hitPf.speed or 0)) or 0)
+        if pvx ~= 0 then
+          self.soul.x = clamp(self.soul.x + pvx * dt, self.box.x + SOUL_CLAMP, self.box.x + self.box.w - SOUL_CLAMP)
+        end
       end
     end
+    -- 【关键】落地复位**只此一处**：框底 / 内置平台 / 脚本平台都走这里
     if self.soul.grounded then
       self.soul.jumping = false; self.soul.jumpCut = false; self.soul.jumpBase = nil; self.soul.jumpBaseBoxY = nil
       self.soul.jumpDone = false; self.soul.jumpHeldT = 0
@@ -2177,7 +2249,10 @@ function Game:update(dt)
   --   碰撞源 = 攻击脚本的 world.platforms（Platform/PlatformRepeat）+ 内置 R6 平台
   local prevSoulY = self.prevY
   if prevSoulY == nil then prevSoulY = self.soul.y end
-  do
+  -- 蓝魂常规物理已经在上面用 groundQuery 统一处理过平台了（含「随平台走」），
+  -- 这一段只给**其它模式**兜底：红魂 / 箭头模块（soul.wall）/ 被甩（slammed）。
+  -- 原来的顺序 bug 就在这里 —— 脚本平台的落地发生在蓝魂复位**之后**，所以板子上跳不起来。
+  if not (self.soul.mode == 'blue' and not self.soul.wall and not self.soul.slammed) then
     local lists = { { list = self.platforms or {}, ox = 0, oy = 0 } }
     if self.world and self.world.platforms then
       lists[#lists + 1] = { list = self.world.platforms, ox = BOX_OFF_X, oy = BOX_OFF_Y }
@@ -2611,8 +2686,11 @@ function Game:applyInput(input)
   self:press('left', input.left); self:press('right', input.right)
   self:press('up', input.up); self:press('down', input.down)
   self:press('cancel', input.cancel)   -- V-03：减速键要按住状态
-  -- 蓝心跳跃用：适配层在蓝魂态把 up/down 掩成 false，只保留按下沿；按住状态走这个字段
-  self.jumpHeld = input.jumpHeld and true or false
+  -- 蓝心跳跃用：适配层在蓝魂态把 up/down 掩成 false，只保留按下沿；按住状态走这个字段。
+  -- 【R3/J5】确认键（Enter/Z/J）同样是「跳跃键」：它触发起跳（下面 e.confirm），
+  -- 但如果这里不认它，同一帧的蓝魂物理会立刻把刚起跳的 vy 覆盖成 fallSpeed，
+  -- 灵魂原地落回板子 —— 探针里 confirm=true 的「第 1 跳 vy=0」就是这个原因。
+  self.jumpHeld = (input.jumpHeld or input.confirm) and true or false
   if self.state == 'result' then
     if e.confirm then self:restart() end
   elseif self.state == 'attack' then

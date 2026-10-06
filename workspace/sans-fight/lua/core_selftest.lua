@@ -1100,6 +1100,48 @@ local function run()
   end
   ok(minY >= yRe - 0.6,
      string.format('blue-jump：下降途中按住跳跃键不会重新上升（最高只到 %.1f，起点 %.1f）', minY, yRe))
+  head('blue-jump-on-platform：空中板子与地面走同一个落地模型（原版 HeartCheckSolid）')
+  -- 原来的 bug（修改意见文档 R1/R2）：落地复位写在蓝魂分支里，而**脚本平台**的落地判定
+  -- 在分支之后才做 → 落在空中板子上时 jumping 一直是 true，第 2 跳被 Game:jump 拦掉。
+  do
+    local gp = newGame({ scripts = A, hp = 1000000 })
+    gp:startEnemyScript('platforms1')
+    local pf
+    for _ = 1, 400 do
+      M.update(gp, {}, DT)
+      for _, p in ipairs(gp.world.platforms) do
+        local px = p.x - 240
+        if px > gp.box.x and px + p.w < gp.box.x + gp.box.w and (p.speed or 0) > 0 then pf = p break end
+      end
+      if pf then break end
+    end
+    if not pf then
+      ok(false, 'blue-jump-on-platform：400 帧内没找到框内的移动脚本平台')
+    else
+      local px, py = pf.x - 240, pf.y - 226
+      gp.soul.x, gp.soul.y = px + pf.w / 2, py - 8
+      gp.prevX, gp.prevY = gp.soul.x, gp.soul.y
+      for _ = 1, 6 do M.update(gp, {}, DT) end
+      ok(gp.soul.grounded and math.abs(gp.soul.y - (py - 8)) < 2,
+        string.format('blue-jump-on-platform：能站在空中板子上（y=%.1f 板面=%.1f grounded=%s）',
+          gp.soul.y, py, tostring(gp.soul.grounded)))
+      gp.soul.jumping = false
+      M.jump(gp)
+      ok(gp.soul.vy < -1,
+        string.format('blue-jump-on-platform：板子上第 1 跳 vy=%.1f < 0', gp.soul.vy))
+      local landed = false
+      for k = 1, 200 do
+        M.update(gp, {}, DT)
+        if gp.soul.grounded and k > 2 then landed = true break end
+      end
+      ok(landed and gp.soul.jumping == false,
+        string.format('blue-jump-on-platform：落回板子后 jumping 必须复位（grounded=%s jumping=%s）',
+          tostring(gp.soul.grounded), tostring(gp.soul.jumping)))
+      M.jump(gp)
+      ok(gp.soul.vy < -1,
+        string.format('blue-jump-on-platform：板子上能连跳（第 2 跳 vy=%.1f < 0）', gp.soul.vy))
+    end
+  end
   head('platforms3-safe：ROUND 10 两根扫平台站立带的骨头已削短')
   -- 站立带 = 平台顶面 -SOUL_CLAMP(8) 为心，±SOUL_R(4)：y = py-12 .. py-4
   local csvP3

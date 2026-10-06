@@ -120,6 +120,9 @@ local mode = 'demo'
 
 local input = { left = false, right = false, up = false, down = false, confirm = false, cancel = false }
 local edgeConfirm, edgeCancel = false, false
+-- 【J5】确认键（Enter/小键盘回车/Z/空格/J）的**按住**状态：光有按下沿不够 ——
+-- 蓝魂起跳靠按住时长决定高度，只给一帧 down 会让灵魂刚起跳就被 jumpCut 剪断。
+local confirmHeld = false
 
 -- 操作方式（**按平台分成两条互不相干的路径**，见下面的「平台分流」段）：
 --   PC   = WASD / 方向键移动 + Enter（Z / 空格 / 小键盘回车 由宿主归到同一个确认键）确认；
@@ -846,23 +849,9 @@ local function drawSans(cmd)
   local hy = by + (pose.hy or 0) * ky
   useBakedCorner(hkey, hx, hy, hspec.w * kx, hspec.h * ky, mir)
 
-  -- 砸击方向提示（保留原功能，坐标改按烘焙头/身体算）
-  do
-    local DIR = { HandRight = { 1, 0 }, HandDown = { 0, 1 }, HandLeft = { -1, 0 }, HandUp = { 0, -1 } }
-    local d = DIR[body]
-    if d then
-      local L = 30
-      local ax, ay = hx + hspec.w * kx + 6, hy + hspec.h * ky / 2
-      local col = shade(C_HP, a)
-      if d[1] ~= 0 then
-        rrect(ax + d[1] * (L / 2), ay, L, 7, 0, col)
-        rtri(ax + d[1] * (L + 7), ay, 14, 16, (d[1] == 1) and 270 or 90, col)
-      else
-        rrect(ax, ay + d[2] * (L / 2), 7, L, 0, col)
-        rtri(ax, ay + d[2] * (L + 7), 16, 14, (d[2] == 1) and 180 or 0, col)
-      end
-    end
-  end
+  -- 【已删除·2026-10-06】原来这里画过「砸击方向提示」箭头（Sans 右侧的橙色矩形+三角）。
+  -- 用户口径：删去先前指示方向的箭头模型 —— 起手方向改由 SansBody 的手势姿势本身表达。
+  -- 不要再加回来：它和手势是同一信息的两次表达，叠在一起反而更乱。
 
   -- 汗滴：头右侧
   if sweat > 0 then
@@ -1371,8 +1360,11 @@ local function bindKeys()
     bind(k.down, function() setDir(dir, true) end)
     bind(k.up, function() setDir(dir, false) end)
   end
-  bind('KeyboardMenuConfirmKeyDown', function() edgeConfirm = true end)   -- Enter / 小键盘回车 / Z / 空格
-  bind('KeyboardNormalAttackKeyDown', function() edgeConfirm = true end)  -- J（备用确认）
+  -- Enter / 小键盘回车 / Z / 空格（keyEventName 会按 Down/Up 成对生成事件名）
+  bind('KeyboardMenuConfirmKeyDown', function() edgeConfirm = true; confirmHeld = true end)
+  bind('KeyboardMenuConfirmKeyUp',   function() confirmHeld = false end)
+  bind('KeyboardNormalAttackKeyDown', function() edgeConfirm = true; confirmHeld = true end)  -- J（备用确认）
+  bind('KeyboardNormalAttackKeyUp',   function() confirmHeld = false end)
   bind('KeyboardMenuBackKeyDown', function() edgeCancel = true end)       -- Esc / X
 end
 
@@ -1898,7 +1890,9 @@ function M.OnLevelUpdate(dt)
         print('main: 蓝魂跳跃（上键按下沿 → core.jump）')
       end
       coreInput = { left = input.left, right = input.right, up = false, down = false,
-                    jumpHeld = input.up,          -- 变高跳：按住时长决定跳多高（core 读这个字段）
+                    -- 【J5】确认键也算「按住跳跃」：蓝魂态下上键被掩成 false，只留按下沿，
+                    -- 若只给 input.up，用 Enter/Z/J 起跳会被同帧的物理剪断（灵魂原地落回）。
+                    jumpHeld = (input.up or confirmHeld),
                     confirm = input.confirm, cancel = input.cancel }
     end
     local ok, out = pcall(function() return core.update(state, coreInput, dt) end)

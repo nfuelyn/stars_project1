@@ -33,6 +33,9 @@ const STOP_ON = argOf('--stop-on', '');           // auto = 点难度卡 + 菜�
 const SAVE = argOf('--save', path.join(PROJ, 'sans-fight.save.json'));
 const ROUND = Number(argOf('--round', 0)) || 0;   // 调试钩子：Level.SansRound（内部回合号，1..19）
 const OUTDIR = argOf('--outdir', OUTROOT);
+// 【蹦跳探针】--jump-at <秒>[,<秒>...]：在这些时刻按一次「确认键」（Enter/Z/空格，= core.jump）
+//   按住 0.2s 再松开 —— 用来在真机里验证蓝心起跳（R3/J5）。
+const JUMP_AT = String(argOf('--jump-at', '')).split(',').map(Number).filter((n) => Number.isFinite(n));
 
 const { createStudio } = await import(pathToFileURL(path.join(SIM, 'studio', 'index.js')).href);
 const { renderScenePng } = await import(pathToFileURL(path.join(SIM, 'studio', 'host-png.js')).href);
@@ -102,6 +105,10 @@ for (let i = 0; i <= frames; i++) {
         break;
       }
     } catch (e) { errors.push('check t=' + t + ': ' + e.message); }
+  }
+  for (const jt of JUMP_AT) {
+    if (Math.abs(t - jt) < DT / 2) { try { studio.playKey('KeyboardMenuConfirmKeyDown'); console.log('[play-capture] 确认键按下 @ t=' + t.toFixed(2)); } catch (e) { errors.push('jump down t=' + t + ': ' + e.message); } }
+    if (Math.abs(t - (jt + 0.2)) < DT / 2) { try { studio.playKey('KeyboardMenuConfirmKeyUp'); console.log('[play-capture] 确认键抬起 @ t=' + t.toFixed(2)); } catch (e) { errors.push('jump up t=' + t + ': ' + e.message); } }
   }
   const clicks = driveClicks(t);
   for (const c of clicks) {
