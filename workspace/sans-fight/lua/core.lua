@@ -589,26 +589,31 @@ CMD.HeartTeleport = function(w, x, y)
   w.heartPosDirty = true          -- 只有 HeartTeleport 会挪灵魂（HeartMode 不该顺带搬位置）
 end
 CMD.HeartMode = function(w, m) w.heart.mode = tonumber(m); w.heartModeDirty = true end
-CMD.HeartMaxFallSpeed = function(w, v) w.heart.maxFall = tonumber(v); w.heartModeDirty = true end
-CMD.SansSlam = function(w, d)   -- 【2026-10-06 用户口径】拖拽 = **瞬移到那一侧的边界**
+-- 【2026-10-06】maxFall 也必须用脏标记：world.heart.maxFall 的**默认值就是 0**，
+--   直接同步会把「没设过」也当成「设成 0」→ 蓝魂终端速度恒 0、永远不落地。
+CMD.HeartMaxFallSpeed = function(w, v)
+  w.heart.maxFall = tonumber(v)
+  w.heartModeDirty = true
+  w.heartMaxFallDirty = true
+end
+CMD.SansSlam = function(w, d)
+  -- 【2026-10-06 依据 sans_final_fall_right.lua / 原作 Battle.xml 还原】
+  --   ① 强制切蓝魂 ② heart.dir = dir（0东/1南/2西/3北）
+  --   ③ heart.vx/vy = 重力单位向量 × MaxFallSpeed（满速甩出） ④ slammed = true
+  --   **不瞬移、不清零速度**（上一轮那版「瞬移到边界」是长框段坏掉的根源，已回退）。
   d = tonumber(d) or 0
   if d < 0 or d > 3 then return end
   local s = w.heart.maxFall
-  if not s or s == 0 then s = 750 end
+  if s == nil then s = 750 end          -- 注意：0 要保留（终端 0 = 钉住）
+  local DX = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
+  local DY = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
   w.heart.mode = 1
   w.heart.slammed = true
   w.heart.dir = d
-  -- 直接把心搬到重力方向那一侧的框边（内缩 SOUL_CLAMP=8，与钳位/碰撞同口径）；
-  -- 不再给初速 —— 用户要的是「瞬移到边界」，不是被推着滑过去。
-  local z = w.zone
-  local m = 8
-  if d == 0 then w.heart.x = z.r - m
-  elseif d == 2 then w.heart.x = z.l + m
-  elseif d == 1 then w.heart.y = z.b - m
-  else w.heart.y = z.t + m end
-  w.heart.vx, w.heart.vy = 0, 0
-  w.heartPosDirty = true
+  w.heart.vx = (DX[d] or 0) * s
+  w.heart.vy = (DY[d] or 0) * s
   w.heartModeDirty = true
+  w.heartVelDirty = true
   say(w, 'slam ' .. tostring(d))
 end
 CMD.HeartDir = function(w, d)
@@ -619,6 +624,7 @@ CMD.HeartDir = function(w, d)
   if d < 0 or d > 3 then return end
   w.heart.dir = d
   w.heartModeDirty = true
+  w.heartDirDirty = true     -- 【2026-10-06】通知 Game 侧同步 soul.dir
 end
 
 CMD.SansSlamDamage = function(w, b)
@@ -2217,7 +2223,7 @@ function Game:update(dt)
       local gx = DX[self.soul.dir or 1] or 0
       local gy = DY[self.soul.dir or 1] or 1
       local mf = self.soul.maxFall
-      if mf == nil or mf == 0 then mf = 750 end
+      if mf == nil then mf = 750 end    -- 【2026-10-06】0 要保留（钉住）
       local va = (self.soul.vx or 0) * gx + (self.soul.vy or 0) * gy
       local na = va + GRAVITY * dt
       if na > mf then na = mf end
@@ -2305,7 +2311,7 @@ function Game:update(dt)
     if (sAx + 0.2) < sB then setAlongG(dsp + grav * dt) end
     -- MaxFallSpeed（默认 750，脚本可改）
     local mf = self.soul.maxFall
-    if mf == nil or mf == 0 then mf = 750 end
+    if mf == nil then mf = 750 end      -- 【2026-10-06】0 要保留（钉住）
     local dsp2 = alongG(self.soul.vx, self.soul.vy)
     if dsp2 > mf then setAlongG(mf) end
     -- ③ 横向：清零垂直分量 + 直接赋值
@@ -2480,9 +2486,24 @@ function Game:update(dt)
       self.soul.wallDir = (B == 'HandRight' and 0) or (B == 'HandDown' and 1)
                           or (B == 'HandLeft' and 2) or (B == 'HandUp' and 3) or self.soul.wallDir
     end
+    -- 【2026-10-06 修·真根因】HeartDir / SansSlam 改了 heart.dir 后必须同步给 soul.dir。
+    --   旧实现只在 heartVelDirty（仅 SansSlam 置位）时同步 → 脚本里 `HeartDir,0` 完全没生效，
+    --   终盘长框段的重力方向一直停在上一次 SansSlam 的 2，蓝心「持续向左」而不是向右坠落。
+    --   注意：**不能无条件同步** —— world.heart.dir 的默认值是 0（不是 nil），
+    --   无条件同步会把所有竖直重力回合的 dir 改成 0（实测：蓝魂永远不落地、跳不起来）。
+    --   所以用脚本侧的脏标记 heartDirDirty 精确触发。
+    if w.heartDirDirty then
+      self.soul.dir = w.heart.dir or self.soul.dir
+      w.heartDirDirty = false
+    end
     if w.heartModeDirty then
       self.soul.mode = (w.heart.mode == 1) and 'blue' or 'red'
-      self.soul.maxFall = ((w.heart.maxFall ~= nil) and w.heart.maxFall ~= 0) and w.heart.maxFall or nil
+      -- 【2026-10-06】0/负值都是有意义的终端速度（0=钉住、负=反向走廊），不能当 nil；
+      --   但只有在脚本真的设过（heartMaxFallDirty）时才写 soul —— world 默认值为 0。
+      if w.heartMaxFallDirty then
+        self.soul.maxFall = w.heart.maxFall
+        w.heartMaxFallDirty = false
+      end
       w.heartModeDirty = false
     end
     w.heart.x = self.soul.x + BOX_OFF_X

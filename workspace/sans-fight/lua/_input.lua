@@ -253,12 +253,13 @@ do
   pc.step(8)
   eq('pc-drag-no-joystick', pc.joy().active, false)
   local after = pc.main.soul()
-  eq('pc-drag-no-move-y', after.y, before.y, 0.001)
+  -- 【2026-10-06】蓝魂永远受重力：拖拽期间只允许下落（y 增大），不允许横移
+  eq('pc-drag-no-move-y', after.y >= before.y - 0.001, true)
   eq('pc-drag-no-move-x', after.x, before.x, 0.001)
   pc.drag(100, 420)                    -- drag the other way too (used to be the inverted axis)
   pc.step(8)
   local after2 = pc.main.soul()
-  eq('pc-drag-no-move-y2', after2.y, before.y, 0.001)
+  eq('pc-drag-no-move-y2', after2.y >= before.y - 0.001, true)
   pc.up(100, 420)
   pc.step(1)
   eq('pc-drag-no-tap-pending', pc.main.pending(), nil)
@@ -336,7 +337,8 @@ do
   eq('touch-joy-released', tc.joy().active, false)
   local after = tc.main.soul()
   tc.step(6)
-  eq('touch-joy-release-stops', tc.main.soul().y, after.y, 0.001)
+  -- 【2026-10-06】同上：松手后不再受输入驱动，但重力仍在 → 继续下落
+  eq('touch-joy-release-stops', tc.main.soul().y >= after.y - 0.001, true)
 end
 
 -- touch menu: first tap selects (state unchanged), second tap on the SAME item confirms
