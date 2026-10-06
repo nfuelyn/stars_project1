@@ -601,6 +601,16 @@ CMD.SansSlam = function(w, d)   -- 【2026-10-06 用户口径】拖拽 = **瞬�
   w.heartModeDirty = true
   say(w, 'slam ' .. tostring(d))
 end
+CMD.HeartDir = function(w, d)
+  -- 【2026-10-06 用户口径】只改「重力方向 / 心尖朝向」，**不**强制蓝魂、**不**瞬移：
+  --   终盘阶段②的长框段用它把心设成 dir=0（尖朝右），让心靠重力自己滑到右边的框边，
+  --   撞边之后再由脚本 HeartMode 0 切回红心 —— 这一段不是拖拽。
+  d = tonumber(d) or 0
+  if d < 0 or d > 3 then return end
+  w.heart.dir = d
+  w.heartModeDirty = true
+end
+
 CMD.SansSlamDamage = function(w, b)
   w.slamDamage = (tonumber(b) ~= 0)
   w.slamDamageDirty = true     -- 【A-3】透传给 Game

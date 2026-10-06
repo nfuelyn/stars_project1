@@ -64,7 +64,7 @@ local M = {
 0.2,SansSlam,2
 0.3,SansBody,HandRight
 0.2,HeartMaxFallSpeed,450
-0,SansSlam,0
+0,HeartDir,0
 0,CombatZoneResizeInstant,241,226,449,391
 0,CombatZoneSpeed,900
 0,CombatZoneResize,241,226,650,391
