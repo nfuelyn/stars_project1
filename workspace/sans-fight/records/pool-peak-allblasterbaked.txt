@@ -1,0 +1,48 @@
+[probe2] frame=1500 round=3 script=sans_bonegap2 rot=0 rect=8 circle=2
+[probe2] frame=3000 round=5 script=platforms2 rot=0 rect=10 circle=4
+[probe2] frame=4500 round=8 script=platformblaster rot=0 rect=9 circle=4
+[probe2] frame=6000 round=12 script=sans_bonegap2 rot=0 rect=14 circle=26
+[probe2] frame=7500 round=15 script=randomblaster1 rot=129 rect=8 circle=2
+[probe2] frame=9000 round=18 script=sans_bonestab2 rot=1 rect=10 circle=6
+[probe2] frame=10500 round=21 script=multi3 rot=0 rect=18 circle=42
+[probe2] frame=12000 round=23 script=final rot=1 rect=8 circle=2
+=== A. 控件池峰值（帧末可见数 == main.lua 的 used[kind]）===
+pc     original ：13357 帧（445.2s）draw ERR=0 未注册 guid=0 OnStart 实例化=1214 运行期追加=3302 零尺寸峰值=0 全透明峰值=0
+
+kind         PC峰值     触摸峰值     四档取大   峰值出现处(触摸norm)                                      r0    rnd spiral
+rect           48       48       48   帧75 round=0 script=sans_intro state=enemy          48     48     37
+circle        164      164      164   帧4594 round=9 script=platforms4hard state=enemy     82    164    114
+rot          1221     1221     1221   帧12256 round=23 script=final state=enemy          517    516   1221
+rtri            4        4        4   帧12127 round=23 script=final state=enemy            3      2      4
+ring            0        0        0   -                                                   0      0      0
+text           12       12       12   帧465 round=0 script=sans_intro state=attack        12     12     12
+cursor          1        1        1   帧1 round=0 script=sans_intro state=enemy            1      1      1
+各类峰值之和 = 1450（含四档难度取大）
+PC 桶帧数：r0=494帧  rnd=7889帧  spiral=4974帧  none=0帧
+
+=== B. 每帧控件写入（两个场景合计）===
+  pos                1167578 次   冗余     0（0.00%）
+  size                617520 次   冗余     0（0.00%）
+  rot                 572370 次   冗余 569920（99.57%）
+  imageColor          318774 次   冗余     0（0.00%）
+  vis                 124960 次   冗余     2（0.00%）
+  text                  6620 次   冗余     0（0.00%）
+  fontSize               218 次   冗余     0（0.00%）
+  horizontalAlignment     218 次   冗余     0（0.00%）
+  fontColor              128 次   冗余     0（0.00%）
+  合计 2808386 次 / 26714 帧 = 105.13 次/帧（剔前 30 帧冷启动 104.97 次/帧）
+  冗余写入 = 569922（20.29%）  PC 最忙帧=帧12269(3574 次) 触摸最忙帧=帧12269(3574 次)
+  文本类：text=6620（0.248 次/帧） fontSize=218 fontColor=128 horizontalAlignment=218
+  含闪层命令的帧 = PC 1379（10.3%）+ 触摸 1379（10.3%）
+
+=== C. 模板池 guid 实际被实例化次数（0 = 该模板整场从未被取用）===
+  1073743001 rect    PC=2829 触摸=2829
+  1073743002 circle  PC=443 触摸=443
+  1073743004 text    PC= 15 触摸= 15
+  1073743006 ring    PC=  2 触摸=  2
+  1073743007 rot     PC=1221 触摸=1221
+  1073743008 rtri    PC=  4 触摸=  4
+  1073743009 cursor  PC=  1 触摸=  1
+  1073743102 bakedRoot PC=  1 触摸=  1
+整场从未被实例化的模板：（无）
+结束：draw ERR=0  未注册 guid 实例化=0  冗余写入=569922

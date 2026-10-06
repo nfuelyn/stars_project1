@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-06-fitblaster'
+local BUILD = '2026-10-06-fitblaster-all'
 
 local G = {
   rect = 1073743001, circle = 1073743002, text = 1073743004,
@@ -57,30 +57,28 @@ end
 
 -- 控件池预算（OnStart 预热，保证 z 序稳定；不足时按需追加）。
 --
--- 测量方法与峰值（`node tools/run-lua.mjs lua/_pool.lua`，跑整场到结局，
--- PC + 触摸两个平台 × 四档难度各一遍，逐帧统计「帧末可见控件数」——take() 顺序取号、
--- frameEnd 把 used 之后的全部隐藏，所以这个可见数逐类恒等于 used[kind] 峰值）：
+-- 测量方法（快测版）：`node tools/run-lua.mjs lua/_probe_pool2.lua` —— _pool.lua 的单场景加速版，
+-- 只跑 PC/original 一趟、逐帧统计「帧末可见控件数」，并**排除烘焙容器子控件**（它们直接挂在容器下，
+-- 不占池槽位）。O(1) 可见计数器替代原版的每帧全表扫描，整趟从 ~40min 降到 ~3min。
 --
--- 【2026-10 第二次重测：20 回合结构 + 脚本弹幕 + 新龙骨炮/sans 外观】
---     kind    峰值（四档取大）  出现在                                  本预算（+20%）
---     rect        99           round13 platforms4hard（骨阵排布修正后整排都在场内）     119
---     circle     369           round13 platforms4hard（骨头两端骨球）                    443
---     rot         76           round19 spiral3（螺旋龙骨炮 9 件/发 + sans 13 件）        106
---     rtri         2 / ring 1 / text 12 / cursor 1
---   合计 560（四档取大）→ 690（+背景板 1 + 闪层 1 = 池总量 692）。
---   ★ 2026-10-05 玩法修正轮后重测：rect 68 / circle 245 / rot 76 / rtri 3 / ring 1 / text 12 / cursor 1
---     合计 **406**（platforms4/4hard 的底骨从 60 根横扫改成 29 根静止后峰值下降）。
---     BUDGET 仍保留 690 这一档：池是启动期预分配，只要 ≥ 峰值就不运行期追加（_pool 实测 运行期追加=0），
---     多出来的空槽不参与每帧写入，留作后续加内容的余量。
---   旧预算（rect57/circle179/rot96 = 354）在 20 回合下**不够**：rect 与 circle 的峰值
---   从 47/149 涨到 70/265（回合改成全部由脚本驱动，platforms4hard 一回合就有 60 根骨头），
---   所以那一版跑整场会出现 ~98 次运行期追加（`_flow` 日志里的 `pool=453` 就是它）。
---   峰值随时序/走位不再变化（RNG 由固定 seed=20260927 驱动）。
+-- 【2026-10-06 全流程龙骨炮烘焙（fitdata.blaster_block2）后实测】
+--     kind     峰值    出现在                                            本预算
+--     rot      1221    round23 final 阶段④ 旋转光束（9 发同屏 × 129 件）   1350
+--     circle    164    round9 platforms4hard（骨头两端骨球）               443
+--     rect       48    round0 sans_intro                                 200
+--     rtri 4 / ring 0（PC 场景，触摸另有 1）/ text 12 / cursor 1
 --
--- 为什么必须 ≥ 峰值：take() 取不到时会**当场实例化**一个新控件，而新控件按创建顺序排在
--- 闪层**之后** → 它会画在全屏闪层之上，且整场会多出几十次运行期实例化
--- （旧预算 rect=168/circle=96/rot=40 下实测：帧内追加 70~93 次）。
-local BUDGET = { rect = 640, circle = 443, rot = 106, rtri = 4, ring = 2, text = 15, cursor = 1 }
+--   ★ 关键结论：像素烘焙龙骨炮走 main.rrect() → **rot 池**，不是 rect 池。
+--     每发 = block2 的 112~126 个 rrect + 光束 2 + 炮口亮块 1 ≈ 129 件；
+--     所以「全流程烘焙」（见面杀 + 22 个回合 + 终盘）后的 rot 峰值分布是：
+--       见面杀 4 发 ≈ 517 / 普通回合 multi2 4 发 ≈ 516 / 终盘阶段④ 9 发 ≈ 1221。
+--     历史遗留：上一轮把预算加在 rect 上（误以为烘焙走 rect 池），实测 rect 峰值只有 48，
+--     这一轮把那 440 个多余槽位还给了真正吃紧的 rot。
+--
+--   为什么必须 ≥ 峰值：take() 取不到时会**当场实例化**一个新控件，而新控件按创建顺序排在
+--   闪层**之后** → 它会画在全屏闪层之上（终盘阶段③的黑屏闪正好紧挨阶段④的旋转光束），
+--   且整场会多出上千次运行期实例化。
+local BUDGET = { rect = 200, circle = 443, rot = 1350, rtri = 4, ring = 2, text = 15, cursor = 1 }
 
 local W, H = 640, 480          -- 逻辑世界尺寸
 local root, flash, bgPanel, bakedRoot = nil, nil, nil, nil

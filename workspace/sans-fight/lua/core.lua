@@ -710,8 +710,8 @@ CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold,
     sx = tonumber(sx), sy = tonumber(sy), ex = ex2, ey = ey2,
     ang = a0, ang0 = a0, endAng = tonumber(endAng), spin = tonumber(spin),
     blast = bt, persistent = persistent, hold = tonumber(hold) or 0, t = 0,
-    -- 【方案A】初见杀用原版像素龙骨炮（block2 烘焙）；其余关卡保持 12 件参数化
-    bake = (w.scriptName == 'sans_intro'),
+    -- 【方案A】全流程龙骨炮统一走原版像素烘焙（fitdata.blaster_block2，每发 112~126 rrect）：
+    bake = true,
     -- 光束宽度：Size 0/1/2 = 20/36/56；骷髅缩放：0.8/1.0/1.3
     -- extraW：双向各加宽这么多（用户口径「光束双向扩大 5px」→ 传 5，宽度 +10）
     band = (BLASTER_W[sz + 1] or BLASTER_W[1]) + (tonumber(extraW) or 0) * 2,
@@ -1947,6 +1947,9 @@ function Game:spawnBlaster(count)
       side = side,
       t = 0, state = 'charge', warn = 0.7, blast = 0.35, band = 92 * (vertical and sx or sy),
       x = z.l + (rx - b.x) * sx, y = z.t + (ry - b.y) * sy,
+      -- 【方案A·2026-10-06】内置 blaster 模式也必须吃同一套烘焙外观：
+      -- 它绕过 CMD.GasterBlaster 直接 push，漏了 bake 就会在场上混进旧的 12 件参数化骷髅。
+      bake = true,
       ang = rang, size = 1, scale = BLASTER_SCALE[2],
       w = z.r - z.l, h = z.b - z.t,
     }

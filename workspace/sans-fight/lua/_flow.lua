@@ -23,6 +23,10 @@ local function mkControl(kind)
       local m = {
         SetVisible = 1, SetActive = 1, SetImage = 1, SetSiblingIndex = 1, SetSizeDelta = 1,
         SetAnchoredPosition = 1, SetLocalRotation = 1, AddKeyEventListener = 1,
+        -- 烘焙容器（main.useBakedCorner/useBakedCenter）用到的锚点 API：
+        -- 旧版白名单漏了这几项 → 每帧 draw ERR（main.lua:503 SetAnchorMin），
+        -- 而整帧失败会被 main 自己的 pcall 吞掉，导致 _flow 长期误报「结局没渲染」。
+        SetAnchorMin = 1, SetAnchorMax = 1, SetPivot = 1, SetLocalScale = 1,
         AddCursorEventListener = 1, GetChildren = 1, GetChild = 1, FindChild = 1,
       }
       if m[k] then return function() end end
@@ -103,7 +107,9 @@ local function clearHazards(st)
   end
 end
 
-for i = 1, 11000 do           -- 约 367 秒游戏时间：20 回合（16 个随机脚本回合 + 3 段螺旋 + 见面杀）
+for i = 1, 18000 do           -- 约 600 秒游戏时间：24 回合（见面杀 + 22 个固定脚本回合 + 终盘 final）
+                              -- 实测整场约 445s（_probe_pool2 跑到 result 用 13357 帧），旧值 11000 帧
+                              -- 在 24 回合结构下跑不到结局态 → 「结局文字已渲染」恒 FAIL
                               -- 实测整场约 250s，旧版 5400 帧（180s）只够跑完 6 回合那套结构
   local ok, err = pcall(main.OnLevelUpdate, 1.0 / 30.0)
   if not ok and #errors < 8 then errors[#errors + 1] = string.format('frame %d: %s', i, tostring(err)) end

@@ -237,5 +237,41 @@ do
     string.format('三档强度递增 gt: %s < %s < %s', tostring(g1), tostring(g2), tostring(g3)))
 end
 
+-- ---------------------------------------------------------------- 全流程龙骨炮烘焙
+-- 用户口径（2026-10-06）：见面杀之后的所有龙骨炮与见面杀同款 = fitdata.blaster_block2 像素烘焙。
+-- 有两条产出路径，两条都要查：
+--   ① 脚本 CMD.GasterBlaster（见面杀 / multi2 / randomblaster / 终盘阶段④ …）
+--   ② 内置 blaster 模式的 Game:spawnBlaster —— 它绕过 CMD 直接 push，
+--      历史上就是这里漏了 bake，才会在第 5 回合（platforms1）混进旧的 12 件参数化骷髅。
+do
+  local probes = {
+    { 0,  "见面杀（脚本路径）" },
+    { 4,  "platforms1 内置 blaster 模式（spawnBlaster 路径）" },
+    { 16, "multi2 四发同屏（脚本路径）" },
+  }
+  local total, baked, firstBad = 0, 0, nil
+  for _, pr in ipairs(probes) do
+    local n = pr[1]
+    local g = core.newGame({ scripts = atk, hp = 1000000, difficulty = "original" })
+    g:startEnemy(n)
+    local t, roundN = 0, 0
+    while g.state == "enemy" and t < 120 do
+      core.update(g, IDLE, core.DT); t = t + core.DT
+      for _, c in ipairs(core.render(g)) do
+        if c.kind == "blaster" then
+          total = total + 1; roundN = roundN + 1
+          if c.bake then baked = baked + 1
+          elseif not firstBad then
+            firstBad = string.format("round %d (%s) script=%s", n, pr[2], tostring(g.roundScript))
+          end
+        end
+      end
+    end
+    ck(roundN > 0, string.format("回合 %d 确实会产生龙骨炮命令（%s）", n, pr[2]), "n=" .. roundN)
+  end
+  ck(firstBad == nil, "全流程龙骨炮 100% 走 fitdata.blaster_block2 烘焙（bake=true）",
+    firstBad and (firstBad .. " —— 未烘焙 " .. (total - baked) .. "/" .. total) or nil)
+end
+
 print(string.format('---- _rounds.lua: %d PASS / %d FAIL ----', pass, fail))
 if fail > 0 then os.exit(1) end

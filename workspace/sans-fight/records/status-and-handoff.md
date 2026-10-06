@@ -735,3 +735,70 @@ node tools/verify-client-pool.mjs        # 客户端控件组契约（PASS 7/7�
 node tools/build-save.mjs                # 重建存档（会按内容筛选编辑器快照）
 ```
 
+
+## 全流程龙骨炮烘焙（2026-10-06，BUILD = 2026-10-06-fitblaster-all）
+
+需求（用户口径）：**见面杀（`sans_intro`）之后的所有龙骨炮与见面杀同款** —— 也就是整场都用
+`fitdata.blaster_block2` 的逐像素烘焙外观，不再出现旧的 12 件参数化骷髅。
+
+### 改了什么
+
+| 文件 | 改动 |
+| --- | --- |
+| `lua/core.lua` `CMD.GasterBlaster` | `bake = (w.scriptName == 'sans_intro')` → **`bake = true`**（脚本路径：见面杀 / multi2 / randomblaster / 终盘阶段④…） |
+| `lua/core.lua` `Game:spawnBlaster` | **补上 `bake = true`**。这条内置 `blaster` 模式绕过 CMD 直接 push，漏了 bake 时会在第 5 回合（platforms1）混进旧参数化骷髅 |
+| `lua/main.lua` `BUDGET` | `rect 640→200`、**`rot 106→1350`**（见下） |
+| `lua/main.lua` `BUILD` | `2026-10-06-fitblaster` → `2026-10-06-fitblaster-all`（试玩页判据） |
+| `lua/_rounds.lua` | 新增 4 条回归：回合 0/4/16 必须产出龙骨炮，且**全部** `bake=true`（58 PASS） |
+| `lua/_flow.lua` | 修测试台：白名单补 `SetAnchorMin/SetAnchorMax/SetPivot/SetLocalScale`；帧预算 11000→18000 |
+
+### 关键结论：烘焙龙骨炮吃的是 **rot 池**，不是 rect 池
+
+`main.drawBlaster` 的 bake 分支逐条走 `rrect()` → `take('rot')`。每发 = block2 的 112~126 个
+rrect + 光束 2 + 炮口亮块 1 ≈ **129 件**。所以「全流程烘焙」后 rot 峰值会从原来的 106 档直接跳到：
+
+| 场景 | 同屏龙骨炮 | rot 件数 |
+| --- | --- | --- |
+| 见面杀 `sans_intro` | 4 | ≈ 517 |
+| `multi2`（内部回合 16） | 4 | ≈ 516 |
+| **终盘 `final` 阶段④ 旋转光束（内部回合 23）** | **9** | **≈ 1221（实测峰值）** |
+
+上一轮把预算加在 `rect` 上是**误判**（实测 rect 峰值只有 48）—— 这一轮把那 440 个多余槽位还给了 rot。
+`take()` 取不到时会当场实例化一个新控件，而新控件排在闪层**之后** → 会画在全屏闪层之上
+（终盘阶段③的黑屏闪正好紧挨阶段④的旋转光束），所以必须预热到位。
+
+### 测量与证据
+
+```powershell
+node tools/run-lua.mjs lua/_probe_bake.lua    # 每回合同屏龙骨炮峰值 + bake 校对 + 时间窗
+node tools/run-lua.mjs lua/_probe_pool2.lua   # 真实 main.lua 的控件池峰值（~3min，单场景加速版）
+```
+
+- `_probe_bake.lua`：24 个回合逐一体检，`maxBake == maxN` 全部成立；峰值 = 回合 23 `final` 的 **9 发 / 1161~1221 件**。
+- `_probe_pool2.lua`（真实 `main.lua` + 真实 `fitdata`，排除烘焙容器子控件）：
+  `rot 峰值 1221 @ 帧12256 round=23 final`、`circle 164`、`rect 48`；对照数据存 `records/pool-peak-allblasterbaked.txt`。
+  它是 `_pool.lua` 的加速版（O(1) 可见计数器 + 单场景），整趟 40min → ~3min。
+- 模拟器无头试玩（`tools/play-capture.mjs`）实拍确认：内部回合 16 同屏 4 发、回合 23 阶段④同屏 9 发
+  都是 fit 像素骷髅，截图存 `records/captures/fit-all-blasterverify/`。
+- 在线自检：主日志 `baked=` 字段（临时诊断，验证后已撤）在终盘阶段④打到 **1161**，与离线推算一致。
+
+### 验收时要注意的坑
+
+终盘阶段④的**时间窗随难度整体平移**（回合总长都是 53s）：
+
+| 难度 | 光束窗口（回合内秒） | 同屏峰值 |
+| --- | --- | --- |
+| easy | 35.62 … 50.32 | 6 发 |
+| normal | 30.10 … 42.78 | 6 发 |
+| hard | 22.42 … 31.07 | 9 发 |
+| original | 22.42 … 31.07 | 9 发 |
+
+试玩页默认点第 1 张难度卡 = **easy**，所以 `--round 23` 截图必须等到 **t≈36s 之后**才拍得到龙骨炮；
+在 24~31s 拍只会拍到空档（这一轮就是这么排查出来的）。
+
+### 回归结果（2026-10-06）
+
+`node tools/verify-all.mjs --quick` → **8 / 8 通过**：`_check` OK /`_rounds` 58 PASS /`core_selftest` 280 PASS /
+`_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（495,446 B）/ `verify-client-pool` 10 项契约全过。
+`node tools/run-lua.mjs lua/_flow.lua` → 整场跑到结局（t=445.3s）：`draw ERR = 0`、`结局文字已渲染 = true`、
+`灵魂跑出框外最大 0.0px`、按钮行三断言全过。

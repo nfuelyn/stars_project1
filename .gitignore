@@ -12,7 +12,29 @@ workspace/_refs/
 workspace/sans-fight/.ref/
 # ---- 临时/调试脚本 ----
 .tmp-*.mjs
+.tmp-*.cjs
 tmp-*.js
 test.lua
 *.tmp
 *.log
+
+# ---- 一次性调试产物（保留在本地，不进仓库；测量结论见 records/status-and-handoff.md）----
+workspace/sans-fight/records/captures/fit-all-intro*/
+workspace/sans-fight/records/captures/fit-all-r16*/
+workspace/sans-fight/records/captures/fit-all-r23*/
+workspace/sans-fight/records/captures/diag-r23*/
+workspace/sans-fight/records/captures/probe-nodes*/
+workspace/sans-fight/records/_probe2-out.txt
+workspace/sans-fight/lua/_probe_bakepool.lua
+workspace/sans-fight/lua/_probe_load.lua
+workspace/sans-fight/lua/_probe_r[0-9]*.lua
+workspace/sans-fight/lua/_probe_r23diff.lua
+workspace/sans-fight/lua/_probe_blastertime.lua
+workspace/sans-fight/tools/_probe-*.mjs
+workspace/sans-fight/tools/patch-*.cjs
+workspace/sans-fight/records/captures/fit-all-builtin*/
+workspace/sans-fight/records/captures/verify-r16/
+workspace/sans-fight/records/captures/verify-r23/
+# 上面两张同名重复件（内容逐字节相同）只留 *_fit-blaster.png 那组
+workspace/sans-fight/records/captures/fit-all-blasterverify/round17-multi2-fitblasters.png
+workspace/sans-fight/records/captures/fit-all-blasterverify/round24-final-spiral-fitblasters.png
