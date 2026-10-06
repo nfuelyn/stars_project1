@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-06-fitblaster-all'
+local BUILD = '2026-10-06-bluesoul'
 
 local G = {
   rect = 1073743001, circle = 1073743002, text = 1073743004,

@@ -1,0 +1,66 @@
+{
+  "canvas": "pc-16-9",
+  "seconds": 6,
+  "dt": 0.03333333333333333,
+  "frames": 180,
+  "wallSeconds": 2.1,
+  "startedAt": "2026-10-06T07:53:41.193Z",
+  "finishedAt": "2026-10-06T07:53:43.393Z",
+  "final": {
+    "time": 5.9999999999999885,
+    "frame": 180,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 600,
+    "paintItems": 0,
+    "canvasWidth": 1600,
+    "canvasHeight": 900,
+    "canvasId": "pc-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0",
+    "main start: build=2026-10-06-bluesoul device=KeyboardAndMouse touch=false mode=core pool=2018 flash=true cursor=true",
+    "main: mode=core device=KeyboardAndMouse touch=false frame=151 pool=2024 cmds=35 box=(239,226,165,165) hp=82 phase=enemy soul=320,383 joy=off"
+  ],
+  "logCount": 86,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 4.6,
+      "shot": "pc-16-9-t4_60.png"
+    }
+  ]
+}
