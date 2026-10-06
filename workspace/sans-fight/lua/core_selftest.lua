@@ -1136,8 +1136,10 @@ local function run()
     ok(not tostring(sc.csv):find('ArrowBone', 1, true) and not tostring(sc.csv):find('HeartWall', 1, true),
        'A-9：' .. sc.name .. ' 不再含 ArrowBone / HeartWall')
     if sc.name == 'sans_bonestab3' then
-      ok(tostring(sc.csv):find('BoneStab,$Direction,9,1.2,0.25,5,2,1.02', 1, true) ~= nil,
-         'A-9：sans_bonestab3 骨墙已分 5 道、隔 1 道留空（保留 2 个可钻的缺口）')
+      -- 【2026-10-06】按 bone_battle.lua 修正后：BoneStab 不再分道/留缺口，改成
+      -- 「一整块厚度 = distance+8 的面板，以 speed=distance*10 滑入 distance 像素」。
+      ok(tostring(sc.csv):find('BoneStab,$Direction,9,1.2,0.25', 1, true) ~= nil,
+         'A-9：sans_bonestab3 参数已按参考（dist/warn/stay，无分道参数）')
       ok(tostring(sc.csv):find('SET,Loop,6', 1, true) ~= nil,
          'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
     end

@@ -698,30 +698,18 @@ CMD.SineBones = function(w, count, spacing, speed, height)
   end
 end
 
-CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery, outDur)
-  -- 从战斗框侧面弹出的骨刺墙：先预警 warn 秒，再伸出 dist，停留 stay 秒后收回。
-  -- 【2026-10-06 用户口径】新增第 6/7 个参数：把整条边切成 `lanes` 段，
-  -- 位置满足 `i % gapEvery == 0` 的段实心、其余段**留空** —— 即「骨墙保留 2~3 个能钻过去的空间」。
-  -- 不传（或 lanes < 2）= 老行为：整条边一根实心骨刺。
-  local d = tonumber(dir)
-  local n = math.floor(tonumber(lanes) or 0)
-  if n < 2 then
-    w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
-                              warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
-                              t = 0, phase = 'warn' }
-    return
-  end
-  local ge = math.floor(tonumber(gapEvery) or 2)
-  if ge < 2 then ge = 2 end
-  for i = 0, n - 1 do
-    if i % ge == 0 then                      -- 实心段；其余段直接不生成 = 缺口
-      w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
-                                warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
-                                t = 0, phase = 'warn', lane = i, lanes = n }
-    end
-  end
+CMD.BoneStab = function(w, dir, dist, warn, stay, outDur)
+  -- 【2026-10-06 依据 D:\\stars\\bone_battle.lua 重写】
+  --   参考实现（Battle.xml 的 BoneStabWarn → BoneStabH/V）：
+  --     * 先出「警告矩形」：内缩 8px、沿边长度 = 框边 - 16、厚度 = distance - 3；
+  --     * warnTime 到点后生成**一整块面板**（厚度 = distance + 8，横跨整条框边），
+  --       以 speed = distance*10 从边界滑入 distance 像素（≈0.1s），停留 stayTime 后原路收回；
+  --     * 面板最终**伸出** distance - 3。
+  --   旧实现是「从边上长出来 + 可切 5 道留缺口」，与参考不符，已删除。
+  w.bones[#w.bones + 1] = { stab = true, dir = tonumber(dir), dist = tonumber(dist),
+                            warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
+                            t = 0, phase = 'warn' }
 end
-
 CMD.HeartWall = function(w, on)
   -- 【箭头模块统一模板】把蓝心切到「贴墙模式」：自由移动（不吃普通蓝心重力/悬停规则），
   -- 跳跃键 = 朝「箭头方向的反方向」冲刺（见 Game:jump）。方向取自 SansBody（箭头）。
@@ -956,7 +944,7 @@ function World:stepStab(b, dt)
     return
   end
   -- 【回合差异文档 2.7】伸出时间可配置（默认 0.1s → 0.22s，约原版两倍，可读性更好）
-  local outDur = b.outDur or 0.22
+  local outDur = b.outDur or 0.1     -- 参考：speed = distance*10 → 0.1s
   if b.phase == 'out' then
     b.cur = math.min(b.dist, b.dist * (b.t / outDur))
     if b.t >= outDur then b.phase = 'stay'; b.t = 0; b.cur = b.dist end
@@ -972,40 +960,28 @@ function World:stepStab(b, dt)
 end
 
 -- 骨刺墙的命中矩形
+-- 骨刺的命中矩形（依据 bone_battle.lua 的 BoneStabH/V 几何）
 function World:stabRect(b)
   local z = self.zone
-  local d = b.cur or 0
-  if b.arrowbone then
-    -- 箭头模块（第十一轮改造）：dir 那条边**整条升起一排骨头**，一起向框内伸出 depth。
-    --   0=东（右边框）/ 2=西（左边框）：整条竖边；1=南（下边框）/ 3=北（上边框）：整条横边。
-    if b.dir == 0 then return { x = z.r - d, y = z.t, w = d, h = z.b - z.t } end
-    if b.dir == 2 then return { x = z.l, y = z.t, w = d, h = z.b - z.t } end
-    if b.dir == 1 then return { x = z.l, y = z.b - d, w = z.r - z.l, h = d } end
-    return { x = z.l, y = z.t, w = z.r - z.l, h = d }
+  local d = tonumber(b.dist) or 0
+  -- b.cur 在 'out' 阶段从 0 线性涨到 d → t 就是「滑入进度 0..1」
+  local t = 0
+  if d > 0 then t = math.min(1, (b.cur or 0) / d) end
+  local dir = b.dir
+  if dir == 1 then                       -- 从下边框向上刺
+    local h = d + 8
+    return { x = z.l, y = z.b - 5 - d * t, w = z.r - z.l, h = h }
+  elseif dir == 3 then                   -- 从上边框向下刺
+    local h = d + 8
+    return { x = z.l, y = z.t + 5 - h + d * t, w = z.r - z.l, h = h }
+  elseif dir == 0 then                   -- 从右边框向左刺
+    local w2 = d + 8
+    return { x = z.r - 5 - d * t, y = z.t, w = w2, h = z.b - z.t }
+  else                                   -- 从左边框向右刺
+    local w2 = d + 8
+    return { x = z.l + 5 - w2 + d * t, y = z.t, w = w2, h = z.b - z.t }
   end
-  -- 【回合差异文档 2.6】与原版一致：0=右 1=下 2=左 3=上（旧实现整体反向）
-  -- 分道骨刺（CMD.BoneStab 的 lanes）只覆盖自己那一段，段与段之间就是给人钻的缺口。
-  local function laneSpan(totalEdge)
-    if not (b.lanes and b.lanes > 1) then return 0, totalEdge end
-    local w1 = totalEdge / b.lanes
-    return (b.lane or 0) * w1, w1
-  end
-  if b.dir == 0 then
-    local y0, yh = laneSpan(z.b - z.t)
-    return { x = z.r - d, y = z.t + y0, w = d, h = yh }
-  end
-  if b.dir == 2 then
-    local y0, yh = laneSpan(z.b - z.t)
-    return { x = z.l, y = z.t + y0, w = d, h = yh }
-  end
-  if b.dir == 1 then
-    local x0, xw = laneSpan(z.r - z.l)
-    return { x = z.l + x0, y = z.b - d, w = xw, h = d }
-  end
-  local x0, xw = laneSpan(z.r - z.l)
-  return { x = z.l + x0, y = z.t, w = xw, h = d }
 end
-
 -- 脚本自身的时间线长度 = 各行延时之和（延时语义是"执行该行前等多久"，首行也要等）。
 -- 含变量延时（`$var`）或**循环**（JMPABS 回跳）时静态算不出来 → 返回 nil。
 -- 【差距文档第二轮 G1/G2】静态求和还会**严重低估**有循环的脚本（spiral1 静态 0.09s / 实际 10.58s，
@@ -1079,7 +1055,9 @@ function World:update(dt)
     else
       b.x = b.x + b.vx * dt
       b.y = b.y + b.vy * dt
-      if b.x > VW + 400 or b.x < -400 or b.y > VH + 400 or b.y < -400 then kill = true end
+      -- 【bone_battle.lua】出屏判定用整张画面：dir=0 → x>640 / 1 → y>480 / 2 → x<-w / 3 → y<-h
+      if (b.vx > 0 and b.x > VW) or (b.vx < 0 and b.x < -b.w)
+         or (b.vy > 0 and b.y > VH) or (b.vy < 0 and b.y < -b.h) then kill = true end
     end
     if kill then table.remove(self.bones, i) end
     i = i - 1

@@ -1046,7 +1046,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,9,1.2,0.33333,5,2,1.02
+0.2,BoneStab,$Direction,9,1.2,0.33333
 0.6,JMPABS,6
 0,EndAttack
 ]==] },
@@ -1075,7 +1075,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,9,1.2,0.2,5,2,1.02
+0.2,BoneStab,$Direction,9,1.2,0.2
 0.93333,JMPABS,6
 0,EndAttack
 ]==] },
@@ -1109,7 +1109,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPREL,1
 0.26666,SansSlam,$Direction
 # 【2026-10-06 二次口径】尺寸再减半 dist 18→9、出现 warn 0.4→1.2、升起 out 0.22→1.02
-0,BoneStab,$Direction,9,1.2,0.25,5,2,1.02
+0,BoneStab,$Direction,9,1.2,0.25
 1.23333,JMPABS,6
 0,EndAttack
 ]==] },
