@@ -1191,12 +1191,20 @@ local function run()
   table.sort(ab, function(x, y) return x.name < y.name end)
   ok(#ab == 3, 'A-9：三个 bonestab 脚本都在（' .. #ab .. '）')
   -- 【用户验收】伸出范围缩小（25/25/29 → 16/16/18）、bonestab3 给 0.25 停留：原版范围太深躲不开
-  local want = { '16,0.4,0.33333', '16,0.3,0.2', '18,0.4,0.25' }
+  -- 【2026-10-06 用户口径】sans_bonestab3（内部 22）骨墙削薄 + 降次数 + 留 2 个缺口：
+  --   dist 18→12、Loop 9→6、周期 0.23333→1.23333，BoneStab 追加 lanes=5 / gapEvery=2。
+  local want = { '16,0.4,0.33333', '16,0.3,0.2', '12,0.4,0.25' }
   for k, sc in ipairs(ab) do
     local got = tostring(sc.csv):match('BoneStab,[^\n]-,(%d+%.?%d*,%d+%.?%d*,%d+%.?%d*)')
     ok(got == want[k], string.format('A-9：%s 参数 = %s（期望 %s）', sc.name, tostring(got), want[k]))
     ok(not tostring(sc.csv):find('ArrowBone', 1, true) and not tostring(sc.csv):find('HeartWall', 1, true),
        'A-9：' .. sc.name .. ' 不再含 ArrowBone / HeartWall')
+    if sc.name == 'sans_bonestab3' then
+      ok(tostring(sc.csv):find('BoneStab,$Direction,12,0.4,0.25,5,2', 1, true) ~= nil,
+         'A-9：sans_bonestab3 骨墙已分 5 道、隔 1 道留空（保留 2 个可钻的缺口）')
+      ok(tostring(sc.csv):find('SET,Loop,6', 1, true) ~= nil,
+         'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
+    end
   end
   head('intro-blaster：首轮（sans_intro）龙骨炮「出现 → 释放」间隔 = 1.0s')
   -- 用户第九轮口径（0.6 → 1.0）。GasterBlaster 的第 8 个参数（cells[9]）是 SpinTime = 出现到释放的时间。

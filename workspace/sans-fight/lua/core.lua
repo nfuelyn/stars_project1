@@ -674,10 +674,27 @@ CMD.SineBones = function(w, count, spacing, speed, height)
   end
 end
 
-CMD.BoneStab = function(w, dir, dist, warn, stay)
-  -- 从战斗框侧面弹出的骨刺墙：先预警 warn 秒，再伸出 dist，停留 stay 秒后收回
-  w.bones[#w.bones + 1] = { stab = true, dir = tonumber(dir), dist = tonumber(dist),
-                            warn = w:wn(warn), stay = tonumber(stay), t = 0, phase = 'warn' }
+CMD.BoneStab = function(w, dir, dist, warn, stay, lanes, gapEvery)
+  -- 从战斗框侧面弹出的骨刺墙：先预警 warn 秒，再伸出 dist，停留 stay 秒后收回。
+  -- 【2026-10-06 用户口径】新增第 6/7 个参数：把整条边切成 `lanes` 段，
+  -- 位置满足 `i % gapEvery == 0` 的段实心、其余段**留空** —— 即「骨墙保留 2~3 个能钻过去的空间」。
+  -- 不传（或 lanes < 2）= 老行为：整条边一根实心骨刺。
+  local d = tonumber(dir)
+  local n = math.floor(tonumber(lanes) or 0)
+  if n < 2 then
+    w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
+                              warn = w:wn(warn), stay = tonumber(stay), t = 0, phase = 'warn' }
+    return
+  end
+  local ge = math.floor(tonumber(gapEvery) or 2)
+  if ge < 2 then ge = 2 end
+  for i = 0, n - 1 do
+    if i % ge == 0 then                      -- 实心段；其余段直接不生成 = 缺口
+      w.bones[#w.bones + 1] = { stab = true, dir = d, dist = tonumber(dist),
+                                warn = w:wn(warn), stay = tonumber(stay), t = 0, phase = 'warn',
+                                lane = i, lanes = n }
+    end
+  end
 end
 
 CMD.HeartWall = function(w, on)
@@ -942,10 +959,26 @@ function World:stabRect(b)
     return { x = z.l, y = z.t, w = z.r - z.l, h = d }
   end
   -- 【回合差异文档 2.6】与原版一致：0=右 1=下 2=左 3=上（旧实现整体反向）
-  if b.dir == 0 then return { x = z.r - d, y = z.t, w = d, h = z.b - z.t } end
-  if b.dir == 2 then return { x = z.l, y = z.t, w = d, h = z.b - z.t } end
-  if b.dir == 1 then return { x = z.l, y = z.b - d, w = z.r - z.l, h = d } end
-  return { x = z.l, y = z.t, w = z.r - z.l, h = d }
+  -- 分道骨刺（CMD.BoneStab 的 lanes）只覆盖自己那一段，段与段之间就是给人钻的缺口。
+  local function laneSpan(totalEdge)
+    if not (b.lanes and b.lanes > 1) then return 0, totalEdge end
+    local w1 = totalEdge / b.lanes
+    return (b.lane or 0) * w1, w1
+  end
+  if b.dir == 0 then
+    local y0, yh = laneSpan(z.b - z.t)
+    return { x = z.r - d, y = z.t + y0, w = d, h = yh }
+  end
+  if b.dir == 2 then
+    local y0, yh = laneSpan(z.b - z.t)
+    return { x = z.l, y = z.t + y0, w = d, h = yh }
+  end
+  if b.dir == 1 then
+    local x0, xw = laneSpan(z.r - z.l)
+    return { x = z.l + x0, y = z.b - d, w = xw, h = d }
+  end
+  local x0, xw = laneSpan(z.r - z.l)
+  return { x = z.l + x0, y = z.t, w = xw, h = d }
 end
 
 -- 脚本自身的时间线长度 = 各行延时之和（延时语义是"执行该行前等多久"，首行也要等）。

@@ -1091,7 +1091,11 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,320,304
 0,HeartMode,0
 0,TLPause
-0,SET,Loop,9
+# 【2026-10-06 用户口径·round22（内部 22 = HUD 23 = sans_bonestab3）】
+#   「地面向上升起的骨头攻击」= BoneStab：骨墙太厚太密 → 削薄 + 降次数 + 每轮 +1s；
+#   并把整条边切成 5 段、每隔 1 段留空 → **骨墙保留 2 个能钻过去的缺口**（lanes=5, gapEvery=2）。
+#   dist 18 → 12（伸出更短、更细）；Loop 9 → 6（9 根降到 6 根）；周期 0.23333 → 1.23333。
+0,SET,Loop,6
 0,JMPZ,26,$Loop
 0,SUB,Loop,$Loop,1
 0,RND,Direction,4
@@ -1110,8 +1114,8 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,18,0.4,0.25
-0.23333,JMPABS,6
+0.2,BoneStab,$Direction,12,0.4,0.25,5,2
+1.23333,JMPABS,6
 0,EndAttack
 ]==] },
   { name = "sans_intro", csv = [==[
