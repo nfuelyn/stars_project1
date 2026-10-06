@@ -1,0 +1,81 @@
+{
+  "canvas": "pc-16-9",
+  "seconds": 5,
+  "dt": 0.03333333333333333,
+  "frames": 150,
+  "wallSeconds": 1.9,
+  "startedAt": "2026-10-06T11:06:08.953Z",
+  "finishedAt": "2026-10-06T11:06:10.956Z",
+  "final": {
+    "time": 4.999999999999992,
+    "frame": 150,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 505,
+    "paintItems": 0,
+    "canvasWidth": 1600,
+    "canvasHeight": 900,
+    "canvasId": "pc-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0",
+    "main start: build=2026-10-06-bluesoul device=KeyboardAndMouse touch=false mode=core pool=2018 flash=true cursor=true"
+  ],
+  "logCount": 75,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 2.7,
+      "shot": "pc-16-9-t2_70.png"
+    },
+    {
+      "t": 2.9,
+      "shot": "pc-16-9-t2_90.png"
+    },
+    {
+      "t": 3.1,
+      "shot": "pc-16-9-t3_10.png"
+    },
+    {
+      "t": 3.3,
+      "shot": "pc-16-9-t3_30.png"
+    },
+    {
+      "t": 3.5,
+      "shot": "pc-16-9-t3_50.png"
+    }
+  ]
+}

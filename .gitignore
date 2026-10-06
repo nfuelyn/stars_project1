@@ -42,3 +42,5 @@ workspace/sans-fight/records/captures/fit-all-blasterverify/round24-final-spiral
 workspace/sans-fight/records/captures/verify-*/
 workspace/sans-fight/tools/diag-key.mjs
 workspace/sans-fight/tools/probe-jump.mjs
+
+.core.bak
