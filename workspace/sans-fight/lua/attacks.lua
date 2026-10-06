@@ -1146,7 +1146,10 @@ $Wait2,SET,LastDir,$Direction
 0.26666,SansSlam,1
 0.5,SansBody,HandUp
 0,SansHead,NoEyes
-0,BoneStab,1,54,0.16666,1
+# 【2026-10-06 用户口径】整场第一段（初见杀）的骨刺「太厚」→ 厚度减半：
+#   BoneStab(dir, distance, warn, stay) 的第 2 个参数是伸出厚度，54 → 27。
+#   （实际板厚 = distance+8，露出 = distance-3，所以从 51px 变成 24px。）
+0,BoneStab,1,27,0.16666,1
 0.7,HeartMode,0
 0,SansBody,HandRight
 0,Sound,Ding
