@@ -246,7 +246,7 @@ self.items = { { id = 'legend_bread', name = '传奇面包', desc = '回复 45 H
 | 松开 | **立刻停止上升**，同速**等速下降**（没有惯性、没有重力加速度） |
 | 上界 | 战斗框上沿（按住会一直升到框顶；平台关需要）——**新增框顶钳位**，旧实现按住会直接飞出框 |
 
-实测（`lua/_probe_jump.lua`，框高 140）：0.35s → 35px（1/4 框高）、**0.7s → 70px（1/2 框高）**、
+实测（`探针_probe_jump（该一次性探针已在“lua 目录瘦身”轮清理，数值结论保留）`，框高 140）：0.35s → 35px（1/4 框高）、**0.7s → 70px（1/2 框高）**、
 1.0s → 100px、1.5s → 124px（框顶封顶）。完全线性。
 
 ### 2. 脚本骨的颜色语义（顺带修的真 bug）
@@ -342,7 +342,7 @@ self.items = { { id = 'legend_bread', name = '传奇面包', desc = '回复 45 H
 * 新增 `gravityFor(vy)`，按上表四档取值 → 起跳弹道 = `180²/(2×540)` ≈ **30px = 1/5 框高**（框高 140）。
 * 「托底」挪到重力**之后**；托底速度 = `0.40 × 框高/秒` → 轻按 0.2 框高、**按住 1s ≈ 0.5 框高**，随按住时长**线性**增长。
 
-### 3. 实测曲线（`lua/_probe_jump.lua`，框高 140）
+### 3. 实测曲线（`探针_probe_jump（该一次性探针已在“lua 目录瘦身”轮清理，数值结论保留）`，框高 140）
 
 ```text
                     旧实现        新实现
@@ -911,7 +911,33 @@ node tools/play-capture.mjs --canvas pc-16-9 --round 4 --seconds 9.4 --shots 8.1
 
 - `verify-all --quick` **8 / 8**：`_check` OK / `_rounds` 58 PASS / `core_selftest` 284 PASS / `_tap` 40 / `_title` 33 / `_input` 249 / `build-save` OK（504,222 B）/ `verify-client-pool` 10 项契约全过。
 - `_flow` 整场到结局：`draw ERR = 0`、`结局文字已渲染 = true`、`灵魂跑出框外最大 0.0px`。
-- 探针：`lua/_probe_rounds.lua`（落定→开火间隔 + 甩击方向还原）、`lua/_probe_cols.lua`（骨列/骨毯定位）。
+- 探针：`探针_probe_rounds（该一次性探针已在“lua 目录瘦身”轮清理，数值结论保留）`（落定→开火间隔 + 甩击方向还原）、`探针_probe_cols（该一次性探针已在“lua 目录瘦身”轮清理，数值结论保留）`（骨列/骨毯定位）。
 
 **注**：离线探针的 `M.update` 每步推进的是 1/60 秒的**计数**、而世界内部按 1/30 推进（与试玩页一致），
 所以探针里读到的 0.767 就是真实 1.5s —— 别再拿探针的 t 当秒用（这一轮踩过）。
+
+## lua 目录瘦身（2026-10-06）
+
+`lua/` 曾达到 **62 个 .lua 文件**（43 个是排查期写的一次性 `_probe_*` 探针）。现已精简到 **27 个**：
+
+| 类别 | 数量 | 说明 |
+| --- | --- | --- |
+| 正式文件 | 6 | `boot / main / core / attacks / fitdata / probe` |
+| 回归套件 | 13 | `core_selftest` + `_check / _flow / _geometry / _input / _pool / _rounds / _tap / _title / _sine / _box / _adapter / _dbg`（**全部保留**） |
+| 长期探针 | 8 | 见下表（有验收价值/被注释引用的） |
+
+长期保留的 8 个探针：
+
+| 探针 | 用途 |
+| --- | --- |
+| `_probe_final_rightfall.lua` | 终盘长框段「蓝心持续右坠」确定性验收（11 断言） |
+| `_probe_floorwidth.lua` | 贴地排骨单根宽度 = 道宽 - FLOOR_BONE_INSET |
+| `_probe_bake.lua` | 全流程龙骨炮烘焙普查（rot 池峰值依据） |
+| `_probe_pool2.lua` | 控件池峰值快测（BUDGET 注释引用） |
+| `_probe_spawnburst.lua` | 骨刺爆发限流效果（单帧新增骨头数） |
+| `_probe_groundjump.lua` | J1 地面连跳 |
+| `_probe_platjump.lua` | J2/J3 空中板子连跳与落地复位 |
+| `_probe_jumpcheck.lua` | J4 平台带走 / J6 四向重力起跳 |
+
+被清理的都是只服务单次排查的（`_probe_hold*` / `_probe_floor*` / `_probe_wall*` / `_probe_r2*` / `_probe_map*` 等）。
+根目录的 `Sans_Fight_*.md` 是需求文档，里面提到这些探针的地方**保留原文**（历史证据，不改写）。

@@ -25,12 +25,7 @@ workspace/sans-fight/records/captures/fit-all-r23*/
 workspace/sans-fight/records/captures/diag-r23*/
 workspace/sans-fight/records/captures/probe-nodes*/
 workspace/sans-fight/records/_probe2-out.txt
-workspace/sans-fight/lua/_probe_bakepool.lua
-workspace/sans-fight/lua/_probe_load.lua
-workspace/sans-fight/lua/_probe_r[0-9]*.lua
-workspace/sans-fight/lua/_probe_gq.lua
 workspace/sans-fight/lua/_probe_r23diff.lua
-workspace/sans-fight/lua/_probe_blastertime.lua
 workspace/sans-fight/tools/_probe-*.mjs
 workspace/sans-fight/tools/patch-*.cjs
 workspace/sans-fight/records/captures/fit-all-builtin*/
