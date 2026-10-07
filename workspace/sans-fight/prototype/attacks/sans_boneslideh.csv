@@ -8,5 +8,5 @@
 0,HeartMode,1
 0,TLPause
 0.5,BoneVRepeat,128,366,20,0,120,8,76
-0.5,BoneVRepeat,513,257,32,2,120,8,76
+0.5,BoneVRepeat,513,257,58,2,120,8,76
 6.7,EndAttack

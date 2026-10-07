@@ -3,7 +3,7 @@
   ---------------------------------------------------------------------------
   生成器：tools/gen-attacks.mjs
   来源：  prototype/attacks/*.csv（27 个）
-  生成日期：2026-10-06
+  生成日期：2026-10-07
 
   每项 = { name = "sans_xxx", csv = <该 CSV 的全文> }
   core.lua 通过 M.newGame({ scripts = require("attacks") }) 注入使用；
@@ -54,7 +54,7 @@ local M = {
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,29,0.4,0
+0.2,BoneStab,$Direction,23.2,1.0,0
 0,ADD,I,$I,1
 0,JMPL,7,$I,4
 0,BoneHRepeat,130,-10,200,1,300,3,183
@@ -285,9 +285,9 @@ $Wait2,SET,LastDir,$Direction
 0,HeartMode,1
 0,HeartTeleport,320,376
 0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
+0,BoneV,64,286,100,0,240,0,1
 0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
+0,BoneV,576,286,100,2,240,0,1
 0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
@@ -295,10 +295,10 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,320,376
 0,BoneV,128,286,100,0,240,1
 0,BoneV,56,366,20,0,240,0
-0,BoneV,24,286,100,0,240,0
+0,BoneV,24,286,100,0,240,0,1
 0,BoneV,512,286,100,2,240,1
 0,BoneV,584,366,20,2,240,0
-0,BoneV,616,286,100,2,240,0
+0,BoneV,616,286,100,2,240,0,1
 1.1,JMPABS,RndAttack
 0,:Attack2
 0,CombatZoneResizeInstant,171,276,476,391
@@ -488,9 +488,9 @@ $Wait2,SET,LastDir,$Direction
 0,HeartMode,1
 0,HeartTeleport,320,376
 0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
+0,BoneV,64,286,100,0,240,0,1
 0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
+0,BoneV,576,286,100,2,240,0,1
 0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
@@ -498,10 +498,10 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,320,376
 0,BoneV,128,286,100,0,240,1
 0,BoneV,56,366,20,0,240,0
-0,BoneV,24,286,100,0,240,0
+0,BoneV,24,286,100,0,240,0,1
 0,BoneV,512,286,100,2,240,1
 0,BoneV,584,366,20,2,240,0
-0,BoneV,616,286,100,2,240,0
+0,BoneV,616,286,100,2,240,0,1
 1.1,JMPABS,RndAttack
 0,:Attack2
 0,CombatZoneResizeInstant,171,276,476,391
@@ -574,7 +574,8 @@ $Wait2,SET,LastDir,$Direction
 
 # 【2026-10-06 用户口径·round22】贴地那排骨头：25 根 × 间距 16（缝仅 6px，灵魂宽 16 钻不过去）
 #   → 10 根 × 间距 40（缝 30px，能容下灵魂），高 30 → 15（大小减半）；横向覆盖宽度不变。
-0,BoneVRepeat,121,364,15,2,0,10,40
+# 底边骨带：贴底边(框底 391) + 顶部到第二块板(y=354) => 单根竖骨 y=354/h=37
+0,BoneVRepeat,121,354,37,2,0,20,20
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -630,6 +631,7 @@ $Wait2,SET,LastDir,$Direction
 0,:End
 0,CombatZoneResizeInstant,33,251,608,391
 0,EndAttack
+
 ]==] },
   { name = "platformblaster", csv = [==[
 # platformblaster —— 蓝魂双平台（右上 8 块向西 / 左下 8 块向东）间躲炮
@@ -913,8 +915,8 @@ $Wait2,SET,LastDir,$Direction
 0,TLPause
 0.2,BoneVRepeat,128,366,20,0,180,8,120,0
 0,BoneVRepeat,503,366,20,2,180,8,120,0
-0.3,BoneVRepeat,128,257,32,0,180,8,120,1
-0,BoneVRepeat,503,257,32,2,180,8,120,1
+0.3,BoneVRepeat,128,257,58,0,180,8,120,1
+0,BoneVRepeat,503,257,58,2,180,8,120,1
 6.1,EndAttack
 ]==] },
   { name = "sans_bonegap1fast", csv = [==[
@@ -932,14 +934,14 @@ $Wait2,SET,LastDir,$Direction
 0,TLPause
 0.4,BoneVRepeat,128,366,20,0,210,8,133,0
 0,BoneVRepeat,503,366,20,2,210,8,133,0
-0.3,BoneVRepeat,128,257,32,0,210,8,133,1
-0,BoneVRepeat,503,257,32,2,210,8,133,1
+0.3,BoneVRepeat,128,257,58,0,210,8,133,1
+0,BoneVRepeat,503,257,58,2,210,8,133,1
 5.7,EndAttack
 ]==] },
   { name = "sans_bonegap2", csv = [==[
 # sans_bonegap2
 # 【2026-10-05 第七轮】上下骨同列前进的「缝」太窄（18px，灵魂 8px 只剩 10px 可站）→ 把
-#   HeightT = 111 - HeightB 改成 99 - HeightB，缝宽 18 → **30px**（可站 22px）。其余数值不动。 —— 从中心向两侧镜像飞出的骨缝（上下骨缝恒为 111 高），越来越快
+#   HeightT = 111 - HeightB → 118 - HeightB：上骨下缘抬到满跳顶点，缝宽收为 11px；其余数值不动。 —— 从中心向两侧镜像飞出的骨缝（上下骨缝恒为 11px），越来越快
 # 用循环 + 标签实现：Total 累加控制横向间距，Choice 决定骨高与增量
 0,CombatZoneResize,133,251,508,391,TLResume
 0,HeartTeleport,320,376
@@ -969,7 +971,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNE,SkipZeroSpeed,$HeightB,40
 0,SET,RndSpeed,0
 0,:SkipZeroSpeed
-0,SUB,HeightT,99,$HeightB
+0,SUB,HeightT,118,$HeightB
 0,SUB,YB,386,$HeightB
 0,ADD,X,$Total,32
 0,JMPNE,BoneL,$HeightB,60
@@ -1015,7 +1017,7 @@ $Wait2,SET,LastDir,$Direction
 0,HeartMode,1
 0,TLPause
 0.5,BoneVRepeat,128,366,20,0,120,8,76
-0.5,BoneVRepeat,513,257,32,2,120,8,76
+0.5,BoneVRepeat,513,257,58,2,120,8,76
 6.7,EndAttack
 ]==] },
   { name = "sans_boneslidev", csv = [==[

@@ -1,0 +1,92 @@
+main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0
+main: 平台 = PC 分支（键盘移动/确认；指针只点 UI，无摇杆）
+main start: build=2026-10-07-rot3x3-intro-redreset device=KeyboardAndMouse touch=false mode=core pool=2018 flash=true cursor=true
+main: 收到按键事件 KeyboardMenuConfirmKeyDown（若你按了 WASD 却从未出现这行，说明试玩页那层没转发按键）
+main: baked sans_body_default#1 96x48 rects=295
+main: baked sans_head_default#1 32x30 rects=177
+main: 阶段 nil → enemy (round=0 hp=92)
+main: baked sans_body_down#1 64x70 rects=299
+main: baked sans_head_blue#1 32x30 rects=181
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: baked sans_body_up#1 64x70 rects=309
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: 游标 CursorDown x=381.875 y=468.75 click=false moved=false
+main: 游标 CursorUp x=381.875 y=468.75 click=true moved=false
+main: baked sans_body_right#1 96x48 rects=284
+main: 游标 CursorDown x=462.5 y=110.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=110.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=80.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=80.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=52.5 click=false moved=false
+main: 游标 CursorUp x=462.5 y=52.5 click=true moved=false
+main: mode=core device=KeyboardAndMouse touch=false frame=151 pool=2024 cmds=35 box=(239,226,165,165) hp=82 phase=enemy soul=320,383 joy=off
+main: 游标 CursorDown x=462.5 y=110.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=110.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=80.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=80.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=52.5 click=false moved=false
+main: 游标 CursorUp x=462.5 y=52.5 click=true moved=false
+main: 游标 CursorDown x=462.5 y=110.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=110.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=80.625 click=false moved=false
+main: 游标 CursorUp x=462.5 y=80.625 click=true moved=false
+main: 游标 CursorDown x=462.5 y=52.5 click=false moved=false
+main: 游标 CursorUp x=462.5 y=52.5 click=true moved=false

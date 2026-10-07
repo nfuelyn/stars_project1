@@ -1,0 +1,6 @@
+# sans_spare —— 饶恕时用的空攻击：蓝魂、宽矮框、0.3s 后结束
+0,CombatZoneResize,133,251,508,391,TLResume
+0,HeartTeleport,320,376
+0,HeartMode,1
+0,TLPause
+0.3,EndAttack

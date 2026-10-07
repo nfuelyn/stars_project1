@@ -1,0 +1,110 @@
+# spiral3 —— 螺旋龙骨炮 · 原作强度（内部回合 19 = 最后一回合，HUD 显示 ROUND 20 / 20）
+# 阶段 A：原作 sans_final.csv 阶段④「旋转光束」**逐字**参数（gt→190 / gin 1→1.7 每次 +0.015 /
+#        每发 0.06666s / Ang = -10·gt / 半径 150→450 / SpinTime 0.5 / BlastTime 0），
+#        框也用原版阶段③留下的 165×165（(239,226)-(404,391)）。
+# 阶段 B：原作阶段⑤「力竭」段（sans_final.csv 行 157-213）逐字转写 ——
+#        38 次砸击、SansSlamDamage 1（真的掉血）、Wait 递减、I=25 冒汗 / I=33 出现 Tired1 /
+#        I=35 强制朝北 / I=36 起 Tired2（MaxFallSpeed 只剩 60）→ 最后 SansAnimation Tired。
+# 唯一改动：原作用的是**数字行号**跳转，这里插了标签行，行号会整体平移，
+#        所以把所有 JMP* 的数字目标换成等价标签（JMPREL 是相对偏移，原样保留）。
+# 跳转目标对照（原行号 → 本文件标签，全部按"标签落在原行号那一行"放置）：
+#   166→SlamLoop  168→DirClampA  170→DirClampB  172→Dispatch  186→RandDir
+#   187→AfterRand 191→T21        194→T25        200→T33       203→T33b
+#   206→T35       210→T36
+0,CombatZoneResize,241,226,406,391,TLResume
+0,HeartTeleport,320,306
+0,HeartMode,0
+0,TLPause
+0,SansHead,BlueEye
+0,SansX,320
+0,Sound,GasterBlaster
+0,SET,gt,0
+0,SET,gin,1
+0,:Loop
+0,MUL,Ang,$gt,-10
+0,COS,X,$Ang
+0,SIN,Y,$Ang
+0,MUL,EndX,$X,150
+0,MUL,EndY,$Y,150
+0,MUL,X,$EndX,3
+0,MUL,Y,$EndY,3
+0,ADD,X,$X,320
+0,ADD,Y,$Y,306
+0,ADD,EndX,$EndX,320
+0,ADD,EndY,$EndY,306
+0,ADD,Ang,$Ang,180
+0,GasterBlaster,0,$X,$Y,$EndX,$EndY,$Ang,0.5,0,0,5
+0,ADD,gt,$gt,$gin
+0,JMPNL,Tail,$gin,1.7
+0,ADD,gin,$gin,0.015
+0,:Tail
+0.06666,JMPL,Loop,$gt,190
+1,SansHead,BlueEye
+0,HeartMaxFallSpeed,750
+0,SansBody,HandRight
+0,SansSlamDamage,1
+0,SET,I,0
+0,SET,Direction,0
+0,SET,LastDir,2
+0,SET,Wait1,0.13333
+0,SET,Wait2,0.13333
+0,:SlamLoop
+0,JMPNE,DirClampA,$Direction,$LastDir
+0,SUB,Direction,$Direction,2
+0,:DirClampA
+0,JMPNL,DirClampB,$Direction,0
+0,ADD,Direction,$Direction,4
+0,:DirClampB
+0,JMPL,Dispatch,$Direction,4
+0,SUB,Direction,$Direction,4
+0,:Dispatch
+0,MUL,Jump,$Direction,2
+0,ADD,Jump,$Jump,1
+0,JMPREL,$Jump
+0,SansBody,HandRight
+0,JMPREL,6
+0,SansBody,HandDown
+0,JMPREL,4
+0,SansBody,HandLeft
+0,JMPREL,2
+0,SansBody,HandUp
+$Wait1,SansSlam,$Direction
+$Wait2,SET,LastDir,$Direction
+0,MOD,Odd,$I,2
+0,JMPZ,AfterRand,$Odd
+0,:RandDir
+0,RND,Direction,4
+0,:AfterRand
+0,JMPNE,T21,$I,21
+0,HeartMaxFallSpeed,480
+0,SET,Wait1,0.2
+0,SET,Wait2,0.2
+0,:T21
+0,JMPNE,T25,$I,25
+0,SansHead,Default
+0,SansSweat,1
+0,:T25
+0,JMPNE,T33,$I,33
+0,SansHead,Tired1
+0,SansSweat,2
+0,HeartMaxFallSpeed,330
+0,SET,Wait1,0.5
+0,SET,Wait2,1.1
+0,:T33
+0,JMPNE,T33b,$I,33
+0,JMPE,RandDir,$Direction,1
+0,JMPE,RandDir,$Direction,$LastDir
+0,:T33b
+0,JMPNE,T35,$I,35
+0,HeartMaxFallSpeed,240
+0,SET,Direction,3
+0,:T35
+0,JMPNE,T36,$I,36
+0,SansHead,Tired2
+0,SansSweat,3
+0,HeartMaxFallSpeed,60
+0,:T36
+0,ADD,I,$I,1
+0,JMPL,SlamLoop,$I,38
+1.5,SansAnimation,Tired
+2.4,EndAttack

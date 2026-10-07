@@ -1,0 +1,16 @@
+# platforms1 —— 蓝魂站平台：向东的平台 + 41 根矮骨地毯（间距 15），后半改由两侧高骨推挤
+# 数据来源：BTS（jcw87/c2-sans-fight, GPL-3.0）Files/sans_platforms1.csv 逐行转写，数值未改。
+# 坐标系：原版 640×480，Y 向下；战斗框参数为 (左, 上, 右, 下)。速度单位 px/s（= 原作值 ×30）。
+0,CombatZoneResize,133,251,508,391,TLResume
+0,HeartTeleport,320,376
+0,HeartMode,1
+0,TLPause
+0,Platform,15,346,61,0,120
+0.4,BoneVRepeat,133,356,40,0,120,41,15
+1.2,Platform,-61,346,61,0,150
+1.7,Platform,-61,346,61,0,180
+1,BoneV,133,257,45,0,210
+0,BoneV,119,257,45,0,210
+0,BoneV,105,257,45,0,210
+2.3,BoneV,133,257,95,0,270
+1.7,EndAttack

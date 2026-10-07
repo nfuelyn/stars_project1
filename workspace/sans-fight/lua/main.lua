@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-06-bluesoul'
+local BUILD = '2026-10-07-bonetune-rot3x3'
 
 local G = {
   rect = 1073743001, circle = 1073743002, text = 1073743004,
@@ -746,12 +746,14 @@ local function drawBlaster(cmd)
         name = keys.default
       end
     end
-    -- 【方案A】初见杀（cmd.bake）走**原版 block2 烘焙**（每发 ~123 个 rrect，像素级还原）；
-    -- 其余关卡仍走下面的 12 件参数化（省池）。
-    if cmd.bake and fit and fit.blaster_block2 then
+    -- 【方案A】普通龙骨炮走 block2；带 spin 的旋转炮单独走 3×3 LOD（只降旋转段负载）。
+    -- 两条路径都仍是 fit 像素烘焙，不会回退旧参数化外观。
+    local block = fit and fit.blaster_block2
+    if cmd.lod == 'block3' and fit and fit.blaster_block3 then block = fit.blaster_block3 end
+    if cmd.bake and block then
       local key = 'Default'
       if fire > 0 then key = (fire >= 0.5) and 'fire_2' or 'fire_0' end
-      local rects = fit.blaster_block2[key] or fit.blaster_block2.Default
+      local rects = block[key] or block.Default
       if rects then
         for i = 1, #rects do
           local r = rects[i]
@@ -884,7 +886,7 @@ local function drawSoul(cmd)
   --     两瓣中心 = 心中心 − 重力方向*2.5 ± 垂直方向*3.5（直径 9）
   --     三角中心 = 心中心 + 重力方向*3.5，15×9，尖朝重力方向
   --   （上一版 back/lobe 取 4.5、三角放大到 18×14，左右方向就歪了。）
-  local sdir = cmd.dir or 1
+  local sdir = (cmd.mode == 'blue') and (cmd.dir or 1) or 1  -- 红心恒为初始尖朝下，不能沿用上次蓝心方向
   local AXD = { [0] = 1, [1] = 0, [2] = -1, [3] = 0 }
   local AYD = { [0] = 0, [1] = 1, [2] = 0,  [3] = -1 }
   local sax, say = AXD[sdir] or 0, AYD[sdir] or 1
@@ -2033,4 +2035,6 @@ function M.joystickGeom() return joystickGeom() end
 function M.joyVector(dx, dy) local kx, ky, nx, ny = joyVector(dx, dy); return { kx = kx, ky = ky, dx = nx, dy = ny } end
 
 return M
+
+
 

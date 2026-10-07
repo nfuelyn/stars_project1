@@ -31,9 +31,9 @@
 0,HeartMode,1
 0,HeartTeleport,320,376
 0,BoneVRepeat,128,341,45,0,240,4,16
-0,BoneV,64,286,100,0,240
+0,BoneV,64,286,100,0,240,0,1
 0,BoneVRepeat,512,341,45,2,240,4,16
-0,BoneV,576,286,100,2,240
+0,BoneV,576,286,100,2,240,0,1
 0.9,JMPABS,RndAttack
 0,:Attack1
 0,CombatZoneResizeInstant,121,276,526,391
@@ -41,10 +41,10 @@
 0,HeartTeleport,320,376
 0,BoneV,128,286,100,0,240,1
 0,BoneV,56,366,20,0,240,0
-0,BoneV,24,286,100,0,240,0
+0,BoneV,24,286,100,0,240,0,1
 0,BoneV,512,286,100,2,240,1
 0,BoneV,584,366,20,2,240,0
-0,BoneV,616,286,100,2,240,0
+0,BoneV,616,286,100,2,240,0,1
 1.1,JMPABS,RndAttack
 0,:Attack2
 0,CombatZoneResizeInstant,171,276,476,391
@@ -114,7 +114,11 @@
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-0,BoneVRepeat,121,364,30,2,0,25,16
+
+# 【2026-10-06 用户口径·round22】贴地那排骨头：25 根 × 间距 16（缝仅 6px，灵魂宽 16 钻不过去）
+#   → 10 根 × 间距 40（缝 30px，能容下灵魂），高 30 → 15（大小减半）；横向覆盖宽度不变。
+# 底边骨带：贴底边(框底 391) + 顶部到第二块板(y=354) => 单根竖骨 y=354/h=37
+0,BoneVRepeat,121,354,37,2,0,20,20
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -170,3 +174,4 @@
 0,:End
 0,CombatZoneResizeInstant,33,251,608,391
 0,EndAttack
+

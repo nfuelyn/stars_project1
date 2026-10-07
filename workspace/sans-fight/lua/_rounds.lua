@@ -273,5 +273,89 @@ do
     firstBad and (firstBad .. " —— 未烘焙 " .. (total - baked) .. "/" .. total) or nil)
 end
 
+
+-- ---------------------------------------------------------------- 终盘旋转龙骨炮：红心复位
+-- 用户口径（2026-10-07）：旋转龙骨炮阶段必须是红心模式。
+-- 这里不只看脚本里有没有 HeartMode 0，而是跑到第一发 persistent 光束出现时，
+-- 同时核对逻辑态与 render 出来的 soul command，防止“逻辑红、画面/运动仍像蓝”的回归。
+do
+  local g = core.newGame({ scripts = atk, hp = 1000000, difficulty = "original" })
+  g:startEnemy(23)
+  local t, seen, persistentCount, modeAtStart, renderMode = 0, false, 0, nil, nil
+  while g.state == "enemy" and t < 45 do
+    core.update(g, IDLE, core.DT); t = t + core.DT
+    persistentCount = 0
+    if g.world then
+      for _, b in ipairs(g.world.blasters) do
+        if b.persistent then persistentCount = persistentCount + 1 end
+      end
+    end
+    if persistentCount > 0 then
+      seen = true
+      modeAtStart = g.soul.mode
+      for _, c in ipairs(core.render(g)) do
+        if c.kind == "soul" then renderMode = c.mode end
+      end
+      break
+    end
+  end
+  ck(seen, "终盘确实进入旋转龙骨炮阶段", string.format("t=%.2fs persistent=%d", t, persistentCount))
+  ck(modeAtStart == "red", "旋转龙骨炮阶段 soul.mode = red", tostring(modeAtStart))
+  ck(renderMode == "red", "旋转龙骨炮阶段 render(soul).mode = red", tostring(renderMode))
+end
+
+
+-- ---------------------------------------------------------------- 初见杀四发组合：3×3 LOD
+do
+  local g = core.newGame({ scripts = atk, hp = 1000000, difficulty = "original" })
+  g:startEnemy(0)
+  local t, sawSize1, sawSize2, badSize1 = 0, false, false, nil
+  while g.state == "enemy" and t < 15 do
+    core.update(g, IDLE, core.DT); t = t + core.DT
+    for _, c in ipairs(core.render(g)) do
+      if c.kind == "blaster" then
+        if c.size == 1 then
+          if c.lod == "block3" then sawSize1 = true else badSize1 = c.lod or "nil" end
+        elseif c.size == 2 and c.lod == nil then
+          sawSize2 = true
+        end
+      end
+    end
+  end
+  ck(sawSize1 and badSize1 == nil, "初见杀四发组合（Size1）全部走 3×3", tostring(badSize1))
+  ck(sawSize2, "初见杀最后两发 Size2 仍保持 2×2")
+end
+
+
+-- ---------------------------------------------------------------- 骨攻微调文档（2026-10-07）
+do
+  local function codeOf(name)
+    for _, sc in ipairs(atk) do
+      if sc.name == name then
+        local out = {}
+        for line in tostring(sc.csv):gmatch('[^\n]+') do
+          if line:sub(1, 1) ~= '#' then out[#out + 1] = line end
+        end
+        return table.concat(out, '\n')
+      end
+    end
+    return ''
+  end
+  local checks = {
+    { 'sans_bonegap1',     'BoneVRepeat,128,257,58,0,180,8,120,1', 'HUD2 左上骨厚度 32→58' },
+    { 'sans_bonegap1',     'BoneVRepeat,503,257,58,2,180,8,120,1', 'HUD2 右上骨厚度 32→58' },
+    { 'sans_bonegap1fast', 'BoneVRepeat,128,257,58,0,210,8,133,1', 'HUD11 左上骨厚度 32→58' },
+    { 'sans_bonegap1fast', 'BoneVRepeat,503,257,58,2,210,8,133,1', 'HUD11 右上骨厚度 32→58' },
+    { 'sans_boneslideh',   'BoneVRepeat,513,257,58,2,120,8,76',    'HUD12 上骨厚度 32→58' },
+    { 'sans_bonegap2',     'SUB,HeightT,118,$HeightB',             'HUD13 上骨抬到满跳命中线' },
+    { 'multi3',            'BoneVRepeat,121,354,37,2,0,20,20',     'HUD22 底边骨带 10×40→20×20' },
+  }
+  for _, t in ipairs(checks) do
+    ck(codeOf(t[1]):find(t[2], 1, true) ~= nil, t[3], t[2])
+  end
+  ck(codeOf('final'):find('BoneStab,$Direction,23.2,1.0,0', 1, true) ~= nil,
+     'HUD24 开场骨刺：厚度 29→23.2、预警 0.4→1.0')
+end
+
 print(string.format('---- _rounds.lua: %d PASS / %d FAIL ----', pass, fail))
 if fail > 0 then os.exit(1) end

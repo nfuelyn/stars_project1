@@ -1,6 +1,6 @@
 # sans_bonegap2
 # 【2026-10-05 第七轮】上下骨同列前进的「缝」太窄（18px，灵魂 8px 只剩 10px 可站）→ 把
-#   HeightT = 111 - HeightB 改成 99 - HeightB，缝宽 18 → **30px**（可站 22px）。其余数值不动。 —— 从中心向两侧镜像飞出的骨缝（上下骨缝恒为 111 高），越来越快
+#   HeightT = 111 - HeightB → 118 - HeightB：上骨下缘抬到满跳顶点，缝宽收为 11px；其余数值不动。 —— 从中心向两侧镜像飞出的骨缝（上下骨缝恒为 11px），越来越快
 # 用循环 + 标签实现：Total 累加控制横向间距，Choice 决定骨高与增量
 0,CombatZoneResize,133,251,508,391,TLResume
 0,HeartTeleport,320,376
@@ -30,7 +30,7 @@
 0,JMPNE,SkipZeroSpeed,$HeightB,40
 0,SET,RndSpeed,0
 0,:SkipZeroSpeed
-0,SUB,HeightT,99,$HeightB
+0,SUB,HeightT,118,$HeightB
 0,SUB,YB,386,$HeightB
 0,ADD,X,$Total,32
 0,JMPNE,BoneL,$HeightB,60

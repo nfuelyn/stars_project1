@@ -39,7 +39,7 @@
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,29,0.4,0
+0.2,BoneStab,$Direction,23.2,1.0,0
 0,ADD,I,$I,1
 0,JMPL,7,$I,4
 0,BoneHRepeat,130,-10,200,1,300,3,183
@@ -49,7 +49,7 @@
 0.2,SansSlam,2
 0.3,SansBody,HandRight
 0.2,HeartMaxFallSpeed,450
-0,SansSlam,0
+0,HeartDir,0
 0,CombatZoneResizeInstant,241,226,449,391
 0,CombatZoneSpeed,900
 0,CombatZoneResize,241,226,650,391
@@ -60,7 +60,9 @@
 0.3,CombatZoneSpeed,30
 0,CombatZoneResize,-10,264,650,369
 0.9,GetHeartPos,HeartX,HeartY
-0,HeartTeleport,40,$HeartY
+# 【2026-10-06 用户口径·优化】长框段开局这一下原来是无提示的**硬瞬移**（前面还有 0.9s 停顿），
+#   改成 0.35s 滑动过去（HeartTeleport 第 4 个参数 = 时长；不传仍是瞬移）。
+0,HeartTeleport,40,$HeartY,0.35
 0,HeartMaxFallSpeed,0
 0,SansSlam,0
 0,DIV,Deg,180,3.141592653589793
@@ -125,7 +127,7 @@
 0,Sound,Flash
 0,CombatZoneResizeInstant,239,226,404,391
 0,HeartTeleport,320,376
-0,HeartMode,1
+0,HeartMode,0
 0,SansAnimation,HeadBob
 0.03333,BoneStab,1,48,0.6,1
 0,BoneStab,3,48,0.6,1
@@ -133,18 +135,21 @@
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
+# 【2026-10-06 用户口径·二次】这一段（两条边一起出骨刺）**保持蓝心**（原作 SansSlam 语义：
+#   切蓝 + 设重力方向），并把两根骨刺「出来」的预警各延长 0.8s（0.6 → 1.4）。
 0,HeartTeleport,262,240
 0,SansSlam,3
-0.03333,BoneStab,2,48,0.6,1
-0,BoneStab,3,48,0.6,1
+0.03333,BoneStab,2,48,1.4,1
+0,BoneStab,3,48,1.4,1
 0.9,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
+# 【2026-10-06 用户口径·二次】同上：保持蓝心（SansSlam），骨刺预警 0.6 → 1.4（+0.8s）。
 0,HeartTeleport,391,376
 0,SansSlam,0
-0.03333,BoneStab,0,48,0.6,1
-0,BoneStab,1,48,0.6,1
+0.03333,BoneStab,0,48,1.4,1
+0,BoneStab,1,48,1.4,1
 0.9,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0

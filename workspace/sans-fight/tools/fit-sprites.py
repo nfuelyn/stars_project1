@@ -133,6 +133,45 @@ def block_rects(w, h, grid, B=2, thresh=0.45):
         merged.append([x, y, rw, rh, c])
     return merged
 
+def block3_lod_rects(w, h, block2, B=3):
+    """把已经拟合好的 block2 占用图降到 3x3，复现 blaster_lod_levels.png 的 3x3 预览。
+
+    只做横向游程，不纵向合并：这是运行时 block3 表采用的轻量 LOD 口径。
+    """
+    grid = [[0] * w for _ in range(h)]
+    for x, y, rw, rh, c in block2:
+        on = 1 if c.upper() == "#FFFFFF" else 0
+        for yy in range(y, min(h, y + rh)):
+            for xx in range(x, min(w, x + rw)):
+                grid[yy][xx] = on
+    cw, ch = (w + B - 1) // B, (h + B - 1) // B
+    cells = [[0] * cw for _ in range(ch)]
+    for cy in range(ch):
+        for cx in range(cw):
+            on = tot = 0
+            for yy in range(cy * B, min(h, (cy + 1) * B)):
+                for xx in range(cx * B, min(w, (cx + 1) * B)):
+                    tot += 1
+                    on += grid[yy][xx]
+            if on > 0 and on * 2 >= tot:
+                cells[cy][cx] = 1
+    out = []
+    for cy in range(ch):
+        x = 0
+        while x < cw:
+            if cells[cy][x] != 1:
+                x += 1
+                continue
+            x2 = x
+            while x2 < cw and cells[cy][x2] == 1:
+                x2 += 1
+            out.append([x * B, cy * B,
+                        min(w, (x2 - x) * B),
+                        min(h, (cy + 1) * B) - cy * B,
+                        "#FFFFFF"])
+            x = x2
+    return out
+
 def render(w, h, rects, bg=(0, 0, 0, 255)):
     im = Image.new("RGBA", (w, h), bg); dr = ImageDraw.Draw(im)
     for x, y, rw, rh, c in rects:
@@ -240,12 +279,22 @@ BLK = [
     ("fire_4", "blaster_Fire_004"),
 ]
 lines.append("")
-lines.append("-- 【方案A】龙骨炮 block2 表（2×2 采样）：初见杀用，逐帧直接画 ~123 个 rrect/发")
+lines.append("-- 【方案A】龙骨炮 block2 表（2×2 采样）：默认/非旋转炮使用。")
 lines.append("M.blaster_block2 = {")
 for key, src in BLK:
     b = data.get(src, {}).get("block2")
     if b:
         lines.append("  %s = { %s }," % (key, lua_block2(b)))
+lines.append("}")
+lines.append("")
+lines.append("-- 【旋转龙骨炮 LOD】3×3 采样：只给 GasterBlaster.spin > 0 使用。")
+lines.append("M.blaster_block3 = {")
+for key, src in BLK:
+    d = data.get(src, {})
+    b = d.get("block2")
+    if b:
+        b3 = block3_lod_rects(d["w"], d["h"], b)
+        lines.append("  %s = { %s }," % (key, lua_block2(b3)))
 lines.append("}")
 with open(os.path.join(ROOT, "lua", "fitdata.lua"), "w", encoding="utf8") as f:
     f.write("\n".join(lines) + "\n")

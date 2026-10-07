@@ -43,6 +43,7 @@ M.VERSION = "1.0.0"
 -- ---------------------------------------------------------------- 常量
 local VW, VH = 640, 480           -- 原版虚拟画布
 local BONE_W = 10                 -- 骨头**厚度**：原版 BoneV.png=10x24 / BoneH.png=24x10 ——
+local MIDFUSE_KEEP = 16           -- 【2026-10-07】中轴引信余量：骨头前缘在中线两侧留出的净空
                                   -- 脚本只 Set height/width，所以竖骨恒 10 宽、横骨恒 10 高。
                                   -- 【2026-10-05 第十二轮】旧值 19 是自绘外观的拍脑袋值：
                                   -- 判定比原版粗了近一倍（擦着边就掉血），这里照原版改回 10。
@@ -650,9 +651,10 @@ CMD.GetHeartPos = function(w, xv, yv)
 end
 
 -- 骨头
-local function pushBone(w, x, y, hOrW, axis, dir, speed, color)
+local function pushBone(w, x, y, hOrW, axis, dir, speed, color, midFuse)
   local c = tonumber(color)
   if c == nil then c = 0 end
+  local mf = tonumber(midFuse)
   w.bones[#w.bones + 1] = {
     x = tonumber(x), y = tonumber(y), axis = axis,   -- axis: 'v' 竖骨 / 'h' 横骨（渲染朝向必须跟它走）
     w = (axis == 'v') and BONE_W or tonumber(hOrW),
@@ -664,16 +666,19 @@ local function pushBone(w, x, y, hOrW, axis, dir, speed, color)
     -- multi / final 这些脚本关全中招）——玩家看到的就是「蓝心没有碰撞箱」。脚本骨本来就该伤人。
     lethal = true,
     color = c,
+    -- 【2026-10-07 用户口径】中轴引信：左右夹击的侧骨在临近中线时销毁，
+    -- 不越过战斗框水平中线（h=100 的骨满跳也过不去 → 越轴必定打中灵魂）。
+    midFuse = (mf ~= nil and mf ~= 0) or nil,
   }
 end
-CMD.BoneV = function(w, x, y, h, dir, speed, color)
-  pushBone(w, x, y, h, 'v', tonumber(dir), tonumber(speed), color)
+CMD.BoneV = function(w, x, y, h, dir, speed, color, midFuse)
+  pushBone(w, x, y, h, 'v', tonumber(dir), tonumber(speed), color, midFuse)
 end
-CMD.BoneH = function(w, x, y, wd, dir, speed, color)
-  pushBone(w, x, y, wd, 'h', tonumber(dir), tonumber(speed), color)
+CMD.BoneH = function(w, x, y, wd, dir, speed, color, midFuse)
+  pushBone(w, x, y, wd, 'h', tonumber(dir), tonumber(speed), color, midFuse)
 end
 
-local function repeatBones(w, axis, x, y, size, dir, speed, count, spacing, color)
+local function repeatBones(w, axis, x, y, size, dir, speed, count, spacing, color, midFuse)
   local d, sp, n, s = tonumber(dir), tonumber(spacing), tonumber(count), tonumber(size)
   -- 【2026-10-06 对照原作修正】BTS 的 BoneHRepeat/BoneVRepeat 逐个 loopindex 的偏移是
   --     X = StartX - cos(Direction*90)*Spacing*loopindex
@@ -687,16 +692,16 @@ local function repeatBones(w, axis, x, y, size, dir, speed, count, spacing, colo
   for i = 0, n - 1 do
     local bx = tonumber(x) - ca * i * sp
     local by = tonumber(y) - sa * i * sp
-    pushBone(w, bx, by, s, axis, d, speed, color)   -- pushBone 内部按 axis 决定 w/h
+    pushBone(w, bx, by, s, axis, d, speed, color, midFuse)   -- pushBone 内部按 axis 决定 w/h
   end
 end
-CMD.BoneVRepeat = function(w, x, y, h, dir, speed, count, spacing, color)
+CMD.BoneVRepeat = function(w, x, y, h, dir, speed, count, spacing, color, midFuse)
   -- 第 8 个参数 Color 是本项目的**向后兼容扩展**：官方 BoneVRepeat 没有 Color（只能是白骨），
   -- 但「左右高低骨」这种组合要求批量生成的骨头也能是蓝骨（Color=1）。不传 = 0 = 白。
-  repeatBones(w, 'v', x, y, h, dir, speed, count, spacing, color)
+  repeatBones(w, 'v', x, y, h, dir, speed, count, spacing, color, midFuse)
 end
-CMD.BoneHRepeat = function(w, x, y, wd, dir, speed, count, spacing, color)
-  repeatBones(w, 'h', x, y, wd, dir, speed, count, spacing, color)
+CMD.BoneHRepeat = function(w, x, y, wd, dir, speed, count, spacing, color, midFuse)
+  repeatBones(w, 'h', x, y, wd, dir, speed, count, spacing, color, midFuse)
 end
 
 CMD.SineBones = function(w, count, spacing, speed, height)
@@ -771,8 +776,10 @@ CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold,
     -- 【2026-10-06】hold 不传时保持 nil —— 写成 `or 0` 会让 HoldTime 的默认值（0.05s）失效，
     -- 于是「落定后延时 1.5s」这类参数一旦漏传就变成同帧开火。
     hold = tonumber(hold), t = 0,
-    -- 【方案A】全流程龙骨炮统一走原版像素烘焙（fitdata.blaster_block2，每发 112~126 rrect）：
+    -- 【方案A】全流程龙骨炮统一走原版像素烘焙；LOD 由 render 决策：
+    --   sans_intro 的四发组合（Size=1）与持续旋转光束走 3×3，其余仍走 2×2。
     bake = true,
+    lod = (((w.scriptName == 'sans_intro') and sz == 1) or persistent) and 'block3' or nil,
     -- 光束宽度：Size 0/1/2 = 20/36/56；骷髅缩放：0.8/1.0/1.3
     -- extraW：双向各加宽这么多（用户口径「光束双向扩大 5px」→ 传 5，宽度 +10）
     band = (BLASTER_W[sz + 1] or BLASTER_W[1]) + (tonumber(extraW) or 0) * 2,
@@ -1093,6 +1100,17 @@ function World:update(dt)
     else
       b.x = b.x + b.vx * dt
       b.y = b.y + b.vy * dt
+      -- 【2026-10-07 用户口径·中轴引信】带 midFuse 标记的横移竖骨，前缘进入
+      --   「中线 ± MIDFUSE_KEEP」禁区后立刻销毁 —— 骨头永远飞不过战斗框水平中线，
+      --   灵魂贴在中线上就不会被这种“不可跳越”的骨扫到（HUD15/22 侧骨必中问题）。
+      if b.midFuse and b.vx ~= 0 and (b.vy or 0) == 0 then
+        local zz = self.zone
+        local cx = (zz.l + zz.r) / 2
+        if (b.vx > 0 and (b.x + b.w) >= cx - MIDFUSE_KEEP)
+           or (b.vx < 0 and b.x <= cx + MIDFUSE_KEEP) then
+          kill = true
+        end
+      end
       -- 【bone_battle.lua】出屏判定用整张画面：dir=0 → x>640 / 1 → y>480 / 2 → x<-w / 3 → y<-h
       if (b.vx > 0 and b.x > VW) or (b.vx < 0 and b.x < -b.w)
          or (b.vy > 0 and b.y > VH) or (b.vy < 0 and b.y < -b.h) then kill = true end
@@ -2399,17 +2417,8 @@ function Game:update(dt)
     end   -- 落地重置变高跳
     end   -- /【A-5】slammed 分支
   else
-    -- 红魂默认不吃重力；但脚本给过 HeartMaxFallSpeed（非 0）就吃 ——
-    -- 原作最终回合阶段②的「反向重力走廊」正是 HeartMaxFallSpeed -300。
-    local mf = self.soul.maxFall
-    if mf then
-      local g = d.p.gravity or GRAVITY
-      self.soul.vy = self.soul.vy + g * dt
-      if self.soul.vy > mf then self.soul.vy = mf end
-      self.soul.y = self.soul.y + self.soul.vy * dt
-      local floorY = self.box.y + self.box.h - SOUL_CLAMP
-      if self.soul.y >= floorY then self.soul.y = floorY; self.soul.vy = 0 end
-    end
+    -- 【方案 B】红魂永远 4 向自由移动（原版语义）：不再读 soul.maxFall，
+    --   MaxFallSpeed 只对蓝魂生效（蓝魂常规分支 / slam 分支各自读取）。
     self.soul.y = clamp(self.soul.y, self.box.y + SOUL_CLAMP, self.box.y + self.box.h - SOUL_CLAMP)
   end
   self.soul.x = clamp(self.soul.x, self.box.x + SOUL_CLAMP, self.box.x + self.box.w - SOUL_CLAMP)
@@ -2526,7 +2535,24 @@ function Game:update(dt)
       w.heartDirDirty = false
     end
     if w.heartModeDirty then
-      self.soul.mode = (w.heart.mode == 1) and 'blue' or 'red'
+      if w.heart.mode == 1 then
+        self.soul.mode = 'blue'
+      else
+        -- 【2026-10-07 修】切回红心必须是“完整复位”，不能只改颜色：
+        --   阶段③最后一次 SansSlam 会把 dir 留在 2（尖朝左）、slammed 留在 true。
+        --   旧代码只写 soul.mode='red'，于是旋转龙骨炮阶段虽然逻辑上已是红魂，
+        --   画出来的心仍按 dir=2 旋转，看起来/手感仍像蓝心。这里恢复初始红心状态：
+        --   dir=1（尖朝下）、无甩击、无残余冲量、速度清零。
+        self.soul.mode = 'red'
+        self.soul.dir = 1
+        self.soul.slammed = false
+        self.soul.slamT = nil
+        self.soul.push = nil
+        self.soul.vx, self.soul.vy = 0, 0
+        w.heart.slammed = false
+        w.heart.dir = 1
+        w.heartDirDirty = false
+      end
       -- 【2026-10-06】0/负值都是有意义的终端速度（0=钉住、负=反向走廊），不能当 nil；
       --   但只有在脚本真的设过（heartMaxFallDirty）时才写 soul —— world 默认值为 0。
       if w.heartMaxFallDirty then
@@ -3001,7 +3027,8 @@ local function renderWorld(g)
     local dir = math.floor(((ang % 360) + 360) % 360 / 90 + 0.5) % 4
     push(cmds, { kind = 'blaster', x = x, y = y, dir = dir, ang = ang, size = g2.size,
                  endX = g2.ex, endY = g2.ey,
-                 bake = g2.bake and true or nil, w = g2.band or BLASTER_W[(g2.size or 0) + 1] or BLASTER_W[1], scale = g2.scale or 1,
+                 bake = g2.bake and true or nil, lod = g2.lod or (g2.persistent and 'block3' or nil),
+                 w = g2.band or BLASTER_W[(g2.size or 0) + 1] or BLASTER_W[1], scale = g2.scale or 1,
                  charge = charge, fire = fire, state = g2.state, alpha = alpha })
   end
   -- 平台（世界帧 ① = 输出帧）

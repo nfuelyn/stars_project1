@@ -504,7 +504,7 @@ local function run()
   for _, sc in ipairs(A) do
     if sc.name == 'sans_bonegap1' or sc.name == 'sans_bonegap1fast' then
       for line in tostring(sc.csv):gmatch('[^\n]+') do
-        if line:find('BoneVRepeat', 1, true) and line:match(',257,32,') then
+        if line:find('BoneVRepeat', 1, true) and line:match(',257,58,') then
           if line:sub(-2) == ',1' then abBlue = abBlue + 1 end
         end
       end
@@ -723,6 +723,23 @@ local function run()
   --   SansSlam 不再瞬移：切蓝 + dir + 沿 dir 满速甩出 + slammed。
   ok(w.heart.mode == 1 and w.heart.dir == 0 and w.heart.vx == 300 and w.heart.vy == 0 and w.heart.slammed == true,
      'SansSlam 0（东）→ 切蓝 + dir=0 + vx=+MaxFallSpeed(300) + slammed')
+
+  head('extra-red-reset：阶段③切回红心时必须完整复位（旋转龙骨炮阶段）')
+  local csvRedReset = table.concat({
+    '0,HeartMode,1',
+    '0,HeartMaxFallSpeed,300',
+    '0,SansSlam,2',
+    '0.7,HeartMode,0',
+    '2,EndAttack',
+  }, '\n')
+  local gred = newGame({ scripts = { { name = 'redreset', csv = csvRedReset } }, hp = 1000000 })
+  gred:startEnemyScript('redreset')
+  local redT = 0
+  while gred.state == 'enemy' and redT < 2.5 do M.update(gred, {}, DT); redT = redT + DT end
+  ok(gred.soul.mode == 'red', 'HeartMode 0 → 逻辑切回红心')
+  ok(gred.soul.dir == 1, string.format('HeartMode 0 → 方向复位为 1（尖朝下），实际 %s', tostring(gred.soul.dir)))
+  ok(gred.soul.slammed == false and gred.soul.push == nil,
+     'HeartMode 0 → 清除上一次蓝魂甩击状态与残余冲量')
 
   head('extra-cmd-coverage：命令/运算/跳转覆盖表')
   local expect = {
@@ -1107,16 +1124,21 @@ local function run()
   ok(#(g7.platforms or {}) == 0,
      string.format('round7：内置平台不再出现（实测 %d 个）', #(g7.platforms or {})))
 
-  head('bonegap2-gap：上下骨同列的缝 18px → 30px')
+  head('bonegap2-apex：上骨下缘覆盖满跳顶点（HeightT = 118 - HeightB）')
   local csvGap
   for _, sc in ipairs(A) do if sc.name == 'sans_bonegap2' then csvGap = sc.csv end end
-  ok(csvGap ~= nil and csvGap:find('SUB,HeightT,99,%$HeightB', 1, false) ~= nil,
-     'bonegap2：HeightT = 99 - HeightB（缝 30px；旧值 111 → 18px）')
-  -- 数值核对：缝 = (386-HeightB) - (257 + HeightT) = 129 - HeightB - HeightT
+  ok(csvGap ~= nil and csvGap:find('SUB,HeightT,118,%$HeightB', 1, false) ~= nil,
+     'bonegap2：HeightT = 118 - HeightB（第 4 关满跳必须被上骨擦到）')
+  -- 用户口径（2026-10-07 骨攻微调文档 §3）：
+  --   上骨框内下缘 = 31 + HeightT；满跳顶点上缘 ≈ 88.1。
+  --   HeightB=20/30/40/60 → HeightT=98/88/78/58 → 下缘=129/119/109/89。
+  -- 代价：上下骨同列缝固定收为 11px（灵魂命中盒 8px，仍有 3px 净空）。
   for _, hb in ipairs({ 20, 30, 40, 60 }) do
-    local ht = 99 - hb
+    local ht = 118 - hb
+    local bottom = 31 + ht
     local gap = (386 - hb) - (257 + ht)
-    ok(gap == 30, string.format('bonegap2：HeightB=%d → 缝 %dpx（灵魂 8px，可站 %dpx）', hb, gap, gap - 8))
+    ok(bottom >= 89, string.format('bonegap2：HeightB=%d → 上骨下缘 %dpx ≥ 满跳命中线 89px', hb, bottom))
+    ok(gap == 11, string.format('bonegap2：HeightB=%d → 上下骨缝 %dpx（灵魂 8px，净空 %dpx）', hb, gap, gap - 8))
   end
 
   head('A-9：bonestab1/2/3 回到原版 BoneStab 三档（方案甲）')
@@ -1165,7 +1187,7 @@ local function run()
   ok(nBlast >= 14 and nBad == 0,
      string.format('intro-blaster：%d 发全部 SpinTime=1.0（不合规 %d 发）', nBlast, nBad))
 
-  head('fair-bone：高骨严格低于灵魂起跳高度，且跟在矮骨后面进场')
+  head('fair-bone：高骨卡满跳顶点、短跳安全，且跟在矮骨后面进场')
   -- 用户口径（2026-10-05 第四轮）：同一 x 上「高骨吊顶 + 矮骨贴地」不能把灵魂夹死，
   --   ① 高骨底沿必须 ≤ 灵魂按住 1s 的最高点矩形上沿（留 3px），跳起来躲矮骨永远撞不到高骨；
   --   ② 高骨行必须在矮骨行**之后**触发（给反应时间）。用 attacks.lua 里的真实 CSV 逐行核对。
@@ -1182,7 +1204,10 @@ local function run()
     end
     return out
   end
-  local jump1sH = select(1, jumpCurve(0.25))     -- 框高 140 下按住 0.25s（= 1/2 框高）的跳跃高度（前面 blue-jump 段测过）
+  -- 用户口径（2026-10-07 骨攻微调文档）：这组上骨改为卡「满跳顶点」——
+  --   满跳必须擦到上骨，短按跳仍安全，高骨仍要晚于矮骨进场。
+  local shortJumpH = select(1, jumpCurve(0.05))
+  local fullJumpH = select(1, jumpCurve(1.2))
   -- 用户第六轮澄清：**「左右高低骨进入的组合」的高骨才是蓝骨**（= bonegap1 / bonegap1fast）；
   -- sans_boneslideh（ROUND 4）上方那根保持白骨。这里连颜色一起钉住。
   local tallIsBlue = { sans_boneslideh = false, sans_bonegap1 = true, sans_bonegap1fast = true }
@@ -1221,14 +1246,17 @@ local function run()
     end
     for _, rw in ipairs(short) do if rw.t < minShortT then minShortT = rw.t end end
     local floorC = b and (b - M.SOUL_CLAMP) or nil
-    local apexTop = floorC and (floorC - jump1sH - M.SOUL_R) or nil
+    local fullApexTop = floorC and (floorC - fullJumpH - M.SOUL_R) or nil
+    local shortApexTop = floorC and (floorC - shortJumpH - M.SOUL_R) or nil
     ok(okGeom, nm .. '：解析出战斗框 + 高骨行 + 矮骨行')
     if okGeom then
-      ok(maxTallH < jump1sH,
-         string.format('%s：高骨高度 %.0f < 灵魂起跳高度 %.1f（字面口径）', nm, maxTallH, jump1sH))
-      ok(maxBottom <= apexTop - 3,
-         string.format('%s：高骨底沿 %.0f ≤ 0.25s 跳跃最高点矩形上沿 %.1f - 3（跳起来撞不到）',
-                       nm, maxBottom, apexTop))
+      ok(maxTallH < fullJumpH,
+         string.format('%s：高骨高度 %.0f < 满跳高度 %.1f（不会起跳即撞）', nm, maxTallH, fullJumpH))
+      ok(maxBottom >= fullApexTop - 1 and maxBottom <= fullApexTop + 2,
+         string.format('%s：高骨底沿 %.0f 卡在满跳顶点上沿 %.1f（满跳会擦到）', nm, maxBottom, fullApexTop))
+      ok(maxBottom < shortApexTop - 3,
+         string.format('%s：高骨底沿 %.0f < 短跳顶点上沿 %.1f - 3（短按跳安全）',
+                       nm, maxBottom, shortApexTop))
       ok(minTallT > minShortT,
          string.format('%s：高骨跟在矮骨后面进场（高骨 t=%.2fs > 矮骨 t=%.2fs）', nm, minTallT, minShortT))
       ok(blueOK, string.format('%s：高骨颜色符合口径（%s）', nm,
