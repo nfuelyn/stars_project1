@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-07-krframe'
+local BUILD = '2026-10-07-settle'
 
 local G = {
   rect = 1073743001, circle = 1073743002, text = 1073743004,
@@ -353,15 +353,18 @@ local SUB_HEAD = 34
 local function subRowTop(cmd, i)
   return cmd.y + SUB_HEAD + (i - 1) * (cmd.rowH or 26)
 end
+-- i 是**视窗槽位**（1..view），不是数据行号；返回比行高多 4px 的容差矩形（方便触屏）
 local function subRowRect(cmd, i)
-  local rh = math.max(20, math.min(cmd.rowH or 26, 40))
+  local rh = math.max(16, math.min(cmd.rowH or 26, 40))
   return cmd.x + 6, subRowTop(cmd, i) - 2, cmd.w - 12, rh + 4
 end
+-- 【方案甲·滚动视窗】只命中当前可见的行，并返回 1 基的**数据行号**（top + 槽位）
 local function subHitTest(cmd, wx, wy)
-  local rows = cmd.rows or {}
-  for i = 1, #rows do
-    local rx, ry, rw, rh = subRowRect(cmd, i)
-    if wx >= rx and wx <= rx + rw and wy >= ry and wy <= ry + rh then return i end
+  local view = cmd.view or #(cmd.rows or {})
+  local top = cmd.top or 0
+  for k = 1, view do
+    local rx, ry, rw, rh = subRowRect(cmd, k)
+    if wx >= rx and wx <= rx + rw and wy >= ry and wy <= ry + rh then return top + k end
   end
   return nil
 end
@@ -1128,16 +1131,42 @@ local function drawSub(cmd)
   rect(x + w - 4, y, 4, h, C_WHITE)
   text(cmd.title or '', x + 14, y + 10, w - 28, 20, C_HP, 'Left')
   local rows = cmd.rows or {}
-  for i, r in ipairs(rows) do
-    local ry = subRowTop(cmd, i)
-    local sel = ((cmd.index or 0) + 1 == i)
-    if sel then heart(x + 18, ry + 9, C_RED, 6) end
-    text(r, x + 28, ry, w - 120, 18, sel and C_HP or C_WHITE, 'Left')
-    local note = cmd.notes and cmd.notes[i]
-    if note and note ~= '' then text(note, x + w - 20, ry, 90, 14, C_DIM, 'Right') end
+  local total = cmd.total or #rows
+  local view = cmd.view or #rows
+  local top = cmd.top or 0
+  for k = 1, view do
+    local i = top + k                       -- 数据行号（1 基）
+    local r = rows[i]
+    if r then
+      local ry = subRowTop(cmd, k)
+      local sel = ((cmd.index or 0) + 1 == i)
+      if sel then heart(x + 18, ry + 9, C_RED, 6) end
+      local note = cmd.notes and cmd.notes[i]
+      -- 【2026-10-07 用户口径】没有备注的行（行动）名字占满整行；有备注（道具 xN / 仁慈）时让出右侧 102px
+      local fs = math.min(18, math.max(12, (cmd.rowH or 26) - 2))
+      local nameW = (note and note ~= '') and (w - 142) or (w - 40)
+      text(r, x + 28, ry, nameW, fs, sel and C_HP or C_WHITE, 'Left')
+      -- 【2026-10-07 修】备注框原来写成 x+w-20 宽 90（text() 不会像 drawHud 那样按对齐回退宽度）→ 文字被画到面板外面；
+      --   改为把框左边界放在 x+w-112、宽 92，右对齐后右缘正好落在面板内边距上。
+      if note and note ~= '' then text(note, x + w - 112, ry, 92, 14, C_DIM, 'Right') end
+    end
   end
+  -- 【方案甲】还有未显示的行：右侧 ▲▼ + 一根细滚动条
+  if total > view then
+    local y0, y1 = y + 34, y + h - 8
+    local span = math.max(4, y1 - y0)
+    rect(x + w - 10, y0, 3, span, 0x33FFFFFF)
+    local k = math.max(4, span * view / math.max(1, total))
+    local ty = y0 + (span - k) * (top / math.max(1, total - view))
+    rect(x + w - 10, ty, 3, k, 0xAAFFFFFF)
+    if top > 0 then text('▲', x + w - 26, y + 16, 16, 12, C_DIM, 'Right') end
+    if top + view < total then text('▼', x + w - 26, y + h - 30, 16, 12, C_DIM, 'Right') end
+  end
+  -- 【2026-10-07 用户口径】回血量/说明放到**面板右上角**（与标题同一行、右对齐），
+  --   不再接在食物列表下面（那儿太挤：最后一行与说明只差 2~3px）。
   if cmd.desc and cmd.desc ~= '' then
-    text(cmd.desc, x + 14, y + h - 28, w - 28, 16, C_DIM, 'Left')
+    local dw = math.min(240, w - 120)
+    text(cmd.desc, x + w - 20 - dw, y + 14, dw, 14, C_DIM, 'Right')
   end
 end
 
@@ -1577,8 +1606,15 @@ handleClick = function(px, py)
   -- 于是"点重开按钮没反应"。
   if st == 'result' then
     clearPending()
-    pcall(function() core.restart(state) end)
-    print('main: 点按 → 重开')
+    local hit = lastMenu and menuHitTest(lastMenu, twx, twy) or nil
+    if hit == 1 then
+      pcall(function() core.settle(state) end)
+      print('main: 点按 → 结算并退出奇域')
+    else
+      -- hit==2 或点空白：保持旧的“点结局页重开”手感。
+      pcall(function() core.restart(state) end)
+      print('main: 点按 → 重开')
+    end
     return true
   end
   -- 子面板：面板内的行 = 选项；面板外 = 返回上一级，避免又一处「点了没反应」
@@ -1857,6 +1893,28 @@ function M.OnStart()
     BUILD, deviceName, tostring(isTouch), mode, madeTotal, tostring(flash ~= nil), tostring(cursorArea ~= nil)))
 end
 
+local function requestSettlement()
+  if not (state and state.settleRequested) then return end
+  state.settleRequested = false
+  if type(game.ServerSignal) ~= 'function' then
+    print('main: 结算信号不可用（当前宿主没有 game.ServerSignal）')
+    return
+  end
+  local ok, err = pcall(function()
+    local sig = game.ServerSignal('SansFightSettle')
+    sig:AddString('result', tostring(state.result or 'victory'))
+    sig:AddInt('hp', math.floor(state.hp or 0))
+    sig:AddInt('kr', math.floor(state.kr or 0))
+    sig:AddInt('round', math.floor((state.round or 0) + 1))
+    sig:SendSignal()
+  end)
+  if ok then
+    print('main: 已发送结算信号 SansFightSettle')
+  else
+    print('main: 结算信号发送失败 :: ' .. tostring(err))
+  end
+end
+
 function M.OnLevelUpdate(dt)
   frame = frame + 1
   local cmds
@@ -1926,6 +1984,7 @@ function M.OnLevelUpdate(dt)
                     confirm = input.confirm, cancel = input.cancel }
     end
     local ok, out = pcall(function() return core.update(state, coreInput, dt) end)
+    requestSettlement()
     if ok and type(out) == 'table' and out[1] and out[1].kind then
       cmds = out
     else
@@ -2035,6 +2094,3 @@ function M.joystickGeom() return joystickGeom() end
 function M.joyVector(dx, dy) local kx, ky, nx, ny = joyVector(dx, dy); return { kx = kx, ky = ky, dx = nx, dy = ny } end
 
 return M
-
-
-

@@ -1,0 +1,65 @@
+{
+  "canvas": "pc-16-9",
+  "seconds": 0.2,
+  "dt": 0.03333333333333333,
+  "frames": 6,
+  "wallSeconds": 0.2,
+  "startedAt": "2026-10-07T10:55:42.901Z",
+  "finishedAt": "2026-10-07T10:55:43.209Z",
+  "final": {
+    "time": 0.19999999999999998,
+    "frame": 6,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 501,
+    "paintItems": 0,
+    "canvasWidth": 1600,
+    "canvasHeight": 900,
+    "canvasId": "pc-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [
+    "main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0",
+    "main start: build=2026-10-07-krframe device=KeyboardAndMouse touch=false mode=core pool=2018 flash=true cursor=true"
+  ],
+  "logCount": 9,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 0,
+      "shot": "pc-16-9-t0_00.png"
+    }
+  ]
+}

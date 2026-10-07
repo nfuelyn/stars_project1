@@ -143,6 +143,9 @@ local MENU = { bw = 110, bh = 42, gap = 10, y = 400 }   -- 真值来自 Animatio
 local MENU_LABELS = { "攻击", "行动", "道具", "仁慈" }
 local BOX_OFF_X, BOX_OFF_Y = 240, 226  -- 攻击脚本坐标 -> 游戏坐标的平移量
 local SCRIPT_BOX_W, SCRIPT_BOX_H = 160, 165
+-- 【2026-10-07 用户口径·我方行动固定长框】我方回合（menu/sub/attack）把战斗框**只加宽**到这两条边：
+--   子面板因此有 (608-33)-16 = 559px 排版宽；y/高沿用当前回合的框 ⇒ Sans（y = 框顶-16-148）零位移。
+local MENU_BOX_L, MENU_BOX_R = 33, 608
 
 -- 骨刺墙内部阶段 -> GDD C14 契约阶段名（render 输出用契约名）
 local STAB_PHASE = { warn = 'peek', out = 'extend', stay = 'hold', ['in'] = 'retract' }
@@ -1422,9 +1425,15 @@ end
 function Game:resetRun()
   self.hp = self.bootHP
   self.kr = 0
-  -- 【2026-10-05 第九轮 · 用户口径】食物大量增加，**全部**是「传奇面包」，每口回复 45 HP。
+  -- 【2026-10-07 用户口径】保留用户设定的「传奇面包（+45 HP ×20）」，并补上
+  --   原版 Items.xml 注册的 4 件（回复量照抄原版：99 / 90 / 60 / 40，Type=0 食物）。
+  --   short 字段 = 原版 ItemName2（菜单短名），本端口目前菜单显示全名，保留备用。
   self.items = {
-    { id = 'legend_bread', name = '传奇面包', desc = '回复 45 HP', heal = 45, count = 20 },
+    { id = 'legend_bread', name = '传奇面包', short = '传奇面包', desc = '回复 45 HP', heal = 45, count = 20 },
+    { id = 'pie',          name = '奶油糖派', short = 'Pie',       desc = '回复 99 HP', heal = 99, count = 1 },
+    { id = 'noodles',      name = '速食泡面', short = 'I.Noodles', desc = '回复 90 HP', heal = 90, count = 1 },
+    { id = 'steak',        name = '脸排',     short = 'Steak',     desc = '回复 60 HP', heal = 60, count = 1 },
+    { id = 'lhero',        name = '传说英雄', short = 'L. Hero',   desc = '回复 40 HP', heal = 40, count = 1 },
   }
   self.taunt = 0
   self.talk = {}
@@ -1443,6 +1452,8 @@ function Game:resetRun()
   self.lastScript = nil
   self.roundScript = nil
   self.result = nil
+  self.resultIndex = 1
+  self.settleRequested = false
   self.failReason = nil
   self.interlude = false
   self.menuIndex = 0
@@ -1666,6 +1677,9 @@ function Game:endEnemy()
   self.whiteT = nil
   self.floorLock = 0
   self.state = 'menu'
+  -- 【2026-10-07 用户口径】我方行动期固定长框：**只改宽度**（y/高沿用本回合的框）
+  --   → 子面板有 559px 可用；Sans 由框顶推导 ⇒ 框顶不变 ⇒ Sans 零位移。
+  self.box = { x = MENU_BOX_L - BOX_OFF_X, y = self.box.y, w = MENU_BOX_R - MENU_BOX_L, h = self.box.h }
   self.menuIndex = 0
   -- 最后一回合打完之后 final = true：原作里这时 Sans 已经力竭、躲不开，
   -- 玩家在菜单里选「攻击」就是致命一击（stopAttack 按 self.final 走"必中"分支），
@@ -1685,8 +1699,19 @@ function Game:endEnemy()
   if self.final then self:say(LINES.final) end
 end
 
+function Game:settle()
+  -- 客户端只负责请求结算；真正「退出奇域 / 胜利结算」由服务端节点图处理。
+  if self.result == 'victory' then return end
+  self.result = 'victory'
+  self.resultIndex = 0
+  self.settleRequested = true
+  self:log('settle victory hp=' .. self.hp)
+end
+
 function Game:finish(outcome, reason)
   self.result = outcome
+  self.resultIndex = 1
+  self.settleRequested = false
   self.failReason = reason or nil
   self.state = 'result'
   if outcome == 'fail' then self:log('fail ' .. (reason or 'hp_zero'))
@@ -1838,9 +1863,8 @@ function Game:subRowNote(idx)
     return l[idx + 1] and ('x' .. l[idx + 1].count) or ''
   end
   if self.sub == 'act' then
-    local o = ACT_OPTIONS[idx + 1]
-    if not o then return '' end
-    return (o.effect == 'wait') and '不结束回合' or '结束回合'
+    -- 【2026-10-07 用户口径】行动行不再显示「结束回合 / 不结束回合」备注（位置不够，改由说明行省去）
+    return ''
   end
   if self.sub == 'mercy' then return (idx == 0) and '撑过 6 回合后才有效' or '他不让你走' end
   return ''
@@ -1848,8 +1872,8 @@ end
 function Game:subDesc()
   local i = self.subIndex
   if self.sub == 'act' then
-    local o = ACT_OPTIONS[i + 1]
-    return o and o.hint or ''
+    -- 【2026-10-07 用户口径】行动面板不再显示底部「作用说明」（腾出 24px 行区给行名）
+    return ''
   end
   if self.sub == 'item' then
     local l = self:itemList()
@@ -2955,7 +2979,11 @@ function Game:applyInput(input)
   -- 灵魂原地落回板子 —— 探针里 confirm=true 的「第 1 跳 vy=0」就是这个原因。
   self.jumpHeld = (input.jumpHeld or input.confirm) and true or false
   if self.state == 'result' then
-    if e.confirm then self:restart() end
+    -- 结算在左、重开在右；默认仍选重开，保留原确认键重开手感。
+    if e.left or e.right then self.resultIndex = 1 - (self.resultIndex or 1) end
+    if e.confirm then
+      if (self.resultIndex or 1) == 0 then self:settle() else self:restart() end
+    end
   elseif self.state == 'attack' then
     if e.confirm then self:stopAttack() end
   elseif self.state == 'menu' then
@@ -3131,13 +3159,16 @@ function M.render(g)
   end
   if g.state == 'result' then
     push(cmds, { kind = 'flash', alpha = 1 })
-    local t = (g.result == 'fail') and 'GAME OVER' or ((g.result == 'spare') and '饶 恕 结 局' or '击 倒 结 局')
+    local t = (g.result == 'victory') and '胜 利 结 算'
+              or ((g.result == 'fail') and 'GAME OVER'
+              or ((g.result == 'spare') and '饶 恕 结 局' or '击 倒 结 局'))
     push(cmds, { kind = 'hudText', text = t, x = VW / 2, y = 145, size = 36,
                  color = (g.result == 'fail') and '#ff2d2d' or '#ffcc33', align = 'center' })
-    push(cmds, { kind = 'menu', x = VW / 2 - 65, y = 220, w = 130, h = 36,
-                 items = { '重 开' }, index = 0, visible = true })
-    push(cmds, { kind = 'hudText', text = '确认键重开', x = VW / 2, y = 280, size = 12,
-                 color = '#bbbbbb', align = 'center' })
+    push(cmds, { kind = 'menu', x = VW / 2 - 140, y = 220, w = 130, gap = 20, h = 36,
+                 items = { '结 算', '重 开' }, index = (g.resultIndex or 1), visible = true })
+    push(cmds, { kind = 'hudText',
+                 text = ((g.resultIndex or 1) == 0) and '确认键：结算并退出奇域' or '确认键：重新开始',
+                 x = VW / 2, y = 280, size = 12, color = '#bbbbbb', align = 'center' })
     return cmds
   end
 
@@ -3287,21 +3318,31 @@ function M.render(g)
       -- 子面板画在**框内**（原版 ACT/ITEM 面板就在框里，框的白边保留），
       -- 并且面板矩形本身必须落在框内、也落在 0..640/0..480 内 ——
       -- 之前是 y=348 + panelH(4 行 212) = 348..560，掉出世界底边 80px，行被切掉。
+      local desc = g:subDesc()
       local pad = 8
       local px, py = boxAbs.x + pad, boxAbs.y + pad
       local pw = boxAbs.w - pad * 2
       local ph = boxAbs.h - pad * 2
-      -- 标题 34 + 描述 24 = 58；剩下的按行数均分（行高限制在 24..40，行少时不会撑得难看）
-      local rowSpace = math.max(0, ph - 58)
-      local rowH = clamp(math.floor(rowSpace / math.max(1, #rows)), 24, 40)
+      -- 【2026-10-07 用户口径】描述（回血量等）改到**面板右上角**（与标题同一行）绘制，
+      --   不再占底部的 24px ⇒ 行区恒为 ph-34，列表能多放一行/行高更舒展。
+      local head = 34
+      local rowSpace = math.max(0, ph - head)
+      -- 【方案甲·滚动视窗】先按 18px/行算出最多能放几行 → 再据此均分行高；
+      --   view < 总数时用 top 决定视窗首行，且让选中项始终落在视窗内（↑↓ 即可滚动，不需要新按键）。
+      local view = math.min(#rows, math.max(1, math.floor(rowSpace / 18)))
+      if view < 1 then view = 1 end
+      local rowH = clamp(math.floor(rowSpace / math.max(1, view)), 18, 40)
+      local top = 0
+      if #rows > view then top = clamp(g.subIndex - view + 1, 0, #rows - view) end
       push(cmds, { kind = 'sub', x = px, y = py, w = pw, h = ph,
                    rowH = rowH, title = SUB_TITLE[g.sub] or '', rows = rows, index = g.subIndex,
+                   top = top, view = view, total = #rows,
                    notes = (function()
                      local n = {}
                      for i = 0, #rows - 1 do n[i + 1] = g:subRowNote(i) end
                      return n
                    end)(),
-                   desc = g:subDesc() })
+                   desc = desc })
     end
   end
   return cmds
@@ -3441,12 +3482,7 @@ function M.titleIndex(g) return g and g.titleIndex or 0 end
 --   返回值就是 M.render(state) 的结果（适配层可直接使用；也可忽略后自行调 render）
 function M.update(g, input, dt)
   if g.state == 'result' then
-    if input and input.confirm and not (g.prevKeys and g.prevKeys.confirm) then
-      g.prevKeys = { confirm = true }
-      g:restart()
-    else
-      g.prevKeys = { confirm = input and input.confirm or false }
-    end
+    g:applyInput(input)
     return M.render(g)
   end
   g:applyInput(input)
@@ -3472,6 +3508,7 @@ function M.subBack(g) g:subBack() end
 function M.stopAttack(g) g:stopAttack() end
 function M.debugHurt(g, kind) return g:debugHurt(kind) end
 function M.restart(g) g:restart() end
+function M.settle(g) g:settle() end
 function M.hasLog(g, s) return g:hasLog(s) end
 
 -- ==========================================================================

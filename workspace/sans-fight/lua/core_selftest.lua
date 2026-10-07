@@ -573,16 +573,20 @@ local function run()
   ok(okDrift and g8.round >= g8.fightCount,
      string.format('G8：fightCount ≤ round（round=%d fightCount=%d）', g8.round, g8.fightCount or 0))
 
-  head('items：食物全部是「传奇面包」，每口回 45 HP 且数量很多')
+  head('items：传奇面包（用户设定 +45 ×20）+ 原版 4 件（99/90/60/40）')
   local gi = newGame({ seed = 1, noSpawn = true })
-  local kinds, total, allBread45 = 0, 0, true
+  local want = { legend_bread = 45, pie = 99, noodles = 90, steak = 60, lhero = 40 }
+  local kinds, total, bad = 0, 0, {}
   for _, it in ipairs(gi.items or {}) do
     kinds = kinds + 1
     total = total + (it.count or 0)
-    if it.name ~= '传奇面包' or it.heal ~= 45 then allBread45 = false end
+    if want[it.id] == nil or it.heal ~= want[it.id] then bad[#bad + 1] = tostring(it.id) end
   end
-  ok(kinds >= 1 and allBread45, string.format('items：%d 种食物全部是「传奇面包」且回 45 HP', kinds))
-  ok(total >= 10, string.format('items：食物总量很多（合计 %d 个）', total))
+  ok(kinds == 5, string.format('items：共 5 种（用户面包 + 原版 4 件，实测 %d）', kinds))
+  ok(#bad == 0, 'items：回复量与表一致（异常：' .. table.concat(bad, ',') .. '）')
+  ok(gi.items[1] and gi.items[1].id == 'legend_bread' and gi.items[1].heal == 45 and gi.items[1].count == 20,
+     'items：第一行仍是用户设定的传奇面包（+45 ×20）')
+  ok(total >= 10, string.format('items：总量足够（合计 %d 个）', total))
   -- 真的吃一口：回 45 且不超过上限
   local gItem = newGame({ seed = 1, noSpawn = true, hp = 92 })
   gItem.hp = 10
@@ -743,6 +747,18 @@ local function run()
   end
   ok(g.state == 'result' and g.result == 'kill', '致命一击 → 击倒结局')
   ok(has(g, 'sans_hit final=1'), '日志含 sans_hit final=1')
+
+  local menuResult
+  for _, c in ipairs(M.render(g)) do if c.kind == 'menu' then menuResult = c end end
+  ok(menuResult and #menuResult.items == 2 and menuResult.items[1] == '结 算' and menuResult.items[2] == '重 开' and menuResult.index == 1,
+     '结局页按钮：结算在左、重开在右，默认选中重开')
+  g:applyInput({ left = true })
+  ok(g.resultIndex == 0, '结局页左键可切到结算')
+  g:applyInput({ confirm = true })
+  ok(g.result == 'victory' and g.settleRequested == true, '结算按钮 → 请求发送 SansFightSettle 信号')
+  local victoryTitle = false
+  for _, c in ipairs(M.render(g)) do if c.kind == 'hudText' and c.text == '胜 利 结 算' then victoryTitle = true end end
+  ok(victoryTitle, '结算后显示「胜 利 结 算」标题')
 
   head('extra-spare：最终回合选仁慈 → 饶恕结局（C16 对照）')
   g = newGame({ seed = 1, noSpawn = true, noScriptRounds = true, startRound = 23 })
@@ -1081,11 +1097,13 @@ local function run()
         subBad[#subBad + 1] = string.format('sub=%s panel=(%.0f,%.0f,%.0f,%.0f) box=(%.0f,%.0f,%.0f,%.0f)',
           kind, sp.x, sp.y, sp.w, sp.h, bx, by, bw, bh)
       end
-      ok(sp.rowH ~= nil and sp.rowH >= 24, 'sub.' .. kind .. ' rowH >= 24（实际 ' .. tostring(sp.rowH) .. '）')
-      -- 内容必须塞得下：标题 34 + 描述 24 + 行数 × rowH
-      local need = 34 + 24 + sp.rowH * #sp.rows
-      ok(need <= sp.h + 0.01, string.format('sub.%s 内容放得下（%d 行 × %d + 58 = %d <= %.0f）',
-        kind, #sp.rows, sp.rowH, need, sp.h))
+      ok(sp.rowH ~= nil and sp.rowH >= 18, 'sub.' .. kind .. ' rowH >= 18（实际 ' .. tostring(sp.rowH) .. '）')
+      -- 内容必须塞得下：标题 34（描述现在画在标题行右侧，不再占底部空间）+ **可见行数** × rowH
+      local vis = sp.view or #sp.rows
+      local head = 34
+      local need = head + sp.rowH * vis
+      ok(need <= sp.h + 0.01, string.format('sub.%s 内容放得下（可见 %d/%d 行 × %d + %d = %d <= %.0f）',
+        kind, vis, #sp.rows, sp.rowH, head, need, sp.h))
     else
       ok(false, 'sub.' .. kind .. ' 没拿到面板指令')
     end
@@ -1093,6 +1111,47 @@ local function run()
   ok(subSeen == 3, 'act/item/mercy 三个面板都拿到了（' .. subSeen .. '/3）')
   ok(#subBad == 0, '子面板矩形都在框内且在世界内' ..
      (#subBad > 0 and ('（异常：' .. table.concat(subBad, '; ') .. '）') or ''))
+
+  head('menu-long-box / act-no-note / item-scroll：我方行动三项优化')
+  do
+    -- ① 我方回合框只加宽（33..608 = 575），y/高与敌方回合一致 ⇒ Sans（y = 框顶-16-148）零位移
+    local gm2 = newGame({ seed = 1, noSpawn = true })
+    gm2:startEnemy(1)
+    local be = boxOf(gm2)
+    toMenu(gm2)
+    local bm = boxOf(gm2)
+    ok(bm and math.abs(bm.w - 575) < 0.01 and math.abs(bm.x - 33) < 0.01,
+       string.format('menu-long-box：我方回合框 = 33..608（x=%.0f w=%.0f）', bm.x, bm.w))
+    ok(bm and math.abs(bm.y - be.y) < 0.01 and math.abs(bm.h - be.h) < 0.01,
+       string.format('menu-long-box：y/高与敌方回合一致（y %.1f→%.1f h %.1f→%.1f）⇒ Sans 零位移', be.y, bm.y, be.h, bm.h))
+    -- ② 行动面板：既没有「结束回合」备注，也没有底部作用说明
+    M.menuChoose(gm2, 1)
+    local sp2
+    for _, c in ipairs(M.render(gm2)) do if c.kind == 'sub' then sp2 = c end end
+    ok(sp2 ~= nil and sp2.desc == '', 'act-no-note：行动面板不显示底部作用说明')
+    local anyNote = false
+    for i = 0, ((sp2 and #sp2.rows) or 0) - 1 do if gm2:subRowNote(i) ~= '' then anyNote = true end end
+    ok(not anyNote, 'act-no-note：行动行都不带「结束回合 / 不结束回合」备注')
+    -- ③ 物品滚动（方案甲）：10 件 → 只显示 view 行，选到末项时视窗跟随到底
+    local gs3 = newGame({ seed = 1, noSpawn = true })
+    gs3.items = {}
+    for i = 1, 20 do
+      gs3.items[i] = { id = 'x' .. i, name = '物品' .. i, desc = '', heal = 1, count = 1 }
+    end
+    toMenu(gs3)
+    M.menuChoose(gs3, 2)
+    local sp3
+    for _, c in ipairs(M.render(gs3)) do if c.kind == 'sub' then sp3 = c end end
+    ok(sp3 ~= nil and sp3.total == 20 and sp3.view < 20 and sp3.top == 0,
+       string.format('item-scroll：20 件 → total=%s view=%s top=%s',
+         tostring(sp3 and sp3.total), tostring(sp3 and sp3.view), tostring(sp3 and sp3.top)))
+    M.subMove(gs3, 19)
+    local sp4
+    for _, c in ipairs(M.render(gs3)) do if c.kind == 'sub' then sp4 = c end end
+    ok(sp4 ~= nil and sp4.top + sp4.view == sp4.total,
+       string.format('item-scroll：选到末项后视窗到底（top=%s view=%s total=%s）',
+         tostring(sp4 and sp4.top), tostring(sp4 and sp4.view), tostring(sp4 and sp4.total)))
+  end
 
   head('blue-jump：依据 blue_soul.lua —— 180 冲量 + 松键截断(30) + 分段重力')
   -- 参考：D:\stars\blue_soul.lua（= 原作 Battle.xml 的 PlayerMovement）
