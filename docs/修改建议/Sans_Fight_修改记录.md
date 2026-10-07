@@ -4,7 +4,7 @@
 - **可试玩存档**：`D:\stars\workspace\sans-fight\sans-fight.save.json`（试玩页 http://127.0.0.1:4173/ 自动加载）
 - **当前构建**：`build=2026-10-05-g9`（第二轮 G1~G13 已处理）
 - **参考仓库（clone）**：`D:\c2-sans-fight-src`（commit `0bb6afe`）
-- **差距文档**：`D:\stars\Sans_Fight_差距与修改文档.md`（50 条，处理结果见第 4 节）
+- **差距文档**：`D:\stars\docs\修改建议\Sans_Fight_差距与修改文档.md`（50 条，处理结果见第 4 节）
 - **本文生成日期**：2026-10-05
 
 ---
@@ -147,7 +147,7 @@ node tools/verify-all.mjs --quick   # 全量回归（跳过最慢的 _geometry/_
 | `D:\stars\workspace\sans-fight\docs\bts-study.md` | 参考仓库研究笔记（§1 脚本语言 … §13 差距文档逐条表） |
 | `D:\stars\workspace\sans-fight\records\status-and-handoff.md` | 逐轮改动 + 证据 + 复现方法（最详细） |
 | `D:\stars\workspace\sans-fight\README.md` | 工程说明 + 回归清单 |
-| `D:\stars\Sans_Fight_差距与修改文档.md` | 原仓库差距盘点（50 条，输入文档） |
+| `D:\stars\docs\修改建议\Sans_Fight_差距与修改文档.md` | 原仓库差距盘点（50 条，输入文档） |
 | `D:\c2-sans-fight-src` | 参考仓库 clone（commit 0bb6afe） |
 | `D:\stars\workspace\sans-fight\records\captures\` | 各轮截图证据 |
 

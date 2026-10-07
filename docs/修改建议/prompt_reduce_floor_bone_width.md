@@ -83,8 +83,8 @@ x = z.l + laneW * (L + 0.5), w = laneW - FLOOR_BONE_INSET,
    - ⚠ 结论：原作 BoneV 本体就是 **10px 厚**；截图里的"厚骨"是**本项目自建的内置排骨**，
      所以"缩宽"是改本项目生成器，不是改原作贴图。
 3. **我给出的独立复刻 / 量化参考**
-   - `D:\stars\bone_battle.lua`：`BONE_V_THICK = 10` / `BONE_H_THICK = 10`（脚本骨尺寸与位移）
-   - `D:\stars\bonestab_floor_rise.lua`：骨刺几何（`BoneStabV` 宽 12 / `BoneStabH` 高 12）
+   - `D:\stars\reference\lua\bone_battle.lua`：`BONE_V_THICK = 10` / `BONE_H_THICK = 10`（脚本骨尺寸与位移）
+   - `D:\stars\reference\lua\bonestab_floor_rise.lua`：骨刺几何（`BoneStabV` 宽 12 / `BoneStabH` 高 12）
    - `D:\stars\prompt_round14_bone_thickness.md`：本次的分析与图像实测数据
 
 ## 五、验收标准

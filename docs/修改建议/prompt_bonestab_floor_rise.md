@@ -61,11 +61,11 @@
    - `D:\c2-sans-fight-src\Files\sans_bonestab1.csv` / `sans_bonestab2.csv` / `sans_bonestab3.csv`
    - `D:\c2-sans-fight-src\Files\sans_final.csv`（阶段③）、`sans_intro.csv`
 3. **已校验的可运行参考实现**（建议直接用它对拍）：
-   - `D:\stars\bonestab_floor_rise.lua` ← 本段 1:1 复刻（几何 + warn/out/stay/in + dir=1 逐帧轨迹）
-   - `D:\stars\bone_battle.lua` ← BoneStab/骨墙/时间轴命令（更完整的引擎版）
+   - `D:\stars\reference\lua\bonestab_floor_rise.lua` ← 本段 1:1 复刻（几何 + warn/out/stay/in + dir=1 逐帧轨迹）
+   - `D:\stars\reference\lua\bone_battle.lua` ← BoneStab/骨墙/时间轴命令（更完整的引擎版）
 4. **既有分析文档**：
-   - `D:\stars\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md` §1.6「BoneStab：单侧骨刺」
-   - `D:\stars\Sans_Fight_回合差异与蓝心物理_修改意见.md` §2.6 / §2.7（方向一致性、升起时间）
+   - `D:\stars\docs\修改建议\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md` §1.6「BoneStab：单侧骨刺」
+   - `D:\stars\docs\修改建议\Sans_Fight_回合差异与蓝心物理_修改意见.md` §2.6 / §2.7（方向一致性、升起时间）
 
 ## 四、原作几何（dir=1 底边向上升起）
 

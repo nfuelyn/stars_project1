@@ -1,5 +1,5 @@
 -- 确定性探针：终盘 sans_final「长框段 · 蓝心持续向右坠落」
---   基准：D:\stars\sans_final_fall_right.lua（原作 1:1 复刻 + 逐帧轨迹）
+--   基准：D:\stars\reference\lua\sans_final_fall_right.lua（原作 1:1 复刻 + 逐帧轨迹）
 --   固定 dt=1/30、固定 seed，逐帧断言
 package.path = LUA_ROOT .. '/?.lua;' .. LUA_ROOT .. '/?/init.lua;' .. package.path
 local M = require('lua' .. '.core')

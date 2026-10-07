@@ -1,6 +1,6 @@
 # 《千星奇域 Sans 战》战斗逻辑缺陷复核与第二轮修改建议
 
-- **复核对象**：`D:\stars\Sans_Fight_修改记录.md`、`D:\stars\workspace\sans-fight\lua\core.lua`、`lua\attacks.lua`、`lua\main.lua`
+- **复核对象**：`D:\stars\docs\修改建议\Sans_Fight_修改记录.md`、`D:\stars\workspace\sans-fight\lua\core.lua`、`lua\attacks.lua`、`lua\main.lua`
 - **复核方法**：静态阅读 + 可复现探针（`lua/_probe_dur.lua`、`lua/_probe_game.lua`、`lua/_probe_diff.lua`）
 - **复现命令**（在 `D:\stars\workspace\sans-fight` 下）：
   ```powershell

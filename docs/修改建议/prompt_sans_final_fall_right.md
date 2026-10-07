@@ -69,13 +69,13 @@
    - `HeartMode` / `HeartMaxFallSpeed` 函数
    - `CombatZone` 组：框伸缩 + 每帧把灵魂夹回框内
 3. **已校验的可运行参考实现（建议直接照它对齐）**
-   - `D:\stars\sans_final_fall_right.lua` —— 本段 1:1 复刻 + 逐帧轨迹，**作为验收基准**
-   - `D:\stars\blue_soul.lua` —— 蓝魂方向重力 / 4 档曲线 / 终端速度钳位 / 跳跃
-   - `D:\stars\bone_battle.lua` —— 骨墙（BoneV / BoneVRepeat）与时间轴命令
+   - `D:\stars\reference\lua\sans_final_fall_right.lua` —— 本段 1:1 复刻 + 逐帧轨迹，**作为验收基准**
+   - `D:\stars\reference\lua\blue_soul.lua` —— 蓝魂方向重力 / 4 档曲线 / 终端速度钳位 / 跳跃
+   - `D:\stars\reference\lua\bone_battle.lua` —— 骨墙（BoneV / BoneVRepeat）与时间轴命令
 4. **既有分析文档**
-   - `D:\stars\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md`（SansSlam 五步、蓝魂 4 方向重力）
-   - `D:\stars\Sans_Fight_回合差异与蓝心物理_修改意见.md` §3.1 / §3.2（合并单一方向重力）
-   - `D:\stars\Sans_Fight_差距与修改文档.md` 第 186–190 行（负数 `HeartMaxFallSpeed` 语义）
+   - `D:\stars\docs\修改建议\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md`（SansSlam 五步、蓝魂 4 方向重力）
+   - `D:\stars\docs\修改建议\Sans_Fight_回合差异与蓝心物理_修改意见.md` §3.1 / §3.2（合并单一方向重力）
+   - `D:\stars\docs\修改建议\Sans_Fight_差距与修改文档.md` 第 186–190 行（负数 `HeartMaxFallSpeed` 语义）
 
 ## 三、验收标准
 

@@ -2,7 +2,7 @@
 
 - **原版来源**：`D:\c2-sans-fight-src`（`Event sheets/Battle.xml` BoneStab 组 + `Files/sans_bonestab3.csv`）
 - **工作区**：`D:\stars\workspace\sans-fight`（`prototype/attacks/sans_bonestab3.csv` → `lua/attacks.lua`、`lua/core.lua`、`lua/main.lua`）
-- **辅助参考**：`D:\stars\bone_battle.lua`（工程内已存在的骨攻复刻模板，含 round 号表）
+- **辅助参考**：`D:\stars\reference\lua\bone_battle.lua`（工程内已存在的骨攻复刻模板，含 round 号表）
 - **日期**：2026-10-07
 
 ---
@@ -15,7 +15,7 @@
 |---|---|---|
 | **A. 原作攻击序号**（HitAttempts 22） | `D:\c2-sans-fight-src\Files\sans_bonestab3.csv`；`Battle.xml` StartAttack 的 `NextAttack` 链 | **`sans_bonestab3`**（BoneStab 连刺，最长档） |
 | **B. 工作区 HUD**（`ROUND x / 24`，= 内部号+1） | `core.lua` `'ROUND '..(g.round+1)`；`FIXED_SEQ` | HUD 22 = 内部 21 = **`multi3`** |
-| **C. `bone_battle.lua` 的 round 表** | `D:\stars\bone_battle.lua` 的 `BoneBattle.ROUNDS` | round 22 = **`sans_boneslidev`** |
+| **C. `bone_battle.lua` 的 round 表** | `D:\stars\reference\lua\bone_battle.lua` 的 `BoneBattle.ROUNDS` | round 22 = **`sans_boneslidev`** |
 
 **判定**：你说的是"**骨头模式**"、"**最开始攻击**"，且此前反馈过"骨头升起时间太短" —— 与 **BoneStab（骨刺从边上升起）** 完全对应。**本文按口径 A：第 22 段 = `sans_bonestab3`**（工作区内部号 22 / HUD 23）。
 
@@ -267,7 +267,7 @@ BoneStab(dir, Distance, WarnTime, StayTime)：
 | 工作区脚本 | `prototype\attacks\sans_bonestab3.csv`（自动生成到 `lua/attacks.lua`） |
 | 工作区命令 | `lua/core.lua` `CMD.BoneStab` / `World:stepStab` / `World:stabRect` |
 | 工作区渲染 | `lua/core.lua` `renderWorld` 的 stab 分支；`lua/main.lua` `drawStab` |
-| 骨攻模板（round 表） | `D:\stars\bone_battle.lua` |
+| 骨攻模板（round 表） | `D:\stars\reference\lua\bone_battle.lua` |
 | 原版骨刺贴图 | `reference\sprites\textures\BoneStabWarn.png`、`BoneStabH.png`、`BoneStabV.png` |
 | 探针 | `lua\_probe_stab.lua` |
 

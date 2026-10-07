@@ -142,10 +142,10 @@ node tools/verify-all.mjs --quick              # 一键跑其余回归 + 重建
 
 | 文件 | 内容 |
 |---|---|
-| `D:\stars\Sans_Fight_改动总结与难点.md` | **本文** |
-| `D:\stars\Sans_Fight_修改记录.md` | 改动总表（含第二轮 G1~G13 结果） |
-| `D:\stars\Sans_Fight_差距与修改文档.md` | 输入文档之一（50 条差距盘点） |
-| `D:\stars\Sans_Fight_修改建议_第二轮.md` | 输入文档之二（G1~G13） |
+| `D:\stars\docs\修改建议\Sans_Fight_改动总结与难点.md` | **本文** |
+| `D:\stars\docs\修改建议\Sans_Fight_修改记录.md` | 改动总表（含第二轮 G1~G13 结果） |
+| `D:\stars\docs\修改建议\Sans_Fight_差距与修改文档.md` | 输入文档之一（50 条差距盘点） |
+| `D:\stars\docs\修改建议\Sans_Fight_修改建议_第二轮.md` | 输入文档之二（G1~G13） |
 | `D:\stars\workspace\sans-fight\docs\bts-study.md` | 参考仓库研究笔记 + §13/§14 逐条处理表 |
 | `D:\stars\workspace\sans-fight\records\status-and-handoff.md` | 逐轮改动 + 证据 + 复现方法（最详细） |
 | `D:\stars\workspace\sans-fight\README.md` | 工程说明 + 回归清单 |

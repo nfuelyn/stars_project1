@@ -3,7 +3,7 @@
 
 - **工作区**：`D:\stars\workspace\sans-fight`
 - **数据源**：`prototype/attacks/*.csv`（唯一源）→ `tools/gen-attacks.mjs` → `lua/attacks.lua`
-- **参考**：`D:\c2-sans-fight-src`（原版 CSV / `Battle.xml`）、`D:\stars\bone_battle.lua`
+- **参考**：`D:\c2-sans-fight-src`（原版 CSV / `Battle.xml`）、`D:\stars\reference\lua\bone_battle.lua`
 - **日期**：2026-10-07
 
 ---

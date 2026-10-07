@@ -1,6 +1,6 @@
 # 《千星奇域 Sans 战》第三轮修改建议 · 含原版图片索引与本次改动
 
-- **复核对象**：`D:\stars\Sans_Fight_改动总结与难点.md`、`D:\stars\workspace\sans-fight\lua\core.lua` / `attacks.lua` / `main.lua`
+- **复核对象**：`D:\stars\docs\修改建议\Sans_Fight_改动总结与难点.md`、`D:\stars\workspace\sans-fight\lua\core.lua` / `attacks.lua` / `main.lua`
 - **复核方法**：静态阅读 + 4 个可复现探针（见附录 A）
 - **本次附带动作**：把原版仓库 `D:\c2-sans-fight-src` 的 **106 张 PNG** 复制进工程 `reference/sprites/`，并生成 `manifest.json` + `INDEX.md`（见 §3）
 - **生成日期**：2026-10-06

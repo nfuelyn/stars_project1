@@ -744,7 +744,7 @@ CMD.SineBones = function(w, count, spacing, speed, height)
 end
 
 CMD.BoneStab = function(w, dir, dist, warn, stay, outDur)
-  -- 【2026-10-06 依据 D:\\stars\\bone_battle.lua 重写】
+  -- 【2026-10-06 依据 D:\\stars\\reference\\lua\\bone_battle.lua 重写】
   --   参考实现（Battle.xml 的 BoneStabWarn → BoneStabH/V）：
   --     * 先出「警告矩形」：内缩 8px、沿边长度 = 框边 - 16、厚度 = distance - 3；
   --     * warnTime 到点后生成**一整块面板**（厚度 = distance + 8，横跨整条框边），
@@ -2394,7 +2394,7 @@ function Game:update(dt)
     --   * 松开 → **立刻停止上升**，等速下降（速度 = 0.5×框高 / 0.75s）；
     --   * 松手后这一次跳跃被「剪断」（jumpCut）→ **下降途中再按跳跃键不会重新上升**（不能二段跳）；
     --   * 另有「起跳点上方 3/5 框高」和战斗框上沿两道兜底。
-    -- 【2026-10-06 · 完全依据 D:\\stars\\blue_soul.lua（= 原作 PlayerMovement）重写】
+    -- 【2026-10-06 · 完全依据 D:\\stars\\reference\\lua\\blue_soul.lua（= 原作 PlayerMovement）重写】
     --   ① 重力**分段**：按「施加本帧重力之前」的沿重力速度 DownSpeed 选档（px/s²）
     --        DownSpeed <= -120            → 180   （高速上冲，保持冲劲）
     --        -120 < DownSpeed <= -30      → 450   （中速上升，迅速刹车）

@@ -805,7 +805,7 @@ node tools/run-lua.mjs lua/_probe_pool2.lua   # 真实 main.lua 的控件池峰�
 
 ## 蓝心跳跃修正（统一落地模型）+ 删去方向箭头（2026-10-06）
 
-依据：`D:\stars\Sans_Fight_蓝心跳跃修正与延时政策.md`（对照原版 `Battle.xml` 的
+依据：`D:\stars\docs\修改建议\Sans_Fight_蓝心跳跃修正与延时政策.md`（对照原版 `Battle.xml` 的
 `HeartJump` / `HeartCheckSolid`）。**§0 政策同时生效：从本文起不再对攻击延时提任何要求**，
 脚本里已调过的 `SpinTime / HoldTime / Loop / delay / Ramp / ExtraWidth` 全部保留。
 

@@ -1154,7 +1154,7 @@ local function run()
   end
 
   head('blue-jump：依据 blue_soul.lua —— 180 冲量 + 松键截断(30) + 分段重力')
-  -- 参考：D:\stars\blue_soul.lua（= 原作 Battle.xml 的 PlayerMovement）
+  -- 参考：D:\stars\reference\lua\blue_soul.lua（= 原作 Battle.xml 的 PlayerMovement）
   --   起跳 = 沿逆重力给 HEART_JUMP_STRENGTH(180) 的瞬时冲量；
   --   变高跳 = 松手瞬间若仍上冲且 > JUMPHOLD_CUTOFF(30)，沿重力分量钳到 -30；
   --   重力分段 180/450/180/540。

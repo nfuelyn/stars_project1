@@ -2,7 +2,7 @@
 ## —— 回归原版「方向重力 + 撞墙甩击」，修复审判眼拖拽灵魂
 
 - **工作区**：`D:\stars\workspace\sans-fight`
-- **依据**：`D:\stars\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md`（方案甲）
+- **依据**：`D:\stars\docs\修改建议\Sans_Fight_审判眼拖拽灵魂_机制总结与修改建议.md`（方案甲）
 - **原版对照**：`D:\c2-sans-fight-src`（commit 0bb6afe）
 - **日期**：2026-10-06
 - **性质**：补丁式修改文档（含 before/after 代码，可直接照改）
