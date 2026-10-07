@@ -160,11 +160,11 @@ local M = {
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
-# 【2026-10-06 用户口径·二次】同上：保持蓝心（SansSlam），骨刺预警 0.6 → 1.4（+0.8s）。【2026-10-07 用户口径·round24 方案A】本组「两边同时」骨刺：厚度 48 → 38.4（×4/5）、伸出延时 1.4 → 1.9（+0.5s）；注意其后的 0.9,BlackScreen,1 会先清场（0.9 < 1.9），所以这两根仍只以预警形式出现，本次可见变化只有厚度。
+# 【2026-10-06 用户口径·二次】同上：保持蓝心（SansSlam），骨刺预警 0.6 → 1.4（+0.8s）。
 0,HeartTeleport,391,376
 0,SansSlam,0
-0.03333,BoneStab,0,38.4,1.9,1
-0,BoneStab,1,38.4,1.9,1
+0.03333,BoneStab,0,48,1.4,1
+0,BoneStab,1,48,1.4,1
 0.9,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
@@ -940,8 +940,8 @@ $Wait2,SET,LastDir,$Direction
 ]==] },
   { name = "sans_bonegap2", csv = [==[
 # sans_bonegap2
-# 【2026-10-07 用户口径·round4/13】高骨（上骨）按预期抬起 7px：HeightT 回到 111 - HeightB（= 原版值），
-#   上骨下缘 = 368 - HeightB、下骨上缘 = 386 - HeightB → 缝恒 18px（与 round15 / multi1 Attack2 逐像素一致）；下骨、骨速、间距、循环均不动。
+# 【2026-10-05 第七轮】上下骨同列前进的「缝」太窄（18px，灵魂 8px 只剩 10px 可站）→ 把
+#   HeightT = 111 - HeightB → 118 - HeightB：上骨下缘抬到满跳顶点，缝宽收为 11px；其余数值不动。 —— 从中心向两侧镜像飞出的骨缝（上下骨缝恒为 11px），越来越快
 # 用循环 + 标签实现：Total 累加控制横向间距，Choice 决定骨高与增量
 0,CombatZoneResize,133,251,508,391,TLResume
 0,HeartTeleport,320,376
@@ -971,7 +971,7 @@ $Wait2,SET,LastDir,$Direction
 0,JMPNE,SkipZeroSpeed,$HeightB,40
 0,SET,RndSpeed,0
 0,:SkipZeroSpeed
-0,SUB,HeightT,111,$HeightB
+0,SUB,HeightT,118,$HeightB
 0,SUB,YB,386,$HeightB
 0,ADD,X,$Total,32
 0,JMPNE,BoneL,$HeightB,60

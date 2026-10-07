@@ -347,8 +347,10 @@ do
     { 'sans_bonegap1fast', 'BoneVRepeat,128,257,58,0,210,8,133,1', 'HUD11 左上骨厚度 32→58' },
     { 'sans_bonegap1fast', 'BoneVRepeat,503,257,58,2,210,8,133,1', 'HUD11 右上骨厚度 32→58' },
     { 'sans_boneslideh',   'BoneVRepeat,513,257,58,2,120,8,76',    'HUD12 上骨厚度 32→58' },
-    { 'sans_bonegap2',     'SUB,HeightT,118,$HeightB',             'HUD13 上骨抬到满跳命中线' },
+    { 'sans_bonegap2',     'SUB,HeightT,111,$HeightB',             'HUD4/13 上骨（高骨）抬起 7px → 缝 18px（=HUD15）' },
     { 'multi3',            'BoneVRepeat,121,354,37,2,0,20,20',     'HUD22 底边骨带 10×40→20×20' },
+    { 'final',             'BoneStab,0,38.4,1.9,1',                'HUD24 阶段③右框骨刺 厚度48→38.4、预警1.4→1.9（方案A）' },
+    { 'final',             'BoneStab,1,38.4,1.9,1',                'HUD24 阶段③下框骨刺 厚度48→38.4、预警1.4→1.9（方案A）' },
   }
   for _, t in ipairs(checks) do
     ck(codeOf(t[1]):find(t[2], 1, true) ~= nil, t[3], t[2])

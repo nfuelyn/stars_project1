@@ -1124,21 +1124,20 @@ local function run()
   ok(#(g7.platforms or {}) == 0,
      string.format('round7：内置平台不再出现（实测 %d 个）', #(g7.platforms or {})))
 
-  head('bonegap2-apex：上骨下缘覆盖满跳顶点（HeightT = 118 - HeightB）')
+  head('bonegap2-gap18：上骨（高骨）抬起 → 缝 18px（= HUD15 / multi1 Attack2）')
   local csvGap
   for _, sc in ipairs(A) do if sc.name == 'sans_bonegap2' then csvGap = sc.csv end end
-  ok(csvGap ~= nil and csvGap:find('SUB,HeightT,118,%$HeightB', 1, false) ~= nil,
-     'bonegap2：HeightT = 118 - HeightB（第 4 关满跳必须被上骨擦到）')
-  -- 用户口径（2026-10-07 骨攻微调文档 §3）：
-  --   上骨框内下缘 = 31 + HeightT；满跳顶点上缘 ≈ 88.1。
-  --   HeightB=20/30/40/60 → HeightT=98/88/78/58 → 下缘=129/119/109/89。
-  -- 代价：上下骨同列缝固定收为 11px（灵魂命中盒 8px，仍有 3px 净空）。
+  ok(csvGap ~= nil and csvGap:find('SUB,HeightT,111,%$HeightB', 1, false) ~= nil,
+     'bonegap2：HeightT = 111 - HeightB（高骨按预期抬起，缝 18px）')
+  -- 用户口径（2026-10-07·round4/13）：118 → 111，上骨下缘 375-HeightB → 368-HeightB（上移 7px）；
+  --   下骨上缘仍是 386-HeightB → 缝恒 18px，与 HUD15（multi1 Attack2）的下缘/缝宽逐像素一致。
+  --   代价：HeightB=60 档不再"满跳被上骨擦到"（下缘 308 高于满跳顶点 314，留 6px 净空）。
   for _, hb in ipairs({ 20, 30, 40, 60 }) do
-    local ht = 118 - hb
-    local bottom = 31 + ht
+    local ht = 111 - hb
+    local bottom = 257 + ht
     local gap = (386 - hb) - (257 + ht)
-    ok(bottom >= 89, string.format('bonegap2：HeightB=%d → 上骨下缘 %dpx ≥ 满跳命中线 89px', hb, bottom))
-    ok(gap == 11, string.format('bonegap2：HeightB=%d → 上下骨缝 %dpx（灵魂 8px，净空 %dpx）', hb, gap, gap - 8))
+    ok(bottom == 368 - hb, string.format('bonegap2：HeightB=%d → 上骨下缘 %d = 368-%d（与 HUD15 同）', hb, bottom, hb))
+    ok(gap == 18, string.format('bonegap2：HeightB=%d → 上下骨缝 %dpx（灵魂视觉 16px，净空 %dpx）', hb, gap, gap - 16))
   end
 
   head('A-9：bonestab1/2/3 回到原版 BoneStab 三档（方案甲）')
@@ -1167,6 +1166,18 @@ local function run()
          'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
     end
   end
+  head('final-stab3：阶段③末尾「两边同时」骨刺（round24 方案A）')
+  -- 用户口径（2026-10-07·round24）：旋转龙骨炮前那组两边同时骨刺 = dir0(右框向左) + dir1(下框向上)，
+  --   厚度 48 → 38.4（×4/5）、伸出延时 1.4 → 1.9（+0.5s）；方案 A = 不动黑屏时序。
+  local csvFin
+  for _, sc in ipairs(A) do if sc.name == 'final' then csvFin = sc.csv end end
+  ok(csvFin ~= nil and csvFin:find('BoneStab,0,38.4,1.9,1', 1, true) ~= nil,
+     'final 阶段③：dir0（右框）骨刺 48 → 38.4、1.4 → 1.9')
+  ok(csvFin ~= nil and csvFin:find('BoneStab,1,38.4,1.9,1', 1, true) ~= nil,
+     'final 阶段③：dir1（下框）骨刺 48 → 38.4、1.4 → 1.9')
+  ok(csvFin ~= nil and csvFin:find('0.9,BlackScreen,1', 1, true) ~= nil,
+     'final 阶段③：黑屏仍为 0.9s（方案 A：不动黑屏时序）')
+
   head('intro-blaster：首轮（sans_intro）龙骨炮「出现 → 释放」间隔 = 1.0s')
   -- 用户第九轮口径（0.6 → 1.0）。GasterBlaster 的第 8 个参数（cells[9]）是 SpinTime = 出现到释放的时间。
   local csvIntro
