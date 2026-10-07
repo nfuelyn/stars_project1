@@ -768,6 +768,12 @@ CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold,
   -- 停靠点钳进安全区：不落在选项栏那一条（也不会出屏）。起点 sx,sy 不钳 —— 原版就是从屏幕角飞入的。
   local ex2 = clamp(tonumber(ex) or 0, BLASTER_SAFE.xmin, BLASTER_SAFE.xmax)
   local ey2 = clamp(tonumber(ey) or 0, BLASTER_SAFE.ymin, BLASTER_SAFE.ymax)
+  -- 【2026-10-07 用户口径·终盘旋转龙骨炮】持续光束（BlastTime <= 0）**不做终点钳制**：
+  --   阶段④每发都是「起点 = 轴心(320,306) + 450u、终点 = 轴心 + 150u」的共线三点；
+  --   一旦终点被 clamp，a0 = atan2(ey-sy, ex-sx) 就偏离这条射线 → 光束不再过轴心 →「轴心跳动」。
+  --   实测（lua/_probe_spiral_pivot.lua）：钳制会让 122 发中的 37 发终点离线，最大 84px。
+  --   普通龙骨炮（有 BlastTime）的钳制保持不变（停靠点仍不会压到选项栏）。
+  if persistent then ex2, ey2 = tonumber(ex) or ex2, tonumber(ey) or ey2 end
   local g = {
     size = sz, x = tonumber(sx), y = tonumber(sy),
     sx = tonumber(sx), sy = tonumber(sy), ex = ex2, ey = ey2,
@@ -3464,4 +3470,3 @@ M.sineBars = sineBars
 M.sineHitTest = sineHitTest
 
 return M
-

@@ -1166,6 +1166,24 @@ local function run()
          'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
     end
   end
+  head('final-spiral：持续光束（BlastTime<=0）不做终点钳制 —— 旋转龙骨炮轴心不跳')
+  do
+    -- 阶段④每发：起点 = 轴心(320,306) + 450u、终点 = 轴心 + 150u。
+    -- 取一个会被 BLASTER_SAFE(ymax=372) 钳到的方向（正下方）验证：持久光束不钳、普通炮仍钳。
+    local wp = M.newWorld({})
+    M.commands.GasterBlaster(wp, 0, 320, 756, 320, 456, 90, 0.5, 0)
+    local gp = wp.blasters[1]
+    ok(gp ~= nil and gp.persistent == true, 'final-spiral：BlastTime=0 登记为持久光束')
+    ok(gp.ey == 456, string.format('final-spiral：持久光束终点不被钳制（ey=%s，安全区上限 %s）',
+       tostring(gp.ey), tostring(M.BLASTER_SAFE.ymax)))
+    local ix, iy = 320 + (gp.sx - 320) / 3, 306 + (gp.sy - 306) / 3
+    ok(math.abs(gp.ex - ix) < 1e-6 and math.abs(gp.ey - iy) < 1e-6,
+       string.format('final-spiral：终点=(%.0f,%.0f) = 轴心+(起点-轴心)/3（三点共线）', gp.ex, gp.ey))
+    local wn2 = M.newWorld({})
+    M.commands.GasterBlaster(wn2, 0, 320, 756, 320, 456, 90, 0.5, 0.3)
+    ok(wn2.blasters[1].ey == M.BLASTER_SAFE.ymax, 'final-spiral：普通龙骨炮终点仍钳到安全区（不回归）')
+  end
+
   head('final-stab3：阶段③末尾「两边同时」骨刺（round24 方案A）')
   -- 用户口径（2026-10-07·round24）：旋转龙骨炮前那组两边同时骨刺 = dir0(右框向左) + dir1(下框向上)，
   --   厚度 48 → 38.4（×4/5）、伸出延时 1.4 → 1.9（+0.5s）；方案 A = 不动黑屏时序。
@@ -1175,6 +1193,8 @@ local function run()
      'final 阶段③：dir0（右框）骨刺 48 → 38.4、1.4 → 1.9')
   ok(csvFin ~= nil and csvFin:find('BoneStab,1,38.4,1.9,1', 1, true) ~= nil,
      'final 阶段③：dir1（下框）骨刺 48 → 38.4、1.4 → 1.9')
+  ok(csvFin ~= nil and csvFin:find('BoneStab,2,38.4,1.1,1', 1, true) ~= nil,
+     'final 阶段③：单发（dir2 左框）骨刺 48 → 38.4、0.6 → 1.1')
   ok(csvFin ~= nil and csvFin:find('0.9,BlackScreen,1', 1, true) ~= nil,
      'final 阶段③：黑屏仍为 0.9s（方案 A：不动黑屏时序）')
 

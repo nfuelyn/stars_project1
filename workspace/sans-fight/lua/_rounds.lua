@@ -351,6 +351,7 @@ do
     { 'multi3',            'BoneVRepeat,121,354,37,2,0,20,20',     'HUD22 底边骨带 10×40→20×20' },
     { 'final',             'BoneStab,0,38.4,1.9,1',                'HUD24 阶段③右框骨刺 厚度48→38.4、预警1.4→1.9（方案A）' },
     { 'final',             'BoneStab,1,38.4,1.9,1',                'HUD24 阶段③下框骨刺 厚度48→38.4、预警1.4→1.9（方案A）' },
+    { 'final',             'BoneStab,2,38.4,1.1,1',                'HUD24 阶段③单发骨刺 厚度48→38.4、预警0.6→1.1（方案A）' },
   }
   for _, t in ipairs(checks) do
     ck(codeOf(t[1]):find(t[2], 1, true) ~= nil, t[3], t[2])

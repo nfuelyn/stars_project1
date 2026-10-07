@@ -259,3 +259,19 @@ node tools/verify-all.mjs --quick
 ---
 
 *第 1、3 项均已用数值/探针实测确认；第 2 项已给出与《原版 CSV》的逐行 diff 与三个候选改动（含精确 before/after），其中只有 `multi3 Attack5` 那条是近期由我文档引入的骨骼数据改动。*
+
+---
+
+## 6. 实施记录（2026-10-07）—— 本文 §3「旋转龙骨炮轴心」已落地
+
+- **根因确认**：`lua/core.lua:769-770` 对**终点**无条件 `clamp(BLASTER_SAFE)`；阶段④每发满足「起点 = 轴心(320,306) + 450u、终点 = 轴心 + 150u」的三点共线，终点被钳后 `a0 = atan2(ey−sy, ex−sx)` 偏离该射线 → 光柱不再过轴心 →「轴心跳动」。
+- **实测（`lua/_probe_spiral_pivot.lua`）**：改前 **37 / 122 发**终点被钳，最大偏差 **84px**；改后 **0 / 122**。
+- **已实施修法（本文 §3.3 方案 A）**：`persistent`（`BlastTime<=0`）时跳过终点钳制，普通龙骨炮仍钳：
+
+```lua
+  if persistent then ex2, ey2 = tonumber(ex) or ex2, tonumber(ey) or ey2 end
+```
+
+- **自测锁定**：`lua/core_selftest.lua` 新增 `final-spiral` 组（4 条）——持久光束终点不被钳、终点 = 轴心 +(起点−轴心)/3（共线）、普通龙骨炮终点仍钳到 `BLASTER_SAFE.ymax`。
+- **验收**：`core_selftest` 296 PASS / 0 FAIL；`_rounds` 74 PASS / 0 FAIL；`verify-all --quick` 8 / 8 通过。
+- **本文 §1（骨缝）与 §2（骨速）** 不属本轮：§1 的缝宽已在《Sans_Fight_round4_13骨缝_与_round24末段骨刺_修改文档.md》按「模仿 round15」落地为 **111 → 缝 18px**；§2 的骨数据经核对**与原版逐行一致**，未做改动。
