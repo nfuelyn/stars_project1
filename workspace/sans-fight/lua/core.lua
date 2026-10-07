@@ -111,8 +111,21 @@ local GRAVITY_FALL    = 540       -- 分段重力：下落              -- 框�
 local SOUL_SPEED = 150              -- 【差距文档 V-03 / 附录B】原版红模式移速 = 150 px/s
 local SOUL_SPEED_SLOW = 75          -- 按住取消键（取消/后退）时减速到 75 px/s
 local KR_PER_HIT = 6              -- 原版 Karma：骨头 6 / 龙骨炮 10（见 Battle.xml 的 Karma 实例变量）
-local KR_TICK = 0.5
 local KR_MAX = 40                  -- 【差距文档 V-02/附录B】原版 KR 上限 40
+-- 参考 Battle.xml 1525-1551：按当前 KR 决定 KR_T 阈值（秒，括号内为约 60fps 帧数）
+local KR_TIERS = {
+  { min = 40, step = 0.033 }, -- 2 帧
+  { min = 30, step = 0.066 }, -- 4 帧
+  { min = 20, step = 0.166 }, -- 10 帧
+  { min = 10, step = 0.500 }, -- 30 帧
+  { min = 0,  step = 1.000 }, -- 60 帧（KR < 10）
+}
+local function krStep(kr)
+  for _, tier in ipairs(KR_TIERS) do
+    if kr >= tier.min then return tier.step end
+  end
+  return 1.0
+end
 local MAX_HP = 92                 -- 【第三轮 N5 · 原作体验】HP 上限 92（传奇面包 +45 不变）                 -- 见文件头说明
 local DT = 1 / 60
 
@@ -666,6 +679,7 @@ local function pushBone(w, x, y, hOrW, axis, dir, speed, color, midFuse)
     -- multi / final 这些脚本关全中招）——玩家看到的就是「蓝心没有碰撞箱」。脚本骨本来就该伤人。
     lethal = true,
     color = c,
+    karma = 6,       -- 骨头首次命中 +6，同一对象后续 +2
     -- 【2026-10-07 用户口径】中轴引信：左右夹击的侧骨在临近中线时销毁，
     -- 不越过战斗框水平中线（h=100 的骨满跳也过不去 → 越轴必定打中灵魂）。
     midFuse = (mf ~= nil and mf ~= 0) or nil,
@@ -722,7 +736,7 @@ CMD.SineBones = function(w, count, spacing, speed, height)
     w.sine[#w.sine + 1] = { x = x, t = 0, speed = spd, gap = 39,
                             sine = sine, height = hgt, amp = 28, phase = 0,
                             zoneT = z.t, zoneB = z.b, bar = SINE_BAR_H,
-                            dir = (sp > 0) and -1 or 1 }
+                            dir = (sp > 0) and -1 or 1, karma = 6 }
   end
 end
 
@@ -736,7 +750,7 @@ CMD.BoneStab = function(w, dir, dist, warn, stay, outDur)
   --   旧实现是「从边上长出来 + 可切 5 道留缺口」，与参考不符，已删除。
   w.bones[#w.bones + 1] = { stab = true, dir = tonumber(dir), dist = tonumber(dist),
                             warn = w:wn(warn), stay = tonumber(stay), outDur = tonumber(outDur),
-                            t = 0, phase = 'warn' }
+                            t = 0, phase = 'warn', karma = 6 }
 end
 CMD.HeartWall = function(w, on)
   -- 【箭头模块统一模板】把蓝心切到「贴墙模式」：自由移动（不吃普通蓝心重力/悬停规则），
@@ -757,7 +771,7 @@ CMD.ArrowBone = function(w, dir, warn, stay)
   local depthH = JUMP_HEIGHT * h
   maxRise = math.min(depthW, depthH)
   w.bones[#w.bones + 1] = { arrowbone = true, dir = d, dist = maxRise,
-                            warn = tonumber(warn), stay = tonumber(stay), t = 0, phase = 'warn', cur = 0 }
+                            warn = tonumber(warn), stay = tonumber(stay), t = 0, phase = 'warn', cur = 0, karma = 6 }
 end
 
 CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold, extraW)
@@ -785,6 +799,7 @@ CMD.GasterBlaster = function(w, size, sx, sy, ex, ey, endAng, spin, blast, hold,
     -- 【方案A】全流程龙骨炮统一走原版像素烘焙；LOD 由 render 决策：
     --   sans_intro 的四发组合（Size=1）与持续旋转光束走 3×3，其余仍走 2×2。
     bake = true,
+    karma = 10,      -- 龙骨炮首次命中 +10，同一对象后续 +2
     lod = (((w.scriptName == 'sans_intro') and sz == 1) or persistent) and 'block3' or nil,
     -- 光束宽度：Size 0/1/2 = 20/36/56；骷髅缩放：0.8/1.0/1.3
     -- extraW：双向各加宽这么多（用户口径「光束双向扩大 5px」→ 传 5，宽度 +10）
@@ -1878,8 +1893,8 @@ function Game:subConfirm()
     if not it then self:subBack(); return end
     it.count = it.count - 1
     self.hp = math.min(self.maxHP, self.hp + it.heal)
-    -- 原作：**治疗会顺带清掉 KR**（业障随治疗消散），这也是原作里「吃一口再打」的战术价值。
-    if self.kr > 0 then self.kr = 0; self.krT = 0; self.krActive = false; self:log('kr_cleared by=item') end
+    -- 参考 Battle.xml MenuUseItem：只回复 HP；KR / KR_T 不变。
+    -- 蓝血只能按自己的燃烧曲线自然结束，不能被治疗解除。
     self:log('item_used id=' .. it.id .. ' hp=' .. self.hp .. ' left=' .. self:itemCount())
     self.sub = nil; self:afterPlayerTurn(); return
   end
@@ -1964,17 +1979,39 @@ function Game:stopAttack()
 end
 
 -- 伤害与 KR
-function Game:hurt(kind, karma)
+function Game:clampKR()
+  -- 参考 Battle.xml 1521-1524：先夹 40，再夹到当前 HP-1；HP=1 时 KR 必然为 0。
+  local hadKR = self.kr > 0
+  if self.kr > KR_MAX then self.kr = KR_MAX end
+  local cap = self.hp - 1
+  if cap < 0 then cap = 0 end
+  if self.kr > cap then
+    if cap == 0 and hadKR and not self.krFloorLogged then
+      self.krFloorLogged = true
+      self:log('kr_floor hp=' .. self.hp)
+    end
+    self.kr = cap
+  end
+  if self.kr <= 0 then
+    self.kr = 0
+    if hadKR then
+      self.krActive = false
+      self:log('kr_done hp=' .. self.hp .. ' kr=0')
+    end
+  end
+end
+
+function Game:hurt(kind, karma, src)
   if self.state ~= 'enemy' or self.invuln > 0 then return false end
-  local hpBefore = self.hp
   self.hp = self.hp - 1
-  -- 【2026-10-05 修】旧实现把 KR 增量按 `hpBefore-1` 截断：血量掉到 2~3 时 KR 只加 1~2（低到 0），
-  -- 玩家看到的紫条几乎不动 → 像「受击判定消失」。现在照原作：**每次命中都照常加满 KR**，
-  -- 「不致死」由 updateKR 的 `hp > 1` 下限保证（KR 永远烧不到 0 血）。
-  -- 原版：骨头 +6、龙骨炮 +10；【差距文档 V-02/附录B】**KR 上限 40**
-  self.kr = math.min(KR_MAX, self.kr + (karma or KR_PER_HIT))
-  self.krActive = self.kr > 0
   self.krFloorLogged = false
+  -- 参考：首次命中按对象的 Karma 加；同一攻击对象后续只加 2。
+  local gain = tonumber(karma) or (src and tonumber(src.karma)) or KR_PER_HIT
+  if src and src.karma == nil then src.karma = gain end
+  self.kr = self.kr + gain
+  self:clampKR()
+  self.krActive = self.kr > 0
+  if src and src.karma and src.karma >= 3 then src.karma = 2 end
   self.invuln = self.tune.invuln          -- 原作没有无敌帧 -> 原作档只有 0.15s
   self.flash = 0.12
   if kind == 'blue' then self:log('hit_blue hp=' .. self.hp .. ' kr=' .. self.kr)
@@ -1986,19 +2023,24 @@ end
 function Game:debugHurt(kind) self.invuln = 0; return self:hurt(kind or 'hit') end
 
 function Game:updateKR(dt)
-  if self.kr <= 0 then self.kr = 0; return end
+  self:clampKR()
+  if self.kr <= 0 then return end
+  if self.hp <= 1 then return end   -- 参考父条件：HP>1 才燃烧
   self.krT = (self.krT or 0) + dt
-  while self.krT >= KR_TICK and self.kr > 0 do
-    self.krT = self.krT - KR_TICK
-    self.kr = self.kr - 1
-    if self.hp > 1 then
-      self.hp = self.hp - 1
-    elseif not self.krFloorLogged then
-      self.krFloorLogged = true; self:log('kr_floor hp=' .. self.hp)
-    end
-    if self.kr <= 0 then
-      self.kr = 0; self.krActive = false; self:log('kr_done hp=' .. self.hp .. ' kr=0')
-    end
+  local step = krStep(self.kr)
+  -- 60fps 下 30/60 帧累计会有约 1e-9 的浮点误差；加一个极小容差，
+  -- 保证文档规定的 30 帧 / 60 帧档位能按时结算。
+  if self.krT + 1e-9 < step then return end
+  -- 参考：每 tick 最多结算一次，结算后 KR_T 直接归零，不做 while 补帧。
+  self.krT = 0
+  self.kr = self.kr - 1
+  if self.hp > 1 then
+    self.hp = self.hp - 1
+  elseif not self.krFloorLogged then
+    self.krFloorLogged = true; self:log('kr_floor hp=' .. self.hp)
+  end
+  if self.kr <= 0 then
+    self.kr = 0; self.krActive = false; self:log('kr_done hp=' .. self.hp .. ' kr=0')
   end
 end
 
@@ -2070,7 +2112,7 @@ function Game:spawnWall(gapW)
   if boneW < 10 then boneW = math.max(6, laneW * 0.5) end
   self.walls[#self.walls + 1] = { t = 0, phase = 'warn', lanes = lanes, laneW = laneW,
                                   boneW = boneW,
-                                  gapStart = gapStart, gapW = gapW, h = 0 }
+                                  gapStart = gapStart, gapW = gapW, h = 0, karma = 6 }
 end
 
 function Game:spawnBlue(fromBottom, color)
@@ -2134,6 +2176,7 @@ function Game:spawnBlaster(count)
       -- 【方案A·2026-10-06】内置 blaster 模式也必须吃同一套烘焙外观：
       -- 它绕过 CMD.GasterBlaster 直接 push，漏了 bake 就会在场上混进旧的 12 件参数化骷髅。
       bake = true,
+      karma = 10,
       ang = rang, size = 1, scale = BLASTER_SCALE[2],
       w = z.r - z.l, h = z.b - z.t,
     }
@@ -2754,7 +2797,7 @@ function Game:update(dt)
         if bn.stab or bn.arrowbone then
           local rc = w2:stabRect(bn)
           if rc.w > 0 and rc.h > 0 and rectHit(SX, SY, SOUL_R, rc) then
-            self:hurt('hit')
+            self:hurt('hit', bn.karma or 6, bn)
           end
         elseif bn.kind == 'blue' then
           local orange = (bn.color == 'orange')
@@ -2763,25 +2806,25 @@ function Game:update(dt)
           local rc = { x = bn.x, y = bn.y, w = bn.w, h = bn.h }
           if white then
             if rectHit(SX, SY, SOUL_R, rc) then
-              if self:hurt('hit') then bn.hitDone = true end
+              if self:hurt('hit', bn.karma or 6, bn) then bn.hitDone = true end
             end
           elseif orange then
             if not moved and rectHit(SX, SY, SOUL_R, rc) then
-              if self:hurt('orange') then bn.hitDone = true end
+              if self:hurt('orange', bn.karma or 6, bn) then bn.hitDone = true end
             end
           else
             if moved and rectHit(SX, SY, SOUL_R, rc) then
-              if self:hurt('blue') then bn.hitDone = true end
+              if self:hurt('blue', bn.karma or 6, bn) then bn.hitDone = true end
             end
           end
         elseif bn.kind == 'floor' then
           local rc = { x = bn.x - bn.w / 2, y = bn.y - bn.h, w = bn.w, h = bn.h }
-          if rectHit(SX, SY, SOUL_R, rc) then self:hurt('hit') end
+          if rectHit(SX, SY, SOUL_R, rc) then self:hurt('hit', bn.karma or 6, bn) end
         elseif bn.kind == 'slide' then
           local rc = { x = bn.x, y = bn.y, w = bn.w, h = bn.h }
-          if rectHit(SX, SY, SOUL_R, rc) then self:hurt('hit') end
+          if rectHit(SX, SY, SOUL_R, rc) then self:hurt('hit', bn.karma or 6, bn) end
         elseif bn.kind == 'sine' then
-          if sineHitTest(bn, SX, SY, SOUL_R) then self:hurt('hit') end
+          if sineHitTest(bn, SX, SY, SOUL_R) then self:hurt('hit', bn.karma or 6, bn) end
         else
           -- 纯攻击脚本骨头（BoneV / BoneH / Repeat）：**X,Y 是左上角**（对齐参考实现的 C2 原点）。
           -- 旧实现按中心算 → 整根骨头偏移 (-w/2,-h/2)：高骨会戳出框顶、底部矮骨会浮在半空，
@@ -2798,11 +2841,11 @@ function Game:update(dt)
             -- 蓝骨只惩罚「移动」，橙骨只惩罚「静止」，白骨无条件伤害（与内置 blue/orange 骨同一套 moved 判定）。
             local c = bn.color
             if c == 1 then
-              if moved then self:hurt('blue') end
+              if moved then self:hurt('blue', bn.karma or 6, bn) end
             elseif c == 2 then
-              if not moved then self:hurt('orange') end
+              if not moved then self:hurt('orange', bn.karma or 6, bn) end
             else
-              self:hurt('hit')
+              self:hurt('hit', bn.karma or 6, bn)
             end
           end
         end
@@ -2818,7 +2861,7 @@ function Game:update(dt)
             local rc = { x = self.box.x + L * W.laneW + (W.laneW - bw) / 2,
                          y = self.box.y + self.box.h - W.h,
                          w = bw, h = W.h }
-            if rectHit(self.soul.x, self.soul.y, SOUL_R, rc) then self:hurt('hit', 10) end
+            if rectHit(self.soul.x, self.soul.y, SOUL_R, rc) then self:hurt('hit', W.karma or 6, W) end
           end
         end
       end
@@ -2827,7 +2870,7 @@ function Game:update(dt)
     -- 之前只判了 w.bones，于是正弦骨从来不打人（视觉有、判定没有）。
     for _, sn in ipairs(w2.sine) do
       if self.state ~= 'enemy' then break end
-      if sineHitTest(sn, SX, SY, SOUL_R) then self:hurt('hit') end
+      if sineHitTest(sn, SX, SY, SOUL_R) then self:hurt('hit', sn.karma or 6, sn) end
     end
     for _, B in ipairs(w2.blasters) do
       -- 【差距文档 P-06】原版 GasterBlastHit 只在 STATE_LEAVE 且 GasterBlast1.Opacity>80 时才失效；
@@ -2862,10 +2905,10 @@ function Game:update(dt)
           local nx, ny = mx + dx * t, my + dy * t
           local dist = math.sqrt((SX - nx) * (SX - nx) + (SY - ny) * (SY - ny))
           local bw = B.band or BLASTER_W[1]
-          if dist <= bw / 2 + SOUL_R then self:hurt('hit', 10) end
+          if dist <= bw / 2 + SOUL_R then self:hurt('hit', B.karma or 10, B) end
           band = nil
         end
-        if band and rectHit(SX, SY, SOUL_R, band) then self:hurt('hit', 10) end   -- 内置模式仍用 band
+        if band and rectHit(SX, SY, SOUL_R, band) then self:hurt('hit', B.karma or 10, B) end   -- 内置模式仍用 band
       end
     end
     end   -- /outside 守卫
@@ -3442,7 +3485,7 @@ M.BLASTER_W, M.BLASTER_BEAM_LEN, M.GRAVITY = BLASTER_W, BLASTER_BEAM_LEN, GRAVIT
 M.BLASTER_SCALE, M.BLASTER_SAFE = BLASTER_SCALE, BLASTER_SAFE
 M.SOUL_R, M.SOUL_SPEED = SOUL_R, SOUL_SPEED
 M.SOUL_CLAMP = SOUL_CLAMP
-M.KR_PER_HIT, M.KR_TICK, M.MAX_HP = KR_PER_HIT, KR_TICK, MAX_HP
+M.KR_PER_HIT, M.KR_TIERS, M.krStep, M.MAX_HP = KR_PER_HIT, KR_TIERS, krStep, MAX_HP
 M.PEEK, M.EXTEND, M.HOLD, M.RETRACT, M.TIP_H = PEEK, EXTEND, HOLD, RETRACT, TIP_H
 M.DIFFS, M.DIFF_ORDER = DIFFS, DIFF_ORDER
 M.ROUNDS, M.SURPRISE = ROUND_DEF, SURPRISE

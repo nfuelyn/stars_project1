@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-07-bonetune-rot3x3'
+local BUILD = '2026-10-07-krframe'
 
 local G = {
   rect = 1073743001, circle = 1073743002, text = 1073743004,
@@ -1149,7 +1149,7 @@ local function drawHudBar(cmd)
   local max = tonumber(cmd.max) or 1
   if max <= 0 then max = 1 end
   local hp = math.max(0, math.min(max, tonumber(cmd.hp) or 0))
-  local kr = math.max(0, math.min(hp, tonumber(cmd.kr) or 0))
+  local kr = math.max(0, math.min(math.max(0, hp - 1), tonumber(cmd.kr) or 0)) -- 参考：KR <= HP-1，HP=1 时紫条为 0
   rect(x, y, w, h, 0xFF2A2A33)                                   -- 底槽
   rect(x, y, w * (hp / max), h, 0xFFFFD200)                      -- 黄色：当前 HP
   if kr > 0 then

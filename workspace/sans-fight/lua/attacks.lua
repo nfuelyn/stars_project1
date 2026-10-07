@@ -576,6 +576,10 @@ $Wait2,SET,LastDir,$Direction
 #   → 10 根 × 间距 40（缝 30px，能容下灵魂），高 30 → 15（大小减半）；横向覆盖宽度不变。
 # 底边骨带：贴底边(框底 391) + 顶部到第二块板(y=354) => 单根竖骨 y=354/h=37
 0,BoneVRepeat,121,354,37,2,0,20,20
+# 【2026-10-07 用户口径·ROUND22（玩家口径）末尾骨带段】同款橙色扫场横骨：
+#   x=121 / y=266（框顶 276 上方 10px）/ 宽=405（= 框宽 121..526，覆盖整框）/ dir=1 向下 / speed=160 / color=2 橙。
+#   与 ROUND23（sans_bonestab3）骨刺阶段那根**同一机制**：不动（不按方向键）才受伤。
+0,BoneH,121,266,405,1,160,2
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -631,7 +635,6 @@ $Wait2,SET,LastDir,$Direction
 0,:End
 0,CombatZoneResizeInstant,33,251,608,391
 0,EndAttack
-
 ]==] },
   { name = "platformblaster", csv = [==[
 # platformblaster —— 蓝魂双平台（右上 8 块向西 / 左下 8 块向东）间躲炮
@@ -1099,7 +1102,7 @@ $Wait2,SET,LastDir,$Direction
 #   并把整条边切成 5 段、每隔 1 段留空 → **骨墙保留 2 个能钻过去的缺口**（lanes=5, gapEvery=2）。
 #   dist 18 → 12（伸出更短、更细）；Loop 9 → 6（9 根降到 6 根）；周期 0.23333 → 1.23333。
 0,SET,Loop,6
-0,JMPZ,26,$Loop
+0,JMPZ,27,$Loop
 0,SUB,Loop,$Loop,1
 0,RND,Direction,4
 0,ADD,Jump,$Direction,1
@@ -1118,6 +1121,10 @@ $Wait2,SET,LastDir,$Direction
 0,JMPREL,1
 0.26666,SansSlam,$Direction
 # 【2026-10-06 二次口径】尺寸再减半 dist 18→9、出现 warn 0.4→1.2、升起 out 0.22→1.02
+# 【2026-10-07 用户口径·round22 骨刺阶段】每一轮骨刺都配一根橙色横骨：
+#   x=241 / y=216（框顶 226 上方 10px，骨厚 10）/ 宽=165（= 框宽 241..406）/ dir=1 向下 / speed=180 / color=2 橙。
+#   180px/s → 0.97s 扫过框高 165，1.47s 飞出屏（< 每轮 1.5s），保证"每轮只有一根在场"。
+0,BoneH,241,216,165,1,180,2
 0,BoneStab,$Direction,9,1.2,0.25
 1.23333,JMPABS,6
 0,EndAttack

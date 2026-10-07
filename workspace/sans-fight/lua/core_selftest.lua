@@ -288,7 +288,7 @@ local function run()
   clearHazards(g)                       -- 隔离 KR 规则：把脚本已生成的弹幕清掉
   step(g, 1.5)
   ok(g.hp == 1, '命中后 HP=1（收到 hp=' .. g.hp .. '）')
-  ok(has(g, 'hit hp=1 kr=6'), '日志含 hit hp=1 kr=6（原版骨头 Karma=6；不致死靠 updateKR 的 hp>1 下限）')
+  ok(has(g, 'hit hp=1 kr=0'), '日志含 hit hp=1 kr=0（原版 KR 先夹到 HP-1，HP=1 时归 0）')
   step(g, 5.0)
   ok(has(g, 'kr_floor hp=1'), '日志含 kr_floor hp=1')
   ok(has(g, 'kr_done hp=1 kr=0'), '日志含 kr_done hp=1 kr=0')
@@ -526,6 +526,38 @@ local function run()
   gk.hp = 2; gk.kr = 40; gk.invuln = 0
   for _ = 1, 600 do M.update(gk, E, DT) if gk.state ~= 'enemy' then break end end
   ok(gk.hp >= 1, string.format('G6：KR 烧血保底 hp>1（跑 20s 后 hp=%d kr=%d）', gk.hp, gk.kr))
+  ok(gk.kr <= math.max(0, gk.hp - 1), string.format('G6：KR <= HP-1（hp=%d kr=%d）', gk.hp, gk.kr))
+
+  -- P0-3：五档 KR 燃烧。用固定 DT 逐帧步进，避免一次性 dt 掩盖"每 tick 只结算一次"。
+  local function burnFrames(kr, frames)
+    local gT = newGame({ seed = 1, noSpawn = true, noScriptRounds = true, hp = 92 })
+    gT.kr, gT.krT = kr, 0
+    for _ = 1, frames do gT:updateKR(DT) end
+    return gT.hp, gT.kr
+  end
+  local hp40, kr40 = burnFrames(40, 2)
+  ok(hp40 == 91 and kr40 == 39, string.format('P0-3：KR=40 走 0.033s 档（hp=%d kr=%d）', hp40, kr40))
+  local _, kr40b = burnFrames(40, 6)
+  ok(kr40b == 38, string.format('P0-3：KR=40 每 2 帧一跳（6 帧后 kr=%d）', kr40b))
+  local hp35, kr35 = burnFrames(35, 4)
+  ok(hp35 == 91 and kr35 == 34, string.format('P0-3：KR=35 走 0.066s 档（hp=%d kr=%d）', hp35, kr35))
+  local hp25, kr25 = burnFrames(25, 10)
+  ok(hp25 == 91 and kr25 == 24, string.format('P0-3：KR=25 走 0.166s 档（hp=%d kr=%d）', hp25, kr25))
+  local hp15, kr15 = burnFrames(15, 30)
+  ok(hp15 == 91 and kr15 == 14, string.format('P0-3：KR=15 走 0.5s 档（hp=%d kr=%d）', hp15, kr15))
+  local hp9, kr9 = burnFrames(9, 60)
+  ok(hp9 == 91 and kr9 == 8, string.format('P0-3：KR=9 走 1.0s 档（hp=%d kr=%d）', hp9, kr9))
+
+  -- P1：同一攻击对象的 Karma 首次后降为 2。
+  local gkarma = newGame({ seed = 1, noSpawn = true, noScriptRounds = true, hp = 92 })
+  local src = { karma = 6 }
+  gkarma.invuln = 0; gkarma:hurt('hit', src.karma, src)
+  local karmaFirst = gkarma.kr
+  gkarma.invuln = 0; gkarma:hurt('hit', src.karma, src)
+  ok(karmaFirst == 6 and gkarma.kr == 8 and src.karma == 2,
+     string.format('P1：同一骨头首次 +6、后续 +2（first=%d second=+%d src.karma=%d）',
+                   karmaFirst, gkarma.kr - karmaFirst, src.karma))
+
   -- G8：round 是攻击序列、fightCount 只数 FIGHT；后者永远不超过前者，且差值 = 非 FIGHT 行动次数
   local g8 = newGame({ seed = 1, noSpawn = true, noScriptRounds = true })
   local okDrift = true
@@ -555,10 +587,15 @@ local function run()
   local gItem = newGame({ seed = 1, noSpawn = true, hp = 92 })
   gItem.hp = 10
   toMenu(gItem)
+  gItem.kr = 9
+  gItem.krT = 0
   M.menuChoose(gItem, 2)
   ok(gItem.state == 'sub' and gItem.sub == 'item', 'items：能打开道具面板')
   M.subConfirm(gItem)
   ok(gItem.hp == 55, string.format('items：吃一口 10 → %d（+45）', gItem.hp))
+  ok(gItem.kr == 9 and gItem.krT == 0, string.format('items：治疗不清 KR / KR_T（kr=%d krT=%.2f）', gItem.kr, gItem.krT))
+  step(gItem, 1.0)
+  ok(gItem.hp == 54 and gItem.kr == 8, string.format('items：治疗后的 KR 继续按档位燃烧（hp=%d kr=%d）', gItem.hp, gItem.kr))
   ok(gItem:itemCount() < total, 'items：吃一口后数量减 1')
 
   head('interlude：第 3 回合后 Sans 停手，仁慈=即死（C16）')
@@ -1166,6 +1203,22 @@ local function run()
          'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
     end
   end
+  head('orange-sweep：ROUND23 骨刺段每轮一根 + ROUND22 末尾骨带段一根（同机制橙骨）')
+  -- 用户口径（2026-10-07）：橙骨有两处，机制相同（整框宽横骨、dir=1 向下、color=2）：
+  --   ① ROUND23（= 内部 22 = sans_bonestab3）骨刺阶段：**每一轮骨刺各一根**（共 6 根）；
+  --   ② ROUND22（= 内部 21 = multi3）末尾那段的贴地骨带：该段每次播放一根。
+  local csvBt3, csvM3
+  for _, sc in ipairs(A) do
+    if sc.name == 'sans_bonestab3' then csvBt3 = sc.csv end
+    if sc.name == 'multi3' then csvM3 = sc.csv end
+  end
+  ok(csvBt3 ~= nil and csvBt3:find('0,BoneH,241,216,165,1,180,2', 1, true) ~= nil,
+     'sans_bonestab3：每轮骨刺配一根橙色横骨（x=241 宽=165=整框，dir=1 向下，color=2）')
+  ok(csvBt3 ~= nil and csvBt3:find('JMPZ,27,$Loop', 1, true) ~= nil,
+     'sans_bonestab3：循环出口已随插入行同步（JMPZ 26 → 27）')
+  ok(csvM3 ~= nil and csvM3:find('0,BoneH,121,266,405,1,160,2', 1, true) ~= nil,
+     'multi3（玩家口径 ROUND22）末尾骨带段也有同款橙色横骨（整框宽 405）')
+
   head('final-spiral：持续光束（BlastTime<=0）不做终点钳制 —— 旋转龙骨炮轴心不跳')
   do
     -- 阶段④每发：起点 = 轴心(320,306) + 450u、终点 = 轴心 + 150u。
