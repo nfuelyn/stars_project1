@@ -164,6 +164,33 @@ local function shaftOf(x, y, w, h, vertical)
   end
   return expRect(x + k / 3, y + (h - k) / 2, math.max(1, w - 2 * k / 3), k, PRIM_RECT)
 end
+-- drawStab 把一条骨刺拆成「一排垂直于边的小骨」：沿边间距 13、单根厚 10（与 main.lua drawStab 同式）。
+-- 每根小骨再走 shaftOf（= drawBoneLook / drawBone 的收窄骨干）。下面的 A、B 两段必须共用这一份拆法。
+local STAB_SP, STAB_BW = 13, 10
+local function stabShafts(x, y, w, h)
+  local out = {}
+  if w == nil or h == nil or w <= 0 or h <= 0 then return out end
+  if w >= h then
+    for i = 0, math.max(1, math.ceil(w / STAB_SP)) - 1 do
+      local bx = x + i * STAB_SP
+      if bx < x + w then
+        local bw = math.min(STAB_BW, x + w - bx)
+        local s = shaftOf(bx, y, bw, h, h >= bw)
+        if s then out[#out + 1] = s end
+      end
+    end
+  else
+    for i = 0, math.max(1, math.ceil(h / STAB_SP)) - 1 do
+      local by = y + i * STAB_SP
+      if by < y + h then
+        local bh = math.min(STAB_BW, y + h - by)
+        local s = shaftOf(x, by, w, bh, bh >= w)
+        if s then out[#out + 1] = s end
+      end
+    end
+  end
+  return out
+end
 local function rectOf(x, y, w, h, prim) return expRect(x, y, w, h, prim or PRIM_RECT) end
 -- 中心锚点的三角件（rtri 池）：位置的写法和 expCenter 一样（锚点相对父中心），但 prim 是 rtri
 local function triOf(cx, cy, w, h)
@@ -198,10 +225,9 @@ local function cmdRects(cmd)
                       (cmd.vertical == nil) and ((cmd.h or 19) >= (cmd.w or 19)) or cmd.vertical)
     if s then out[#out + 1] = s end
   elseif k == 'stab' then
-    if (cmd.w or 0) > 0 and (cmd.h or 0) > 0 then          -- drawStab 的提前 return
-      local s = shaftOf(cmd.x, cmd.y, cmd.w, cmd.h, cmd.h >= cmd.w)
-      if s then out[#out + 1] = s end
-    end
+    -- 2026-10-11：drawStab 画的是**一排小骨**（每根 1 骨干 + 4 骨球），不是整条一个骨干。
+    -- 这里必须展开成同一排，否则「绘制 == 判定」对 stab 恒红。
+    for _, s in ipairs(stabShafts(cmd.x, cmd.y, cmd.w or 0, cmd.h or 0)) do out[#out + 1] = s end
   elseif k == 'blaster' then
     -- 新外观（骷髅炮 + 光束）没有"零件 == 整条命令矩形"这回事：炮身被拆成
     -- 颅骨/吻部/2 眼窝/2 獠牙共 6 件、光束是 3 条线 + 4 段拉链，所以改成两条
@@ -306,9 +332,8 @@ local function stateRects(st, sx, sy)
       for _, bn in ipairs(w.bones) do
         if bn.stab then
           local rc = w:stabRect(bn)
-          if rc.w > 0 and rc.h > 0 then
-            local s = shaftOf(rc.x + sx, rc.y + sy, rc.w, rc.h, rc.h >= rc.w)
-            if s then stabs[#stabs + 1] = s end
+          for _, s in ipairs(stabShafts(rc.x + sx, rc.y + sy, rc.w, rc.h)) do
+            stabs[#stabs + 1] = s
           end
         elseif bn.kind == 'floor' then
           local s = shaftOf(bn.x - bn.w / 2 + sx, bn.y - bn.h + sy, bn.w, bn.h, true)

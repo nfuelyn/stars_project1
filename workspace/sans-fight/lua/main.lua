@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-11-bone-look'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-11-bone-knob'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 local G = {
   -- 模拟器内部模板 GUID
@@ -1214,20 +1214,38 @@ local function drawBone(cmd)
   end
 end
 
--- [2026-10-11 用户口径] 骨头观感通用画法（骨刺小骨 / sin 型长骨都用它）：
---   1) 矩形按原始尺寸画满（= 判定矩形）→ 几何契约与命中盒都不变；
---   2) 四角各一颗骨球，完全落在矩形内部 → 视觉是骨头，但碰撞体不增加（球只是装饰）；
---   3) 骨球登记到 G_REAL.boneKnobs，由 draw() 帧末统一置顶（否则会被 rect 池的骨干盖住）。
+-- [2026-10-11 用户口径 v2] 骨头观感通用画法（骨刺小骨 / sin 型长骨都用它）。
+--   v1 写的是「满尺寸矩形 + 四颗同色圆」——圆的并集被矩形完全包含，屏幕上仍旧是纯矩形
+--   （真机实测：开局杀的骨头看不出骨头形状）。v2 改为和脚本骨 drawBone 同一套几何：
+--     k = 0.6×短边 = 骨球直径；骨干宽/高收窄到 k；两端各两颗骨球（原版 BoneV 贴图的两瓣端头）。
+--   四颗骨球仍落在**原判定矩形的外接框** x..x+w / y..y+h 内 ⇒ 纯装饰：
+--   不增加碰撞体积，core 的命中盒与视觉外接框都不变。
+--   骨球登记到 G_REAL.boneKnobs，由 draw() 帧末统一置顶（否则会被后画的骨干矩形盖住）。
 function G_REAL.drawBoneLook(x, y, w, h, vertical, col)
-  rect(x, y, w, h, col)
+  if w == nil or h == nil or w <= 0 or h <= 0 then return end
+  if vertical == nil then vertical = (h >= w) end
   local k = math.min(w, h) * 0.6
   if k < 4 then k = 4 end
   if k > w then k = w end
   if k > h then k = h end
-  circle(x, y, k, col)
-  circle(x + w - k, y, k, col)
-  circle(x, y + h - k, k, col)
-  circle(x + w - k, y + h - k, k, col)
+  local ks = G_REAL.boneKnobs
+  if vertical then
+    rect(x + (w - k) / 2, y + k / 3, k, math.max(1, h - 2 * k / 3), col)
+    if ks then
+      ks[#ks + 1] = circle(x, y, k, col)
+      ks[#ks + 1] = circle(x + w - k, y, k, col)
+      ks[#ks + 1] = circle(x, y + h - k, k, col)
+      ks[#ks + 1] = circle(x + w - k, y + h - k, k, col)
+    end
+  else
+    rect(x + k / 3, y + (h - k) / 2, math.max(1, w - 2 * k / 3), k, col)
+    if ks then
+      ks[#ks + 1] = circle(x, y, k, col)
+      ks[#ks + 1] = circle(x + w - k, y, k, col)
+      ks[#ks + 1] = circle(x, y + h - k, k, col)
+      ks[#ks + 1] = circle(x + w - k, y + h - k, k, col)
+    end
+  end
 end
 
 -- 颜色工具（只给下面的复合外观用）------------------------------------------
