@@ -1,0 +1,62 @@
+{
+  "canvas": "pc-16-9",
+  "seconds": 0.2,
+  "dt": 0.03333333333333333,
+  "frames": 6,
+  "wallSeconds": 0.2,
+  "startedAt": "2026-10-08T05:56:48.232Z",
+  "finishedAt": "2026-10-08T05:56:48.414Z",
+  "final": {
+    "time": 0.19999999999999998,
+    "frame": 6,
+    "running": true,
+    "keys": [
+      "canvasId",
+      "platform",
+      "device",
+      "canvasWidth",
+      "canvasHeight",
+      "canvasPresets",
+      "playerCount",
+      "viewPlayerIndex",
+      "players",
+      "time",
+      "frame",
+      "paused",
+      "levelTimePaused",
+      "mountError",
+      "logs",
+      "tree",
+      "paint",
+      "scene",
+      "server",
+      "history",
+      "running",
+      "serverLogs",
+      "serverVars"
+    ],
+    "treeNodes": 1,
+    "sceneNodes": 0,
+    "paintItems": 0,
+    "canvasWidth": 1600,
+    "canvasHeight": 900,
+    "canvasId": "pc-16-9"
+  },
+  "errorCount": 0,
+  "errors": [],
+  "interestingLogs": [],
+  "logCount": 1,
+  "milestones": [
+    {
+      "t": 0,
+      "time": 0.03333333333333333,
+      "frame": 1
+    }
+  ],
+  "timeline": [
+    {
+      "t": 0,
+      "shot": "pc-16-9-t0_00.png"
+    }
+  ]
+}

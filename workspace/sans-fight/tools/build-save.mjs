@@ -269,7 +269,7 @@ const serverProject = {
 
 // ---- 脚本：**自足单文件**（模块垫片 + 内联 core/attacks/main） ----
 // 依据 nightingale-0/millastra-6nimmt 的 AGENTS.md：官方客户端 Lua 沙箱**没有 require 全局**，
-// 跨脚本 require 在真机不保证解析得到。所以挂载脚本自带一个 local require 垫片，把 core/attacks/main
+// 跨脚本 require 在真机不保证解析得到。所以挂载脚本自带一个 local require 垫片，把 core/attacks/fitdata/music/textart/config/main
 // 原样内联进来 —— 真机/模拟器都只依赖这一条脚本。
 // `--script <file>` 仍可整体替换（调试用）。
 const MOD = 'default_import_file/workspace/sans-fight/lua/';
@@ -281,7 +281,7 @@ if (rawOverride) {
 } else {
   bundle = [
     '-- 自动生成（tools/build-save.mjs）—— 请勿手改；改逻辑请改 lua/*.lua 后重建存档。',
-    '-- 千星客户端 Lua 沙箱没有 require：这里自带模块垫片，把 core/attacks/main 内联成一个自足脚本。',
+    '-- 千星客户端 Lua 沙箱没有 require：这里自带模块垫片，把 core/attacks/fitdata/music/main 内联成一个自足脚本。',
     'local __modules = {}',
     'local function require(p) return __modules[p] end',
     '',
@@ -295,6 +295,18 @@ if (rawOverride) {
     '',
     `__modules['${MOD}fitdata'] = (function()`,
     readLua('lua/fitdata.lua'),
+    'end)()',
+    '',
+    `__modules['${MOD}music'] = (function()`,
+    readLua('lua/music.lua'),
+    'end)()',
+    '',
+    `__modules['${MOD}textart'] = (function()`,
+    readLua('lua/textart.lua'),
+    'end)()',
+    '',
+    `__modules['${MOD}config'] = (function()`,
+    readLua('lua/config.lua'),
     'end)()',
     '',
     `__modules['${MOD}main'] = (function()`,
@@ -335,7 +347,7 @@ const save = {
 fs.writeFileSync(OUT, JSON.stringify(save, null, 2) + '\n', 'utf8');
 const bytes = fs.statSync(OUT).size;
 console.log(`[build-save] 快照 ${path.basename(spill)}`);
-console.log(`[build-save] 主脚本 = 内联包（core+attacks+main 共 ${(bundle.length/1024).toFixed(1)} KB）` + (rawOverride ? ' [--script 覆盖]' : ''));
+console.log(`[build-save] 主脚本 = 内联包（core+attacks+fitdata+music+textart+config+main 共 ${(bundle.length/1024).toFixed(1)} KB）` + (rawOverride ? ' [--script 覆盖]' : ''));
 console.log(`[build-save] 模板池 ${TEMPLATES.length} 个：` + TEMPLATES.map((t) => `${t.name}(${t.guid})`).join(', '));
 console.log(`[build-save] 脚本 ${scripts.length} 条` + scripts.map((s) => ` ${s.id}${s.controlId ? '@' + s.controlId : '(module)'}`).join(''));
 console.log(`[build-save] 写出 ${OUT} (${bytes} bytes)`);

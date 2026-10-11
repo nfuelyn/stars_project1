@@ -39,3 +39,6 @@ workspace/sans-fight/tools/diag-key.mjs
 workspace/sans-fight/tools/probe-jump.mjs
 
 .core.bak
+
+# ---- 大体积临时素材与中间产物（本地保留，绝不上传）----
+.tmp-*

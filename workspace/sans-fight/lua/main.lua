@@ -19,13 +19,92 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-07-settle'
+local BUILD = '2026-10-11-bone-look'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 local G = {
+  -- 模拟器内部模板 GUID
   rect = 1073743001, circle = 1073743002, text = 1073743004,
   ring = 1073743006, rot = 1073743007, rtri = 1073743008,
   cursor = 1073743009, baked = 1073743100, bakedC = 1073743101, bakedRoot = 1073743102,
 }
+
+-- 真机（千星编辑器）模板：**每个工程的索引都不一样**，所以放「候选列表」逐个试，
+-- 拿到 nil（模板池里没有这个索引）就试下一个。容器节点永远垫底 —— 拿到容器再钻进去找叶子。
+--   候选 1 = 用户在编辑器里确认的「客户端控件模板」索引
+--            （矩形 1865 / 圆形 1871 / 圆环 1875 / 旋转图元 1877 / 旋转三角形 1879
+--              / 文本框 1867 / 光标 1860 / 容器节点 1862）
+--   候选 2 = 交接包 BadTime-Miliastra-Handoff 实测可用的「挂载后实例」索引
+--            （1887 / 1889 / 1890 / 1891 / 1888 / 1886 / 1885 / 容器 1884）
+-- 想固定成一套：在 lua/config.lua 的 C.templates 里写死（改完要重建存档）。
+local G_REAL = {
+  rect = { 1073741865, 1073741887 }, circle = { 1073741871, 1073741889 },
+  ring = { 1073741875, 1073741890 }, rot = { 1073741877, 1073741891 },
+  rtri = { 1073741879, 1073741888 }, text = { 1073741867, 1073741886 },
+  cursor = { 1073741860, 1073741885 },
+  baked = { 1073741862, 1073741884 }, bakedC = { 1073741862, 1073741884 },
+  bakedRoot = { 1073741862, 1073741884 },
+  bakedFallback = { 1073741862, 1073741884 },
+}
+
+-- 图片资产 ID：**0 = 沿用模板自带的图片**。真机的图元模板本来就带图案，模拟器模板池里也写了
+-- imageId；交接包在真机上写死 100001 是**模拟器的内置图元编号**，真机没有这个资产 → 会把图元
+-- 刷成空白。所以默认 0、不调 SetImage；只有确认了当前工程真实的图片资产 ID 才在 config.lua 里填。
+local IMAGE_ID = { rect = 0, circle = 0, ring = 0, rot = 0, rtri = 0, text = 0 }
+
+-- 环境配置：模板索引 / 图片资产 / 更新回调 / 设备。优先读 lua/config.lua（交接包里叫 C），
+-- 读不到就用下面的默认值 —— 模拟器与离线自测的行为因此完全不变。
+G_REAL.cfg = {
+  updateCallback = 'level',        -- 官方推荐 'level'（OnLevelUpdate）；外部宿主只调 OnUpdate 时改 'ui'
+  templatesFirst = 'sim',          -- 先试模拟器模板；真机模板探测失败的工程可改 'real'
+  legacyTemplateFallback = true,   -- 是否允许回退到模拟器 GUID
+  templates = nil, images = nil,
+}
+do
+  local ok, mod = pcall(require, 'default_import_file/workspace/sans-fight/lua/config')
+  if not (ok and type(mod) == 'table') then ok, mod = pcall(require, 'lua' .. '.config') end
+  if ok and type(mod) == 'table' then
+    for k, v in pairs(mod) do G_REAL.cfg[k] = v end
+  end
+  if type(G_REAL.cfg.templates) == 'table' then
+    for k, v in pairs(G_REAL.cfg.templates) do G_REAL[k] = v end
+  end
+  if type(G_REAL.cfg.images) == 'table' then
+    for k, v in pairs(G_REAL.cfg.images) do IMAGE_ID[k] = v end
+  end
+end
+
+-- 枚举取值：真机的 AddKeyEventListener / AddCursorEventListener / horizontalAlignment 都要求
+-- **枚举项**（KeyEventType / CursorEventType / TextHorizontalAlignment），不吃字符串；
+-- 而模拟器与离线测试台吃字符串（试玩页注入的也是字符串）。所以统一走「先字符串、抛错再枚举」。
+function G_REAL.enumValue(group, name)
+  if name == nil then return nil end
+  local ok, v = pcall(function() return Enum[group][name] end)
+  if ok and v ~= nil then return v end
+  return nil
+end
+
+-- 颜色统一走 Color(r,g,b,a)：真机要求 ColorValue（整数直接写 imageColor/fontColor 不生效），
+-- 模拟器的 Color 返回同一个 ARGB 打包整数（语义一致），宿主没有 Color 时原样返回整数（离线自测）。
+G_REAL.colorCache = {}
+function G_REAL.apiColor(v)
+  if type(v) ~= 'number' then return v end
+  local hit = G_REAL.colorCache[v]
+  if hit ~= nil then return hit end
+  local a = math.floor(v / 16777216) % 256
+  local r = math.floor(v / 65536) % 256
+  local g = math.floor(v / 256) % 256
+  local b = v % 256
+  local ok, c = pcall(Color, r, g, b, a)
+  if not ok or c == nil then G_REAL.colorCache[v] = v; return v end
+  G_REAL.colorCache[v] = c
+  return c
+end
+
+function G_REAL.activate(c)
+  if c == nil then return end
+  pcall(function() c:SetActive(true) end)
+  pcall(function() c:SetVisible(true) end)
+end
 
 -- 原件配色：白 0 / 蓝 1 / 橙 2（与 BTS 攻击脚本 Color 字段一致）
 local BONE_COLORS = { 0xFFFFFFFF, 0xFF2F6BFF, 0xFFFF7A18 }
@@ -81,10 +160,14 @@ end
 local BUDGET = { rect = 200, circle = 443, rot = 1350, rtri = 4, ring = 2, text = 15, cursor = 1 }
 
 local W, H = 640, 480          -- 逻辑世界尺寸
-local root, flash, bgPanel, bakedRoot = nil, nil, nil, nil
+local root, flash, bgPanel, bgOver, bakedRoot = nil, nil, nil, nil, nil
 local CW, CH, S, OX, OY = 1280, 720, 1.5, 160, 0
 
 local pool, used, memo = {}, {}, {}
+-- 沙箱生命周期簿记：自建控件与监听器都要留引用，OnDestroy 才能干净卸载（宿主 root 不销毁）。
+-- holds：确认/取消是**多来源**动作，按来源记按住状态再聚合（见 bindKeys）。
+local owned = { controls = {}, keys = {}, cursors = {}, started = false, enabled = true,
+                holds = { confirm = {}, cancel = {} } }
 local curBox = { x = 240, y = 226, w = 160, h = 165 }   -- 当前**画出来**的战斗框（平滑后的值）
 local boxTarget = nil                                   -- 逻辑层的目标框（每帧由 box 命令给出）
 
@@ -114,8 +197,10 @@ local resultFlashN = 0        -- 结局态闪层已连续绘制的帧数（超�
 --   `lua/_geometry.lua` 用「绘制 == 判定几何」逐帧对账把这件事钉住。）
 local madeTotal = 0
 local frame, logAcc = 0, 0
-local core, attacks, state = nil, nil, nil
+local core, attacks, music, state = nil, nil, nil, nil
+local lastRunSeq = nil             -- core 每次开战/重开 +1；宿主据此让 BGM 从头播
 local fit = nil                    -- lua/fitdata.lua：exact 逐像素烘焙表（缺失时走参数化回退）
+local textart = nil                -- lua/textart.lua：矩形字形配方（原生文本框在真机渲不出字时用它）
 local mode = 'demo'
 
 local input = { left = false, right = false, up = false, down = false, confirm = false, cancel = false }
@@ -189,11 +274,12 @@ local function joyVector(rawdx, rawdy)
   return kx, ky, nx, ny
 end
 
--- 触摸分支的摇杆区 = 左半屏（不用精确点中圆）；但**可点 UI 优先**：
--- 底部按钮行横跨整屏（原版就在框下），左半屏也有「攻击/行动」，不能被摇杆吞掉。
--- PC 分支**根本不调用这个函数**：鼠标永远不起摇杆（见 bindPointer）。
-local function inJoyZone(wx)
-  return wx < W * 0.55
+-- 【2026-10-11 用户口径·固定摇杆】吸附区围绕**固定中心**（JOY_HOME = 原神预设位置）：
+--   手指落在中心附近就抓住摇杆（不必精确点中圆），中心本身**永远不动**；可点 UI 仍然优先。
+-- PC 分支根本不调用这个函数（鼠标不起摇杆，见 bindPointer）。
+local function inJoyZone(wx, wy)
+  return math.abs(wx - JOY_HOME_X) <= 120
+     and math.abs((wy or JOY_HOME_Y) - JOY_HOME_Y) <= 150
 end
 
 -- ---------------------------------------------------------------- 平台分流
@@ -245,6 +331,10 @@ local function readDeviceName()
 end
 
 local function detectDevice()
+  -- 调试用强制分支：config.lua 里 C.device = 'keyboard' / 'touch'（默认 'auto' 读设备）。
+  local force = G_REAL.cfg.device
+  if force == 'keyboard' then deviceName = 'forced-keyboard'; return false end
+  if force == 'touch' then deviceName = 'forced-touch'; return true end
   local name = readDeviceName()
   deviceName = name or 'unknown'
   if type(name) == 'string' then
@@ -318,16 +408,20 @@ end
 
 -- 按钮行第 i 项（1 基）的按钮矩形：x/w 是第一个按钮的矩形，后续按 w+gap 排开（core 的约定）
 local function menuButtonRect(cmd, i)
-  local gap = cmd.gap or 10
   local bw = cmd.w or 110
   local bh = cmd.h or 36
+  -- 【方案 A2】core 给了显式 x 表（原版非等距 32/184/344/496）就用它，绘制/命中/触屏同一套公式
+  if type(cmd.xs) == 'table' and cmd.xs[i] ~= nil then
+    return cmd.xs[i], cmd.y, bw, bh
+  end
+  local gap = cmd.gap or 10
   return cmd.x + (i - 1) * (bw + gap), cmd.y, bw, bh
 end
 
--- 选中标记红心画在按钮左侧：心中心 (bx-16, y+bh/2)、半径 7 → 左伸约 25px
+-- 【方案 A3】选中红心画在**按钮内部左侧 16px**、垂直居中（原版按钮贴图的 Heart 图像点 = 0.145455×110 ≈ 16px）
 local function menuHeartRect(cmd, i)
   local bx, y, _, bh = menuButtonRect(cmd, i)
-  return bx - 26, y + bh / 2 - 9, 20, 18
+  return bx + 7, y + bh / 2 - 9, 20, 18
 end
 
 -- 命中按钮行：**先按按钮矩形**（彼此不重叠），再按左侧红心（允许与邻居轻微重叠）
@@ -384,17 +478,301 @@ end
 
 -- ---------------------------------------------------------------- 控件池
 
-local instNILLogged = false     -- 模板缺失只打一次完整诊断，避免刷屏
+-- 千星真机的客户端资产经常只允许先放「容器节点」，再把图片/文字/光标作为其子控件。
+-- 这里做兼容：期望叶子控件时，如果拿到的是容器，则自动取第一个子控件；模拟器当前直接模板不受影响。
+function G_REAL.controlName(c)
+  local ok, n = pcall(function() return c.name end)
+  if ok and type(n) == 'string' then return n end
+  ok, n = pcall(function() return c.Name end)
+  return (ok and type(n) == 'string') and n or ''
+end
 
+function G_REAL.nameHasAny(name, ...)
+  for _, key in ipairs({ ... }) do
+    if name:find(key, 1, true) ~= nil then return true end
+  end
+  return false
+end
+
+-- 键盘监听：字符串键名先试（模拟器 / 离线测试台），真机会抛
+--   bad argument #2 to 'AddKeyEventListener' (KeyEventType expected, got string)
+-- → 再换成 Enum.KeyEventType.<name>。返回**真正生效的那个键**（供 RemoveKeyEventListener 用）。
+function G_REAL.addKeyEvent(c, name, cb)
+  if c == nil then return nil end
+  if pcall(function() c:AddKeyEventListener(name, cb) end) then return name end
+  local ev = G_REAL.enumValue('KeyEventType', name)
+  if ev ~= nil and pcall(function() c:AddKeyEventListener(ev, cb) end) then return ev end
+  return nil
+end
+
+-- 游标监听：同上（真机要 Enum.CursorEventType.*）
+function G_REAL.addCursorEvent(c, name, cb)
+  if c == nil then return nil end
+  if pcall(function() c:AddCursorEventListener(name, cb) end) then return name end
+  local ev = G_REAL.enumValue('CursorEventType', name)
+  if ev ~= nil and pcall(function() c:AddCursorEventListener(ev, cb) end) then return ev end
+  return nil
+end
+
+-- 水平对齐：真机要 Enum.TextHorizontalAlignment.*（写字符串会抛
+--   bad argument #2 to 'horizontalAlignment' (TextHorizontalAlignment expected, got string)）。
+-- 只在**第一次**探测一次，之后按结果固定走一条（避免每帧都在 pcall 里白抛一次）。
+function G_REAL.setAlign(c, align)
+  if c == nil or align == nil then return end
+  if G_REAL.alignMode ~= 'enum' then
+    if pcall(function() c.horizontalAlignment = align end) then
+      G_REAL.alignMode = 'string'
+      return
+    end
+    G_REAL.alignMode = 'enum'
+  end
+  local ev = G_REAL.enumValue('TextHorizontalAlignment', align)
+  if ev ~= nil then pcall(function() c.horizontalAlignment = ev end) end
+end
+
+function G_REAL.isKindControl(c, kind)
+  if not c then return false end
+  -- 【真机修正】**不能**用 c.prefabIndex == 模板索引 判类型：模板本身可能是「容器 + 叶子」包装，
+  -- 父层与叶子的 prefabIndex 都是那个索引 —— 用它短路，unwrapTemplate 就永远钻不进叶子，
+  -- 真机上只能拿到空容器（表现：屏幕全黑 / 只有一张空图）。类型只认叶子接口。
+  local n = G_REAL.controlName(c)
+  if kind == 'rect' then
+    return G_REAL.nameHasAny(n, '矩形') or c.SetImage ~= nil
+  elseif kind == 'circle' then
+    return G_REAL.nameHasAny(n, '圆形') or c.SetImage ~= nil
+  elseif kind == 'ring' then
+    return G_REAL.nameHasAny(n, '圆环') or c.SetImage ~= nil
+  elseif kind == 'rot' then
+    return G_REAL.nameHasAny(n, '旋转图元', '旋转矩形') or c.SetImage ~= nil
+  elseif kind == 'rtri' then
+    return G_REAL.nameHasAny(n, '旋转三角形', '三角形') or c.SetImage ~= nil
+  elseif kind == 'text' then
+    return G_REAL.nameHasAny(n, '文本') or c.text ~= nil
+  elseif kind == 'cursor' then
+    return G_REAL.nameHasAny(n, '光标') or c.AddCursorEventListener ~= nil
+  end
+  return false
+end
+
+function G_REAL.findKindChild(c, kind)
+  local ok, children = pcall(function() return c:GetChildren() end)
+  if not ok or type(children) ~= 'table' then return nil end
+  for _, child in ipairs(children) do
+    if G_REAL.isKindControl(child, kind) then return child end
+    local nested = G_REAL.findKindChild(child, kind)
+    if nested ~= nil then return nested end
+  end
+  return nil
+end
+
+-- 包装层拉伸归一化：真机模板的父容器默认可能是零尺寸/贴着角，不拉伸会把叶子裁没。
+function G_REAL.stretchWrapper(c)
+  if not c then return end
+  pcall(function() c:SetAnchorMin(0, 0) end)
+  pcall(function() c:SetAnchorMax(1, 1) end)
+  pcall(function() c:SetPivot(0, 0) end)
+  pcall(function() c:SetSizeDelta(0, 0) end)
+  pcall(function() c:SetAnchoredPosition(0, 0) end)
+  G_REAL.activate(c)
+end
+
+-- 控件属性调用统一包一层：**失败要出声**（之前全是静默 pcall，真机上锚点没生效也看不出来）。
+function G_REAL.trySet(c, what, fn)
+  local ok, err = pcall(fn)
+  if not ok and not G_REAL.setFailLogged then
+    G_REAL.setFailLogged = true
+    print('main: 【警告】写 ' .. tostring(what) .. ' 失败 :: ' .. tostring(err)
+      .. '  ← 把这条发给开发者（说明该属性在当前宿主不支持/名字不同）')
+  end
+  return ok
+end
+
+-- 几何回读（诊断用）：把宿主自己记的 anchor/pivot/pos/size 打一行。真机上属性是否真的写进去了，
+-- 一眼就能看出来（读不到就打 ?）。
+function G_REAL.dumpGeom(c, tag)
+  if c == nil then print('main: geom[' .. tostring(tag) .. '] = nil') return end
+  local function g(k)
+    local ok, v = pcall(function() return c[k] end)
+    if ok and v ~= nil then return tostring(v) end
+    return '?'
+  end
+  print(string.format('main: geom[%s] anchor=(%s,%s)-(%s,%s) pivot=(%s,%s) pos=(%s,%s) size=(%s,%s)',
+    tostring(tag), g('anchorMinX'), g('anchorMinY'), g('anchorMaxX'), g('anchorMaxY'),
+    g('pivotX'), g('pivotY'), g('anchoredPositionX'), g('anchoredPositionY'),
+    g('sizeDeltaX'), g('sizeDeltaY')))
+end
+
+-- 全屏件归一化：锚点 (0,0)-(1,1)、pivot 中心、尺寸差 0、位置 0（吃满父容器）。
+function G_REAL.stretchFull(c)
+  if c == nil then return nil end
+  G_REAL.trySet(c, 'SetAnchorMin', function() c:SetAnchorMin(0, 0) end)
+  G_REAL.trySet(c, 'SetAnchorMax', function() c:SetAnchorMax(1, 1) end)
+  G_REAL.trySet(c, 'SetPivot', function() c:SetPivot(0.5, 0.5) end)
+  G_REAL.trySet(c, 'SetSizeDelta', function() c:SetSizeDelta(0, 0) end)
+  G_REAL.trySet(c, 'SetAnchoredPosition', function() c:SetAnchoredPosition(0, 0) end)
+  return c
+end
+
+-- 叶子归一化：把模板自己的锚点/中心**强制**成我们绘制用的口径 —— 轴对齐件左下 (0,0)、
+-- 旋转件与中心容器 (0.5,0.5)、全屏件（光标区/烘焙根）拉伸铺满。
+--
+-- 【2026-10-08 真机实证】必须**无条件**调用（不能只在「容器包装」分支里调用）：
+-- 真机模板的 RectTransform 默认是 Unity 的「锚点=中心、pivot=0.5」，而 put()/putRot() 里
+-- SetAnchoredPosition 用的是「锚点 + 左下角」语义。不归一化的后果（用户实测）：
+--   * 黑底背景（3 倍画布、位置 (-CW,-CH)）被当成「中心在左下」→ 只有屏幕左下角一块是黑的；
+--   * 所有以画布左下角为原点摆的图元整体偏移 → 看起来「原点跑到了屏幕中心」。
+-- 交接包 another/lua/main.lua 的 instantiateTemplate 同样是无条件设 anchorMin/Max/Pivot/AnchoredPosition。
+function G_REAL.normalizeLeaf(c, kind)
+  if c == nil then return nil end
+  -- 全屏件：光标检测区（吃满画布才有指针事件）、烘焙根（装绝对坐标子控件）
+  if kind == 'cursor' or kind == 'bakedRoot' then return G_REAL.stretchFull(c) end
+  local a = (kind == 'rot' or kind == 'rtri' or kind == 'bakedC') and 0.5 or 0
+  G_REAL.trySet(c, 'SetAnchorMin', function() c:SetAnchorMin(a, a) end)
+  G_REAL.trySet(c, 'SetAnchorMax', function() c:SetAnchorMax(a, a) end)
+  G_REAL.trySet(c, 'SetPivot', function() c:SetPivot(a, a) end)
+  G_REAL.trySet(c, 'SetAnchoredPosition', function() c:SetAnchoredPosition(0, 0) end)
+  return c
+end
+
+-- 图片叶子：清掉羽化/遮罩/填充裁切。真机模板若开着这些，拉伸到全屏的「黑底」会被裁成一小块
+-- 或边缘发虚（交接包文档明确要求：图片用基础完整显示、无软边、无遮罩、不使用填充裁切）。
+function G_REAL.plainImage(c)
+  if c == nil then return nil end
+  -- 只写**官方可写字段**（模拟器 scene.js 的 KIND_RW.image）：
+  --   imageColor / enableMask / enableSoftEdge / softEdge* / fill*（fillType 那一组）/ reverseMaskArea
+  -- 注意 enableFill 与 imageType **不在**表里（真机写会报 cannot set），所以这里不碰。
+  G_REAL.trySet(c, 'enableMask=false', function() c.enableMask = false end)
+  G_REAL.trySet(c, 'enableSoftEdge=false', function() c.enableSoftEdge = false end)
+  return c
+end
+
+function G_REAL.isolateChild(root, keep)
+  local function visit(node)
+    local ok, children = pcall(function() return node:GetChildren() end)
+    if not ok or type(children) ~= 'table' then return false end
+    local containsKeep = false
+    for _, child in ipairs(children) do
+      local childKeeps = (child == keep) or visit(child)
+      if childKeeps then
+        containsKeep = true
+        G_REAL.activate(child)
+        if child ~= keep then G_REAL.stretchWrapper(child) end
+      elseif child ~= keep then
+        pcall(function() child:SetVisible(false) end)
+      end
+    end
+    return containsKeep
+  end
+  visit(root)
+end
+
+local function unwrapTemplate(c, kind)
+  if not c then return nil end
+  if kind == 'baked' or kind == 'bakedC' or kind == 'bakedRoot' then return c end
+  if G_REAL.isKindControl(c, kind) then return c end
+  local child = G_REAL.findKindChild(c, kind)
+  if child ~= nil then
+    G_REAL.wrapperMode = true          -- 真机包装模板：启动预热要改按需创建，否则实例数爆炸
+    G_REAL.isolateChild(c, child)
+    G_REAL.stretchWrapper(c)
+    return G_REAL.normalizeLeaf(child, kind)
+  end
+  -- 兼容旧编辑器：模板不报类型时退回第一个子控件（**只取不做包装判定**，避免误判真机模式）。
+  local ok, first = pcall(function() return c:GetChild(1) end)
+  if ok and first ~= nil then
+    G_REAL.isolateChild(c, first)
+    return first
+  end
+  return c
+end
+
+local function applyImageKind(c, kind)
+  local id = IMAGE_ID[kind]
+  if c ~= nil and type(id) == 'number' and id > 0 then
+    -- 模拟器/真机均为两参数：SetImage(ImageSource, imageId)。
+    local src = G_REAL.enumValue('ImageSource', 'StaticReference')
+    if src == nil then pcall(function() src = Enum.ImageSource.StaticReference end) end
+    local ok = pcall(function() c:SetImage(src, id) end)
+    if not ok then pcall(function() c:SetImage(id) end) end
+  end
+  return c
+end
+
+-- 候选索引序列（去重、扁平化）。真机/模拟器两套索引都可能在，逐个试错 —— 不认识的索引
+-- 只会让 InstantiateClientUIControl 返回 nil，不会污染结果。
+function G_REAL.templateList(kind)
+  local out, seen = {}, {}
+  local function push(v)
+    if v == nil then return end
+    if type(v) == 'table' then for _, x in ipairs(v) do push(x) end return end
+    if type(v) == 'number' and not seen[v] then seen[v] = true; out[#out + 1] = v end
+  end
+  local sim, real = G[kind], G_REAL[kind]
+  if G_REAL.cfg.templatesFirst == 'real' then push(real); push(sim) else push(sim); push(real) end
+  if G_REAL.cfg.legacyTemplateFallback == false then
+    local only = {}
+    for _, v in ipairs(out) do if v ~= sim then only[#only + 1] = v end end
+    out = only
+  end
+  if kind ~= 'baked' and kind ~= 'bakedC' and kind ~= 'bakedRoot' then push(G_REAL.bakedFallback) end
+  return out
+end
+
+local function instantiateTemplate(kind, parent)
+  for _, guid in ipairs(G_REAL.templateList(kind)) do
+    local ok, c = pcall(function() return game.InstantiateClientUIControl(guid, parent) end)
+    if ok and c ~= nil then
+      owned.controls[#owned.controls + 1] = c
+      G_REAL.activate(c)                      -- 包装模板的父层也必须激活
+      if guid ~= G[kind] then G_REAL.realTemplateMode = true end
+      local outer = c
+      c = unwrapTemplate(c, kind)
+      if c ~= outer then G_REAL.stretchWrapper(outer) end
+      G_REAL.activate(c)
+      c = applyImageKind(c, kind)
+      -- 【必须】无条件归一化锚点/pivot：真机的「直接模板」也要（不能只在容器包装分支里做）。
+      c = G_REAL.normalizeLeaf(c, kind)
+      if kind == 'rect' or kind == 'circle' or kind == 'ring' or kind == 'rot' or kind == 'rtri' then
+        G_REAL.plainImage(c)
+      end
+      if kind == 'cursor' then
+        G_REAL.stretchFull(c)                      -- 指针区必须吃满画布
+        pcall(function() c.raycastTarget = true end)
+      end
+      if kind == 'text' then
+        -- 文本框：底色透明 + 固定字号（不自动压缩字号）+ 顶对齐。
+        -- 交接包文档要求「背景完全透明、固定字号、不启用自动压缩字号、无外框」——
+        -- 真机上模板若开着自动压缩，长句会被压成小字/挤在一起，看起来就是「文本框不正常显示」。
+        G_REAL.trySet(c, 'bgColor=透明', function() c.bgColor = G_REAL.apiColor(0x00000000) end)
+        -- 【2026-10-08 按官方实现文档改】建议文本框开启自适应字号（配一个最小字号）：
+        --   studio/docs/control-support.md 与 05-lua-implementation.md 都写明"建议 adaptiveFontSize = true，
+        --   按可读性设置最小字号"。之前我们强制关掉，可能与引擎的排版裁剪路径不符（真机上一个字都不显示）。
+        G_REAL.trySet(c, 'adaptiveFontSize=true', function() c.adaptiveFontSize = true end)
+        local v = G_REAL.enumValue('TextVerticalAlignment', 'Top')
+        if v ~= nil then G_REAL.trySet(c, 'verticalAlignment', function() c.verticalAlignment = v end) end
+      end
+      return c, nil
+    end
+  end
+  return nil, '客户端模板缺失：' .. tostring(kind) .. ' 候选 ' ..
+    table.concat(G_REAL.templateList(kind), '/') .. '；请核对 lua/config.lua 与客户端模板'
+end
+
+local instNILLogged = false     -- 模板缺失只打一次完整诊断，避免刷屏
+G_REAL.wrapperMode = false          -- 真机使用容器包装模板时开启；避免启动批量预热造成卡死
+G_REAL.realTemplateMode = false     -- 真机使用真实模板 GUID 时开启；真机不做 2015 控件预热
+
+-- memo 的键用**控件对象本身**，不用 c.Id：真机控件的运行期身份是小写 id，c.Id 可能是 nil，
+-- 用 nil 当键会让所有控件共用同一份 memo（尺寸/颜色互相串台）。
 local function st(c)
-  local m = memo[c.Id]
-  if not m then m = {}; memo[c.Id] = m end
+  local m = memo[c]
+  if not m then m = {}; memo[c] = m end
   return m
 end
 
 local function spawn(kind)
-  local ok, c = pcall(function() return game.InstantiateClientUIControl(G[kind], root) end)
-  if not ok then print('main: inst ERR ' .. kind .. ' :: ' .. tostring(c)) return nil end
+  local c, err = instantiateTemplate(kind, root)
+  if c == nil and err ~= nil then print('main: inst ERR ' .. kind .. ' :: ' .. tostring(err)) return nil end
   if c == nil then
     -- 实例化返回 nil = 客户端模板池缺这个索引（或图元类型不对），只打一次完整诊断
     if not instNILLogged then
@@ -435,7 +813,15 @@ end
 local function prewarm()
   for kind, n in pairs(BUDGET) do
     local list = poolOf(kind)
-    for i = 1, n do list[i] = spawn(kind) end
+    for i = 1, n do
+      list[i] = spawn(kind)
+      -- 真机容器包装模式下，每个实例带多个子控件；继续预热 2015 份会卡死。
+      -- 改为此后完全按需创建，已经创建的这一份保留在池里。
+      if G_REAL.realTemplateMode or G_REAL.wrapperMode then
+        print('main: 检测到真机模板，跳过大批量预热，改为按需创建控件')
+        return
+      end
+    end
   end
 end
 
@@ -462,7 +848,8 @@ end
 
 local function tint(c, color)
   local m = st(c)
-  if m.c ~= color then c.imageColor = color; m.c = color end
+  local cv = G_REAL.apiColor(color)      -- 真机要 ColorValue；模拟器/离线自测原样返回整数
+  if m.c ~= cv then c.imageColor = cv; m.c = cv end
 end
 
 local function spin(c, deg)
@@ -483,49 +870,59 @@ local BAKED_MAX_INSTS = 12             -- 同一素材同时在场上限（龙�
 local fitWarned = false
 
 local function newBakedInstance(rec)
-  local parent = bakedRoot or root
-  local ok, c = pcall(function() return game.InstantiateClientUIControl(rec.center and G.bakedC or G.baked, parent) end)
+  local parent = rec.layer or bakedRoot or root
+  local c, instErr = instantiateTemplate(rec.center and 'bakedC' or 'baked', parent)
+  local ok = (c ~= nil)
   if not ok or c == nil then
-    if not instNILLogged then instNILLogged = true; print('main: baked 容器缺失 :: ' .. tostring(c)) end
+    if not instNILLogged then instNILLogged = true; print('main: baked 容器缺失 :: ' .. tostring(instErr)) end
     return nil
   end
   madeTotal = madeTotal + 1
   c:SetVisible(false)
   local spec, mirror = rec.spec, rec.mirror
-  local kids = 0
+  local K = rec.k or (SANS_BAKE_SCALE * S)     -- 画布 px / 素材 px
+  local kids, firstKid = 0, nil
   for i = 1, #spec.rects do
     local r = spec.rects[i]
-    local k = game.InstantiateClientUIControl(G.rect, c)
+    local k = instantiateTemplate('rect', c)
     if k then
-      local ax0, ax1
-      if mirror then
-        ax0 = 1 - (r.x + r.w) / spec.w
-        ax1 = 1 - r.x / spec.w
-      else
-        ax0 = r.x / spec.w
-        ax1 = (r.x + r.w) / spec.w
-      end
-      k:SetAnchorMin(ax0, 1 - (r.y + r.h) / spec.h)
-      k:SetAnchorMax(ax1, 1 - r.y / spec.h)
-      k:SetSizeDelta(0, 0)
-      k.imageColor = r.c
+      -- 【2026-10-08 真机第三轮】子块改用**绝对几何**：左下锚点 + pivot 0 + 绝对位置 + 绝对尺寸。
+      -- 为什么不用「比例锚点 + sizeDelta 0」：真机对这个组合的支持不可靠（实测模型散成一堆细条），
+      -- 而「锚点/pivot + SetAnchoredPosition + SetSizeDelta」正是画战斗框/HUD 用的同一套 API，
+      -- 真机已证明可用。镜像也在这里一次算完（x 取反）。
+      local bx = (mirror and (spec.w - r.x - r.w) or r.x) * K
+      local by = (spec.h - r.y - r.h) * K
+      G_REAL.trySet(k, 'child.SetAnchorMin', function() k:SetAnchorMin(0, 0) end)
+      G_REAL.trySet(k, 'child.SetAnchorMax', function() k:SetAnchorMax(0, 0) end)
+      G_REAL.trySet(k, 'child.SetPivot', function() k:SetPivot(0, 0) end)
+      G_REAL.trySet(k, 'child.SetAnchoredPosition', function() k:SetAnchoredPosition(bx, by) end)
+      G_REAL.trySet(k, 'child.SetSizeDelta', function() k:SetSizeDelta(r.w * K, r.h * K) end)
+      k.imageColor = G_REAL.apiColor(r.c)
       k:SetVisible(true)
       kids = kids + 1
+      if firstKid == nil then firstKid = k end
     end
   end
   local inst = { c = c, vis = false, used = -1, kids = kids }
   st(c).vis = false
+  if #rec.insts == 0 then        -- 每种素材只在第一次创建时回读一次几何，真机排查用
+    G_REAL.dumpGeom(c, 'baked:' .. tostring(rec.name))
+    G_REAL.dumpGeom(firstKid, 'baked-child:' .. tostring(rec.name))
+  end
   return inst
 end
 
 -- 取一个本帧还没用过的实例；没有就新建（每个实例一套独立子控件 → 可同时画多发龙骨炮）
-local function bakeInstance(name, center, mirror)
+local function bakeInstance(name, center, mirror, k, layer)
   if not fit or type(fit[name]) ~= 'table' then return nil end
-  local key = mirror and (name .. '#m') or name
+  k = k or (SANS_BAKE_SCALE * S)
+  -- 缓存键带上缩放与层：子块按绝对几何烤进去，换缩放/换层必须另烤一份
+  local key = (mirror and (name .. '#m') or name) .. '@' .. string.format('%.4f', k)
+    .. '@' .. tostring(layer == nil and '-' or 'L')
   local rec = baked[key]
   if not rec then
     rec = { name = name, spec = fit[name], center = center and true or false,
-            mirror = mirror and true or false, insts = {} }
+            mirror = mirror and true or false, k = k, layer = layer, insts = {} }
     baked[key] = rec
   end
   for i = 1, #rec.insts do
@@ -542,8 +939,10 @@ local function bakeInstance(name, center, mirror)
 end
 
 -- 左下锚点：world 左上角 (x,y)、宽高 w,h（世界 px）
-local function useBakedCorner(name, x, y, w, h, mirror)
-  local b = bakeInstance(name, false, mirror); if not b then return nil end
+local function useBakedCorner(name, x, y, w, h, mirror, layer)
+  local spec = fit and fit[name]
+  local b = bakeInstance(name, false, mirror, spec and (w * S) / spec.w or nil, layer)
+  if not b then return nil end
   b.used = frame
   if not b.vis then b.c:SetVisible(true); b.vis = true end
   put(b.c, wx(x), wyBottom(y + h), w * S, h * S)
@@ -552,7 +951,9 @@ end
 
 -- 中心锚点：world 中心 (cx,cy)、宽高 w,h、旋转 deg
 local function useBakedCenter(name, cx, cy, w, h, deg)
-  local b = bakeInstance(name, true); if not b then return nil end
+  local spec = fit and fit[name]
+  local b = bakeInstance(name, true, false, spec and (w * S) / spec.w or nil)
+  if not b then return nil end
   b.used = frame
   if not b.vis then b.c:SetVisible(true); b.vis = true end
   put(b.c, wx(cx) - CW / 2, wyBottom(cy) - CH / 2, w * S, h * S)
@@ -588,6 +989,32 @@ local function safeUtf8(s)
   return s:sub(1, math.max(0, i))
 end
 
+-- UTF-8 逐码点拆分（不依赖 utf8 库：客户端沙箱不一定有）。非法序列按 '?' 处理。
+local function utf8Codepoints(str)
+  local out = {}
+  local i, n = 1, #str
+  while i <= n do
+    local b = str:byte(i)
+    local len = 1
+    if b >= 0xF0 then len = 4 elseif b >= 0xE0 then len = 3 elseif b >= 0xC0 then len = 2 end
+    local cp, ok = b, true
+    if len == 1 then
+      ok = (b < 0x80); cp = ok and b or 63
+    else
+      local mask = (len == 2) and 0x1F or ((len == 3) and 0x0F or 0x07)
+      cp = b % (mask + 1)
+      for k = 1, len - 1 do
+        local nb = str:byte(i + k)
+        if nb == nil or nb < 0x80 or nb > 0xBF then ok = false; break end
+        cp = cp * 64 + (nb % 64)
+      end
+    end
+    out[#out + 1] = ok and cp or 63
+    i = i + len
+  end
+  return out
+end
+
 local function label(c, txt, size, color, align)
   local m = st(c)
   if m.t ~= txt then c.text = safeUtf8(txt); m.t = txt end
@@ -601,9 +1028,17 @@ local function label(c, txt, size, color, align)
     fs = math.floor(fs + 0.5)
     if fs < 1 then fs = 1 end
   end
-  if fs and m.fs ~= fs then c.fontSize = fs; m.fs = fs end
-  if color and m.fc ~= color then c.fontColor = color; m.fc = color end
-  if align and m.al ~= align then c.horizontalAlignment = align; m.al = align end
+  if fs and m.fs ~= fs then
+    c.fontSize = fs
+    -- 自适应字号开启时，最小字号决定"缩到多小为止"：与目标字号同值 = 不缩，但走自适应排版路径
+    pcall(function() c.minimumFontSize = fs end)
+    m.fs = fs
+  end
+  if color then
+    local fc = G_REAL.apiColor(color)
+    if m.fc ~= fc then c.fontColor = fc; m.fc = fc end
+  end
+  if align and m.al ~= align then G_REAL.setAlign(c, align); m.al = align end
 end
 
 -- ---------------------------------------------------------------- 图元
@@ -636,9 +1071,99 @@ local function rtri(cx, cy, w, h, deg, color)
 end
 
 local function text(s, x, y, w, size, color, align)
+  -- 【CodeArt 文字 · 默认路径】原生文本框在真机上渲染不出字形（写入/几何都对，见
+  -- docs/device-setup.md 与 Sans_Fight_文本框渲染_问题与方案.md），改用矩形字形：
+  -- 每个字从 lua/textart.lua 取配方 → 注册成一张 fit 配方（按 码点+颜色 缓存）→ 用 useBakedCorner
+  -- 烘成容器画出来（与 Sans/龙骨炮同一条烘焙路径）。字号基准 = textart 的 16px。
+  if textart ~= nil and type(textart.glyphs) == 'table' and fit ~= nil
+     and G_REAL.cfg.textMode ~= 'control' then
+    local codes = utf8Codepoints(safeUtf8(tostring(s)))
+    local chars, advance = {}, 0
+    for ci = 1, #codes do
+      local gl = textart.glyphs[codes[ci]] or textart.glyphs[63]
+      if gl == nil then gl = { w = 8, advance = 8, rects = {} } end   -- 字库缺字：留空位不崩
+      chars[#chars + 1] = { code = codes[ci], glyph = gl }
+      advance = advance + (gl.advance or gl.w or 0)
+    end
+    local scale = size / 16
+    if advance * scale > w and advance > 0 then scale = w / advance end
+    local tx = x
+    local al = tostring(align or 'Left')
+    if al == 'Middle' or al == 'middle' then tx = x + (w - advance * scale) / 2
+    elseif al == 'Right' or al == 'right' then tx = x + w - advance * scale end
+    for ci = 1, #chars do
+      local cd, gl = chars[ci].code, chars[ci].glyph
+      if gl ~= nil and gl.rects ~= nil and #gl.rects > 0 then
+        local name = 'glyph:' .. tostring(cd) .. ':' .. tostring(color)
+        if fit[name] == nil then
+          local spec = { w = gl.w, h = textart.height, rects = {} }
+          for ri = 1, #gl.rects do
+            local r = gl.rects[ri]
+            spec.rects[#spec.rects + 1] = { x = r[1], y = r[2], w = r[3], h = r[4], c = color }
+          end
+          fit[name] = spec
+        end
+        -- 字形画进**独立的顶层容器**（见 OnStart 的 glyphLayer 与 draw() 末尾的置顶）：
+        -- 否则字形烘在 bakedRoot（OnStart 最先建）里，会被后来按需创建的池矩形整体盖住 ——
+        -- 真机上「子面板文字发灰、像叠在一起」就是这个原因。
+        useBakedCorner(name, tx, y, gl.w * scale, textart.height * scale, false, G_REAL.glyphLayer)
+      end
+      tx = tx + (gl and (gl.advance or gl.w) or 0) * scale
+    end
+    if not G_REAL.artDiag then
+      G_REAL.artDiag = true
+      print('main: [diag] 文字走 CodeArt 矩形字形（textart height=' .. tostring(textart.height)
+        .. '，字号基准 16）首帧样例="' .. safeUtf8(tostring(s)) .. '" size=' .. tostring(size) .. ' align=' .. al)
+    end
+    return
+  end
   local c = take('text'); if not c then return nil end
+  -- 【诊断】只在第一个文本框上打「写前 / 写后 / 期望」三行 —— 用来区分
+  --   「属性写入没生效」和「写进去了但引擎渲染不出字形」。注意必须在 put/label **之后**再读，
+  --   否则读到的是模板默认值（text=""、fontSize=20、align=Left、size=100x40）。
+  local diag = false
+  if not G_REAL.textDiag then G_REAL.textDiag = true; diag = true end
+  local function rd(k)
+    local ok, v = pcall(function() return c[k] end)
+    if ok and v ~= nil then return tostring(v) end
+    return '?'
+  end
+  if diag then
+    print('main: [diag] 文本框写前 text="' .. rd('text') .. '" fontSize=' .. rd('fontSize')
+      .. ' align=' .. rd('horizontalAlignment') .. ' size=' .. rd('sizeDeltaX') .. 'x' .. rd('sizeDeltaY'))
+  end
   put(c, wx(x), wyBottom(y + size * 1.4), w * S, size * 1.4 * S)
   label(c, s, size * S, color, align or 'Left')
+  if diag then
+    print('main: [diag] 文本框写后 text="' .. rd('text') .. '" fontSize=' .. rd('fontSize')
+      .. ' fontColor=' .. rd('fontColor') .. ' align=' .. rd('horizontalAlignment')
+      .. ' size=' .. rd('sizeDeltaX') .. 'x' .. rd('sizeDeltaY')
+      .. ' pos=' .. rd('anchoredPositionX') .. ',' .. rd('anchoredPositionY')
+      .. ' visible=' .. rd('visible') .. ' active=' .. rd('active'))
+    print('main: [diag] 文本框期望 text="' .. safeUtf8(s) .. '" fontSize=' .. tostring(math.floor(size * S + 0.5))
+      .. ' align=' .. tostring(align or 'Left') .. ' size=' .. tostring(w * S) .. 'x' .. tostring(size * 1.4 * S))
+    -- 【研究用】把文本框上**所有能读到的字段**列出来：找找引擎里有没有我们没写的"字体/字形/排版"类字段
+    -- （真机读不到的字段返回 nil，所以这行会自然只列出真实存在的字段）。
+    local FIELDS = {
+      'name', 'Id', 'prefabIndex', 'typeofName', 'active', 'visible', 'activeInHierarchy', 'alive',
+      'sizeDeltaX', 'sizeDeltaY', 'anchoredPositionX', 'anchoredPositionY',
+      'anchorMinX', 'anchorMinY', 'anchorMaxX', 'anchorMaxY', 'pivotX', 'pivotY',
+      'localScaleX', 'localScaleY', 'localScaleZ', 'localRotationX', 'localRotationY', 'localRotationZ',
+      'text', 'fontSize', 'minimumFontSize', 'adaptiveFontSize', 'fontColor', 'bgColor',
+      'enableOutline', 'outlineColor', 'horizontalAlignment', 'verticalAlignment',
+      'raycastTarget', 'interactable', 'imageId', 'imageColor', 'visibleInHierarchy',
+      -- 下面这些是"猜测名"：真机若存在会打出来，不存在则为 nil（不影响）
+      'font', 'fontId', 'fontName', 'fontAsset', 'fontResource', 'textStyle', 'textStyleId',
+      'glyphSet', 'spriteFont', 'richText', 'lineSpacing', 'textAlign', 'textVerticalAlign',
+      'horizontalOverflow', 'verticalOverflow', 'wrapping', 'overflow', 'backgroundColor', 'color',
+    }
+    local parts = {}
+    for _, k in ipairs(FIELDS) do
+      local ok, v = pcall(function() return c[k] end)
+      if ok and v ~= nil then parts[#parts + 1] = k .. '=' .. tostring(v) end
+    end
+    print('main: [diag] 文本框字段: ' .. table.concat(parts, ' '))
+  end
   return c
 end
 
@@ -651,6 +1176,15 @@ end
 -- 端点必须画成两颗球（原为两颗重合的大圆 → 胶囊形，不是骨头）。
 local function drawBone(cmd)
   local x, y, w, h = cmd.x, cmd.y, cmd.w or 10, cmd.h or 10
+  -- 【诊断】橙骨（color=2）生成时打一行（最多打 8 条，够看 ROUND22/23 那两段）——
+  -- 用来确认"橙骨到底有没有出现在场上"，以及它的实际位置/尺寸。
+  if (cmd.color or 0) == 2 then
+    G_REAL.orangeSeen = (G_REAL.orangeSeen or 0) + 1
+    if G_REAL.orangeSeen <= 8 then
+      print(string.format('main: [橙骨] #%d x=%.0f y=%.0f w=%.0f h=%.0f vertical=%s',
+        G_REAL.orangeSeen, x, y, w, h, tostring(cmd.vertical)))
+    end
+  end
   local col = BONE_COLORS[(cmd.color or 0) + 1] or C_WHITE
   local a = cmd.alpha or 1
   if a < 1 then
@@ -664,19 +1198,36 @@ local function drawBone(cmd)
   if k < 4 then k = 4 end
   if k > w then k = w end
   if k > h then k = h end
+  local ks = G_REAL.boneKnobs
   if vertical then
     rect(x + (w - k) / 2, y + k / 3, k, math.max(1, h - 2 * k / 3), col)
-    circle(x, y, k, col)
-    circle(x + w - k, y, k, col)
-    circle(x, y + h - k, k, col)
-    circle(x + w - k, y + h - k, k, col)
+    if ks then ks[#ks + 1] = circle(x, y, k, col) end
+    if ks then ks[#ks + 1] = circle(x + w - k, y, k, col) end
+    if ks then ks[#ks + 1] = circle(x, y + h - k, k, col) end
+    if ks then ks[#ks + 1] = circle(x + w - k, y + h - k, k, col) end
   else
     rect(x + k / 3, y + (h - k) / 2, math.max(1, w - 2 * k / 3), k, col)
-    circle(x, y, k, col)
-    circle(x + w - k, y, k, col)
-    circle(x, y + h - k, k, col)
-    circle(x + w - k, y + h - k, k, col)
+    if ks then ks[#ks + 1] = circle(x, y, k, col) end
+    if ks then ks[#ks + 1] = circle(x + w - k, y, k, col) end
+    if ks then ks[#ks + 1] = circle(x, y + h - k, k, col) end
+    if ks then ks[#ks + 1] = circle(x + w - k, y + h - k, k, col) end
   end
+end
+
+-- [2026-10-11 用户口径] 骨头观感通用画法（骨刺小骨 / sin 型长骨都用它）：
+--   1) 矩形按原始尺寸画满（= 判定矩形）→ 几何契约与命中盒都不变；
+--   2) 四角各一颗骨球，完全落在矩形内部 → 视觉是骨头，但碰撞体不增加（球只是装饰）；
+--   3) 骨球登记到 G_REAL.boneKnobs，由 draw() 帧末统一置顶（否则会被 rect 池的骨干盖住）。
+function G_REAL.drawBoneLook(x, y, w, h, vertical, col)
+  rect(x, y, w, h, col)
+  local k = math.min(w, h) * 0.6
+  if k < 4 then k = 4 end
+  if k > w then k = w end
+  if k > h then k = h end
+  circle(x, y, k, col)
+  circle(x + w - k, y, k, col)
+  circle(x, y + h - k, k, col)
+  circle(x + w - k, y + h - k, k, col)
 end
 
 -- 颜色工具（只给下面的复合外观用）------------------------------------------
@@ -749,14 +1300,20 @@ local function drawBlaster(cmd)
         name = keys.default
       end
     end
-    -- 【方案A】普通龙骨炮走 block2；带 spin 的旋转炮单独走 3×3 LOD（只降旋转段负载）。
+    -- 【口径】所有龙骨炮（含旋转段）统一走 block2（2×2 精度）；block3 的 3×3 粗 LOD 已废弃。
     -- 两条路径都仍是 fit 像素烘焙，不会回退旧参数化外观。
+    -- 【2026-10-08 用户口径】所有龙骨炮统一走 block2（原 2×2 精度），
+    -- 不再按 cmd.lod 切 block3（3×3 粗 LOD 看着像糊/发射异常）。cmd.lod 仍保留但不生效。
     local block = fit and fit.blaster_block2
-    if cmd.lod == 'block3' and fit and fit.blaster_block3 then block = fit.blaster_block3 end
     if cmd.bake and block then
       local key = 'Default'
       if fire > 0 then key = (fire >= 0.5) and 'fire_2' or 'fire_0' end
       local rects = block[key] or block.Default
+      if rects and not G_REAL.blasterDiag then
+        G_REAL.blasterDiag = true
+        print(string.format('main: [diag] blaster bake=%s block=%s rects=%d sc=%.3f deg=%.1f size=%s w=%s lod=%s',
+          tostring(cmd.bake), tostring(block ~= nil), #rects, sc, deg, tostring(cmd.size), tostring(cmd.w), tostring(cmd.lod)))
+      end
       if rects then
         for i = 1, #rects do
           local r = rects[i]
@@ -820,6 +1377,7 @@ local function drawSans(cmd)
   local dodge = cmd.dodge or 0
   if dodge < 0 then dodge = 0 elseif dodge > 1 then dodge = 1 end
   x = x + 42 * dodge                              -- 闪身：整体侧移
+  x = x + (G_REAL.cfg.sansXOffset or 0)            -- 【可调】Sans 水平修正（真机实测偏左，见 config.lua 注释）
   local head = cmd.head or 'Default'
   local body = cmd.body
   local sweat = tonumber(cmd.sweat) or 0
@@ -923,11 +1481,22 @@ end
 -- 红心标记（菜单选中项用），与原作一致：心停在选中按钮左侧
 local function heart(cx, cy, col, r)
   r = r or 6
-  -- 同上：circle 的 (cx,cy) 是左上角，按「中心」摆要各减半个直径；三角本来就是中心锚点
-  local d = r * 0.62
-  circle(cx - r * 0.7 - d / 2, cy - r * 0.5 - d / 2, d, col)
-  circle(cx + r * 0.7 - d / 2, cy - r * 0.5 - d / 2, d, col)
-  rtri(cx, cy - r * 0.25, r * 2.3, r * 1.5, 180, col)
+  -- 【2026-10-10 重画】原来的圆瓣直径只有 0.62r（远小于三角的 2.3r×1.5r），
+  --   两个小圆 + 一个大三角 → 看起来就是"圆和三角重叠"。按原版心形重排：
+  --   ① 两个圆瓣直径 = r，圆心在 (cx ∓ 0.5r, cy - 0.5r) → 上半部正好铺满 cx±r、cy-r..cy
+  --   ② 下尖三角宽 = 2r（与两瓣外缘对齐）、高 = r，顶边接在两瓣中线、尖朝下到 cy + 0.5r
+  --   两瓣与三角在中线处相切重叠 ≈ 半个三角高 → 拼成完整心形（不会再是"两个小圆 + 大三角"）。
+  local d = r
+  local a = circle(cx - r * 0.5 - d / 2, cy - r * 0.5 - d / 2, d, col)
+  local b = circle(cx + r * 0.5 - d / 2, cy - r * 0.5 - d / 2, d, col)
+  local t = rtri(cx, cy, r * 2, r, 180, col)
+  -- 记录本帧用到的红心控件：帧末统一置顶，避免被按钮黑底（rect 池）之类按创建顺序盖住
+  local hs = G_REAL.hearts
+  if hs ~= nil then
+    if a ~= nil then hs[#hs + 1] = a end
+    if b ~= nil then hs[#hs + 1] = b end
+    if t ~= nil then hs[#hs + 1] = t end
+  end
 end
 
 -- 菜单项是否选中（抽成纯函数，便于单元测试）：
@@ -949,15 +1518,23 @@ local function drawMenu(cmd)
   -- 原版：框下方一行四个按钮（攻击/行动/道具/仁慈），心停在选中的那个左边，**没有横杠**。
   -- 文字与心都**画在按钮矩形内部**（跟 menuHitTest 用同一套矩形）：以前文字画在 y+22（矩形外），
   -- 命中框却在 y-6..y+34 —— 玩家点看得见的字，判定落空，表现就是「点了没反应」。
-  local gap = cmd.gap or 10
   local bh = cmd.h or 36
   local fs = 22                                   -- 标签字号（世界单位）
   local ty = y + (bh - fs * 1.4) / 2              -- 文字盒顶部：让标签在按钮矩形内垂直居中
   for i, it in ipairs(items) do
-    local bx = x + (i - 1) * (w + gap)
+    local bx, by, bw = menuButtonRect(cmd, i)
     local selected = menuItemSelected(cmd, i)
-    if selected then heart(bx - 16, y + bh / 2, C_RED, 7) end
-    text(it, bx, ty, w, fs, selected and C_HP or C_WHITE, 'Middle')
+    -- 【方案 B】按钮底：黑底 + 1px 白描边（对应原版 Default 贴图的"黑底 + 描边"，选中只换文字颜色）
+    --   注意：黑底来自 rect 池，红心来自 circle/rtri 池 —— 层级按控件创建顺序定，
+    --   所以红心在**帧末统一置顶**（见 draw() 末尾的 G_REAL.hearts 处理），才不会被黑底盖住。
+    local edge = C_WHITE
+    rect(bx, by, bw, bh, 0xE6000000)
+    rect(bx, by, bw, 1, edge); rect(bx, by + bh - 1, bw, 1, edge)
+    rect(bx, by, 1, bh, edge); rect(bx + bw - 1, by, 1, bh, edge)
+    -- 【方案 A3】红心在按钮内左 16px、垂直居中（原版 Heart 图像点）
+    if selected then heart(bx + 16, by + bh / 2, C_RED, 7) end
+    -- 【方案 A4】标签让出左侧心位：从 bx+26 起、宽 bw-32，仍居中（中文 2 字 ≈44px 不会压到心）
+    text(it, bx + 26, ty, bw - 32, fs, selected and C_HP or C_WHITE, 'Middle')
   end
 end
 
@@ -1012,27 +1589,8 @@ local function drawFlash(cmd)
 end
 
 -- 骨刺：从战斗框某条边刺出的骨（peek 预告半透明 → extend 伸出 → hold → retract）
-local function drawStab(cmd)
-  local x, y, w, h, dir = cmd.x, cmd.y, cmd.w, cmd.h, cmd.dir or 0
-  if w <= 0 or h <= 0 then return end
-  local peek = (cmd.phase == 'peek')
-  local alpha = peek and 0.45 or (cmd.alpha or 1)
-  drawBone({ x = x, y = y, w = w, h = h, vertical = (h >= w), color = 0, alpha = alpha })
-  local thick = (h >= w) and w or h
-  local deg = (dir == 0 and 90) or (dir == 1 and 180) or (dir == 2 and -90) or 0
-  local tx, ty
-  -- 【2.6】方向语义改为 0=右 1=下 2=左 3=上 → 三角放在**朝框内**的那条边
-  if dir == 0 then tx, ty = x, y + h / 2
-  elseif dir == 2 then tx, ty = x + w, y + h / 2
-  elseif dir == 1 then tx, ty = x + w / 2, y
-  else tx, ty = x + w / 2, y + h end
-  if dir == 0 or dir == 2 then
-    rtri(tx, ty, 9, thick, deg, peek and 0x88FFFFFF or C_WHITE)
-  else
-    rtri(tx, ty, thick, 9, deg, peek and 0x88FFFFFF or C_WHITE)
-  end
-end
-
+-- 【2026-10-08 用户口径】骨刺只用**细骨**表示：删掉原来贴在骨尖上的三角形图元（rtri）。
+--   依据交接包文档："骨刺使用细骨排列"，rtri 只留给其它三角图元（心尖等仍然用它）。
 -- 细长条（正弦骨长骨）：矩形 + 两端等厚圆帽，避免 drawBone 的 13px 骨球撑破 8px 厚的长骨
 local function drawBar(x, y, w, h, color)
   rect(x, y, w, h, color)
@@ -1043,6 +1601,38 @@ local function drawBar(x, y, w, h, color)
   else
     circle(x, y, d, color)
     circle(x, y + h - d, d, color)
+  end
+end
+
+local function drawStab(cmd)
+  local x, y, w, h = cmd.x, cmd.y, cmd.w, cmd.h
+  if w <= 0 or h <= 0 then return end
+  local peek = (cmd.phase == 'peek')
+  local alpha = peek and 0.45 or (cmd.alpha or 1)
+  local col = ((math.floor(255 * alpha)) << 24) | 0xFFFFFF
+  -- 【2026-10-11 用户口径】把"一条平行于边的骨刺"画成**一排垂直于边的小骨**：
+  --   沿边间距 13px、单根厚 10px ⇒ 缝 3px < 灵魂判定盒 4px ⇒ 钻不过去；
+  --   判定仍用整条边（core.World:stabRect 不变）⇒ 视觉有缝、实际无缝。
+  local SP, BW = 13, 10
+  local alongX = (w >= h)                    -- 横条（上/下边刺出）沿 x 排；竖条（左/右边刺出）沿 y 排
+  if alongX then
+    local n = math.max(1, math.ceil(w / SP))
+    for i = 0, n - 1 do
+      local bx = x + i * SP
+      if bx < x + w then
+        local bw2 = math.min(BW, x + w - bx)
+        G_REAL.drawBoneLook(bx, y, bw2, h, (h >= bw2), col)
+      end
+    end
+  else
+    local n = math.max(1, math.ceil(h / SP))
+    for i = 0, n - 1 do
+      local by = y + i * SP
+      if by < y + h then
+        local bh2 = math.min(BW, y + h - by)
+        G_REAL.drawBoneLook(x, by, w, bh2, (bh2 >= w), col)
+      end
+    end
   end
 end
 
@@ -1067,7 +1657,9 @@ local function drawSine(cmd)
   if longEnough then
     for i = 1, 2 do
       local b = bars[i]
-      if b and b.w > 0 and b.h > 0 then drawBar(b.x, b.y, b.w, b.h, C_WHITE) end
+      if b and b.w > 0 and b.h > 0 then
+        G_REAL.drawBoneLook(b.x, b.y, b.w, b.h, (b.h >= b.w), C_WHITE)
+      end
     end
     return
   end
@@ -1143,7 +1735,9 @@ local function drawSub(cmd)
       if sel then heart(x + 18, ry + 9, C_RED, 6) end
       local note = cmd.notes and cmd.notes[i]
       -- 【2026-10-07 用户口径】没有备注的行（行动）名字占满整行；有备注（道具 xN / 仁慈）时让出右侧 102px
-      local fs = math.min(18, math.max(12, (cmd.rowH or 26) - 2))
+      -- 字号按行高定，但字形（CodeArt 16px 基准）比原来的原生字体"墨迹更满"，
+      -- 取 0.58×行高（上限 15）才不会相邻两行视觉粘连。
+      local fs = math.min(15, math.max(11, (cmd.rowH or 26) * 0.58))
       local nameW = (note and note ~= '') and (w - 142) or (w - 40)
       text(r, x + 28, ry, nameW, fs, sel and C_HP or C_WHITE, 'Left')
       -- 【2026-10-07 修】备注框原来写成 x+w-20 宽 90（text() 不会像 drawHud 那样按对齐回退宽度）→ 文字被画到面板外面；
@@ -1195,6 +1789,8 @@ local DRAW = {
 }
 
 local function frameBegin()
+  G_REAL.hearts = {}          -- 本帧用到的红心控件（帧末置顶用）
+  G_REAL.boneKnobs = {}       -- 本帧用到的骨球控件（帧末置顶用：否则被骨干矩形盖住）
   SHKX, SHKY = 0, 0   -- 【A-7】每帧先清零，由 shake 命令写入
   for k in pairs(used) do used[k] = 0 end
   -- 闪层每帧先关，由本帧的 flash 命令决定是否再打开（否则会残留）
@@ -1336,6 +1932,37 @@ local function draw(cmds)
     end
   end
   drawPendingHint()      -- 触摸端「再点一次确认」提示（画在选中项旁边）
+
+  -- 【z 序 · 2026-10-08】把本帧用到的文本框提到最上层。
+  -- 为什么必须显式提：真机**按控件创建顺序**定兄弟序，而真机上我们不做批量预热、控件是按需创建的 ——
+  -- 后面新建的 rect/circle（骨头、HP 条底、战斗框边、黑底……）会盖在**先前建的文本框**上面，
+  -- 表现为"文字一个都不显示"。模拟器因为一次性把全部控件预热好、顺序固定，所以复现不出来。
+  -- 每帧最多 15 次调用，成本可忽略；比依赖创建顺序可靠。
+  -- ① 字形层（CodeArt 文字全在这里）置顶 —— 它烘在独立容器里，不置顶就会被池矩形（面板底板/边框）盖住；
+  -- ② 原生文本框控件（textMode='control' 时才用）同样置顶；
+  -- ③ 闪层最后（结局白闪要盖住包括文字在内的一切）。
+  if G_REAL.glyphLayer ~= nil then pcall(function() G_REAL.glyphLayer:SetAsLastSibling() end) end
+  -- 红心（圆瓣 + 三角来自 circle/rtri 池）同样要置顶：否则会被按钮黑底（rect 池）按创建顺序盖住
+  if type(G_REAL.boneKnobs) == 'table' then
+    for ki = 1, #G_REAL.boneKnobs do
+      local kc = G_REAL.boneKnobs[ki]
+      if kc ~= nil then pcall(function() kc:SetAsLastSibling() end) end
+    end
+  end
+  if type(G_REAL.hearts) == 'table' then
+    for hi = 1, #G_REAL.hearts do
+      local hc = G_REAL.hearts[hi]
+      if hc ~= nil then pcall(function() hc:SetAsLastSibling() end) end
+    end
+  end
+  local tpool = pool.text
+  if tpool ~= nil then
+    for ti = 1, (used.text or 0) do
+      local tc = tpool[ti]
+      if tc ~= nil then pcall(function() tc:SetAsLastSibling() end) end
+    end
+  end
+  if flash ~= nil then pcall(function() flash:SetAsLastSibling() end) end
   frameEnd()
 end
 
@@ -1347,18 +1974,24 @@ end
 -- 如果用户按了 WASD 却**从未**看到这行，就说明按键在试玩页那一层就被丢了（映射缺失/页面没转发），
 -- 而不是游戏逻辑没响应；看到这行则说明事件已到达 Lua，问题在别处。
 local keyDiagLogged = false
-local function bind(name, fn)
+-- bind(name, fn[, optional])：optional = 这一路键在真机枚举里可能不存在（如 KeyboardMenuConfirmKey），
+-- 失败时只提示「跳过可选键」，不当成错误。
+local function bind(name, fn, optional)
   if not root then return end
-  local ok, err = pcall(function()
-    root:AddKeyEventListener(name, function()
-      if not keyDiagLogged then
-        keyDiagLogged = true
-        print(string.format('main: 收到按键事件 %s（若你按了 WASD 却从未出现这行，说明试玩页那层没转发按键）', name))
-      end
-      fn()
-    end)
-  end)
-  if not ok then print('main: bind fail ' .. name .. ' :: ' .. tostring(err)) end
+  -- 回调必须留引用：RemoveKeyEventListener(name, fn) 要的是**同一个函数对象**，
+  -- 注册完就丢引用的话 OnDestroy 里根本卸不掉（真机换关/重开的残留监听就是这么来的）。
+  local cb = function()
+    if not keyDiagLogged then
+      keyDiagLogged = true
+      print(string.format('main: 收到按键事件 %s（若你按了 WASD 却从未出现这行，说明试玩页那层没转发按键）', name))
+    end
+    fn()
+  end
+  -- 真机要 Enum.KeyEventType（字符串会抛 "KeyEventType expected, got string"，见 2026-10-08 真机日志）
+  local used = G_REAL.addKeyEvent(root, name, cb)
+  if used ~= nil then owned.keys[#owned.keys + 1] = { name = used, cb = cb }
+  elseif optional then print('main: 跳过可选键 ' .. name .. '（本宿主不认字符串键名，枚举里也没有这一项）')
+  else print('main: bind fail ' .. name .. '（宿主既不吃字符串键名，也没有 Enum.KeyEventType.' .. name .. '）') end
 end
 
 -- 键盘**四向表**（**只在 PC 分支注册**：bindKeys 只被 PC 分支调用，触摸分支不绑、不响应任何键盘事件）：
@@ -1407,22 +2040,88 @@ local function setDir(dir, v)
 end
 
 local function bindKeys()
+  -- 方向：键盘语义键名（试玩页注入的字符串）优先，真机上同一个名字换成 Enum.KeyEventType.*
+  -- （bind → G_REAL.addKeyEvent 内部「先字符串、抛错再枚举」，两条路径都能落地）
   for _, k in ipairs(KEY_DIRS) do
     local dir = k.dir
     bind(k.down, function() setDir(dir, true) end)
     bind(k.up, function() setDir(dir, false) end)
   end
-  -- Enter / 小键盘回车 / Z / 空格（keyEventName 会按 Down/Up 成对生成事件名）
-  bind('KeyboardMenuConfirmKeyDown', function() edgeConfirm = true; confirmHeld = true end)
-  bind('KeyboardMenuConfirmKeyUp',   function() confirmHeld = false end)
-  bind('KeyboardNormalAttackKeyDown', function() edgeConfirm = true; confirmHeld = true end)  -- J（备用确认）
-  bind('KeyboardNormalAttackKeyUp',   function() confirmHeld = false end)
-  bind('KeyboardMenuBackKeyDown', function() edgeCancel = true end)       -- Esc / X
+  -- 确认 / 取消：**多来源聚合**。
+  --   ① 真机枚举里**没有** KeyboardMenuConfirmKey / KeyboardMenuBackKey（只有 ControllerMenuConfirmKey /
+  --      ControllerMenuBackKey，见 worker.js 的 pl()：键盘表里就没有 MenuConfirm/MenuBack 这两项）；
+  --   ② 同一个「确认」在千星有多种可用来源（Enter/空格/Z、Jump 键、J、F/E、控制器 MenuConfirm）。
+  --   所以按来源分别记状态、任一按住即算按住 —— 一个来源的「抬起」绝不能顶掉另一个还按着的来源
+  --   （蓝心跳跃靠**按住时长**决定高度，这个状态必须准）。
+  local HOLD = owned.holds
+  local function anyHold(t)
+    for _, v in pairs(t) do if v then return true end end
+    return false
+  end
+  local function bindConfirm(name)
+    bind(name .. 'Down', function()
+      -- 【修复：空格反复触发攻击/闪避】只认"从抬起到按下"的那一次 —— 长按或
+      -- 手柄/键盘的自动重复（连续 Down 但中间没有 Up）不再产生新的确认边沿。
+      local was = HOLD.confirm[name]
+      HOLD.confirm[name] = true
+      if not was then edgeConfirm = true end
+      confirmHeld = anyHold(HOLD.confirm)
+    end, true)
+    bind(name .. 'Up', function()
+      HOLD.confirm[name] = false; confirmHeld = anyHold(HOLD.confirm)
+    end, true)
+  end
+  local function bindCancel(name)
+    bind(name .. 'Down', function()
+      HOLD.cancel[name] = true
+      edgeCancel = true
+      -- 【诊断】记下"玩家按了 ESC/返回键"的帧号：OnDisable/OnDestroy 时用它区分
+      --   「玩家强制退出」和「服务端结算结束关卡」。
+      G_REAL.escFrame = frame
+      print('main: [input] 按下返回键（ESC/X）→ 若随后立刻出现 OnDisable/OnDestroy，那就是玩家强退')
+    end, true)
+    bind(name .. 'Up', function() HOLD.cancel[name] = false end, true)
+  end
+  -- 确认：Enter / 小键盘回车 / Z / 空格（试玩页都归到 KeyboardMenuConfirmKey）
+  --       控制器 MenuConfirm、Jump 键、J（NormalAttack）、F/E（Interact）兜底
+  for _, n in ipairs({ 'KeyboardMenuConfirmKey', 'ControllerMenuConfirmKey', 'KeyboardJumpKey',
+                       'KeyboardNormalAttackKey', 'KeyboardInteractKey' }) do bindConfirm(n) end
+  -- 取消：Esc / X（KeyboardMenuBackKey）、控制器 MenuBack、Drop 键
+  for _, n in ipairs({ 'KeyboardMenuBackKey', 'ControllerMenuBackKey', 'KeyboardDropKey' }) do bindCancel(n) end
+
+  -- 【键位诊断，默认关】lua/config.lua 里 C.keyDiag = true 时，把 Enum.KeyEventType 里**所有**事件
+  -- 都挂一个「按到就打印」的监听。真机上不确定某个物理键对应哪个事件名时打开它：
+  -- 进入关卡后按一下想用的键，日志会打 main: [keyDiag] <事件名>，据此把确认键配准。
+  if G_REAL.cfg.keyDiag then
+    local okLib, lib = pcall(function() return Enum.KeyEventType end)
+    if okLib and type(lib) == 'table' then
+      local count = 0
+      for name, ev in pairs(lib) do
+        local cb = function() print('main: [keyDiag] ' .. tostring(name)) end
+        if pcall(function() root:AddKeyEventListener(ev, cb) end) then
+          owned.keys[#owned.keys + 1] = { name = ev, cb = cb }
+          count = count + 1
+        end
+      end
+      print('main: [keyDiag] 已挂 ' .. count .. ' 个按键监听（随便按键，看日志打出的事件名）')
+    else
+      print('main: [keyDiag] 本宿主没有可枚举的 Enum.KeyEventType，配不了键位')
+    end
+  end
 end
 
 local function consumeEdges()
   local c, x = edgeConfirm, edgeCancel
   edgeConfirm, edgeCancel = false, false
+  -- 【修复：空格反复触发攻击/闪避】去抖：相邻 3 帧（≈0.1s）内只接受一次确认边沿。
+  -- 攻击条 / 菜单 / 结局页都靠这个边沿推进，连按会在同一状态里重复触发（闪避动画会反复重放）。
+  if c then
+    if G_REAL.lastConfirmFrame ~= nil and (frame - G_REAL.lastConfirmFrame) < 3 then
+      c = false
+    else
+      G_REAL.lastConfirmFrame = frame
+    end
+  end
   return c, x
 end
 
@@ -1463,8 +2162,15 @@ local function bindPointer()
     print('main: 无游标控件，指针输入不可用')
     return
   end
+  -- 游标回调同样要留引用（OnDestroy 里逐个 RemoveCursorEventListener / 最后 RemoveAll 兜底）。
+  -- 真机要 Enum.CursorEventType.*（字符串同样会抛 "CursorEventType expected, got string"）
+  local function onCursor(name, fn)
+    local used = G_REAL.addCursorEvent(cursorArea, name, fn)
+    if used ~= nil then owned.cursors[#owned.cursors + 1] = { name = used, cb = fn, c = cursorArea }
+    else print('main: 游标监听注册失败 ' .. name .. '（宿主既不吃字符串，也没有 Enum.CursorEventType.' .. name .. '）') end
+  end
   local ok, err = pcall(function()
-    cursorArea:AddCursorEventListener('CursorDown', function(e)
+    onCursor('CursorDown', function(e)
       ptr.down = true
       ptr.tapPending = false
       joy.consumed = false
@@ -1476,16 +2182,17 @@ local function bindPointer()
         -- 只在**敌方阶段**起摇杆：其它状态 core 根本不读方向输入（菜单/子面板/攻击条/结局），
         -- 起了只会把点按吞掉（实测：攻击条阶段点左半屏本来该结算，却因为摇杆消费了 CursorUp 而没反应）。
         local twx, twy = toWorld(x, y)
-        if state and state.state == 'enemy' and inJoyZone(twx) and not uiHit(twx, twy) then
+        if state and state.state == 'enemy' and inJoyZone(twx, twy) and not uiHit(twx, twy) then
           joy.active = true
-          joy.bx, joy.by = twx, twy
+          -- 【2026-10-11 用户口径·固定摇杆】基准点**固定**在 HOME（原神预设位），不再跟随按下点
+          joy.bx, joy.by = JOY_HOME_X, JOY_HOME_Y
           joy.kx, joy.ky, joy.dx, joy.dy = 0, 0, 0, 0
         end
       end
       -- PC 分支：这里**什么都不做** —— 鼠标只在 UI 上起作用，拖动不产生任何移动、也不画摇杆
       onPointer(e, false, 'CursorDown')
     end)
-    cursorArea:AddCursorEventListener('CursorDrag', function(e)
+    onCursor('CursorDrag', function(e)
       ptr.down = true
       local x, y = ptrPos(e)
       if not x then return end
@@ -1503,7 +2210,7 @@ local function bindPointer()
         ptr.moved = true
       end
     end)
-    cursorArea:AddCursorEventListener('CursorUp', function(e)
+    onCursor('CursorUp', function(e)
       ptr.down = false
       local x, y = ptrPos(e)
       if x then ptr.x, ptr.y = x, y end
@@ -1518,7 +2225,7 @@ local function bindPointer()
       ptr.tapPending = not ptr.moved
       onPointer(e, ptr.tapPending, 'CursorUp')
     end)
-    cursorArea:AddCursorEventListener('CursorClick', function(e)
+    onCursor('CursorClick', function(e)
       if ptr.tapPending then
         ptr.tapPending = false
         return                       -- 紧跟 CursorUp 的同一个点按，去重
@@ -1610,10 +2317,14 @@ handleClick = function(px, py)
     if hit == 1 then
       pcall(function() core.settle(state) end)
       print('main: 点按 → 结算并退出奇域')
+    elseif hit == 3 then
+      -- 【2026-10-09】第三项：重开并**重选难度**（回标题页）
+      pcall(function() core.retitle(state) end)
+      print('main: 点按 → 重选难度（回标题页）')
     else
       -- hit==2 或点空白：保持旧的“点结局页重开”手感。
-      pcall(function() core.restart(state) end)
-      print('main: 点按 → 重开')
+      pcall(function() core.requestRestart(state) end)
+      print('main: 点按 → 重开（需再确认一次）')
     end
     return true
   end
@@ -1713,7 +2424,8 @@ end
 -- （千星画布原点在左下、Y 向上，wyBottom(y) = OY + (H-y)*S 已经翻过一次），
 -- 所以往上拖（世界 ky<0）杆头画在圈心**上方**，不会出现"拖上去、圈画在下面"。
 local function joystickGeom()
-  if not (isTouch and joy.active) then return nil end
+  -- 【2026-10-11】固定摇杆：触摸分支下**常显**（未按住画淡底盘，让玩家知道摇杆固定在哪）
+  if not isTouch then return nil end
   local bx, by, kx, ky = joy.bx, joy.by, joy.kx, joy.ky
   local d = 26
   return {
@@ -1728,7 +2440,7 @@ end
 local function drawJoystick()
   local g = joystickGeom()
   if not g then return end
-  local alpha = 0.8
+  local alpha = joy.active and 0.8 or 0.28
   local rc = take('ring')
   if rc then
     put(rc, g.ring.x, g.ring.y, g.ring.w, g.ring.h)
@@ -1795,6 +2507,15 @@ end
 
 -- ---------------------------------------------------------------- 生命周期
 
+local function tryLoadTextArt()
+  local ok, m = pcall(require, 'default_import_file/workspace/sans-fight/lua/textart')
+  if ok and type(m) == 'table' and type(m.glyphs) == 'table' then return m end
+  local ok2, m2 = pcall(require, 'lua' .. '.textart')
+  if ok2 and type(m2) == 'table' and type(m2.glyphs) == 'table' then return m2 end
+  print('main: textart 未加载（文字回退到原生文本框）:: ' .. tostring(m))
+  return nil
+end
+
 local function tryLoadFit()
   local ok, m = pcall(require, 'default_import_file/workspace/sans-fight/lua/fitdata')
   -- 主路径成功即返回（离线单测会把它 stub 成空表 → 走参数化回退）
@@ -1822,6 +2543,16 @@ local function tryLoadCore()
   return mod
 end
 
+-- 战斗 BGM（客户端音效拼旋律）：单独一个模块，缺失时静默降级（不影响战斗）
+local function tryLoadMusic()
+  local ok, m = pcall(require, 'default_import_file/workspace/sans-fight/lua/music')
+  if ok and type(m) == 'table' and type(m.start) == 'function' and type(m.update) == 'function' then return m end
+  local ok2, m2 = pcall(require, 'lua' .. '.music')
+  if ok2 and type(m2) == 'table' and type(m2.start) == 'function' then return m2 end
+  print('main: music 未加载（本局无 BGM）:: ' .. tostring(m))
+  return nil
+end
+
 local function difficulty()
   local ok, v = pcall(function() return game.GetGlobalCustomVariableValue('Level', 'SansDifficulty') end)
   if ok and type(v) == 'string' and v ~= '' then return v end
@@ -1831,25 +2562,76 @@ end
 -- （调试钩子 bootRound() 定义在文件上方「平台分流」段，这里不再重复定义）
 
 function M.OnInit()
-  root = game.GetClientUIControl(1)
+  -- 真实千星最可靠：脚本挂载对象本身就是父容器（1073741857）。
+  -- 模拟器/旧运行时再按 GUID 或运行期 Id 回退。
+  local scriptOk, scriptObj = pcall(function() return script.object end)
+  if scriptOk and scriptObj ~= nil then root = scriptObj end
+  if root == nil then
+    for _, rid in ipairs({ 1073741857, 1073741856, 1 }) do
+      local ok, candidate = pcall(function() return game.GetClientUIControl(rid) end)
+      if ok and candidate ~= nil then root = candidate; break end
+    end
+  end
   layout()
   print(string.format('main init: root=%s canvas=%.0fx%.0f scale=%.3f ox=%.1f oy=%.1f',
     tostring(root ~= nil), CW, CH, S, OX, OY))
 end
 
+function M.OnUpdate(dt)
+  -- 官方**同时**提供 OnUpdate 与 OnLevelUpdate；两个都推进 = 每帧跑两遍（速度翻倍、双倍伤害）。
+  -- 默认只让 OnLevelUpdate 推进（与关卡暂停一致）；只有确认外部宿主**只**调 OnUpdate 时，
+  -- 才在 lua/config.lua 里把 C.updateCallback 改成 'ui'。
+  if G_REAL.cfg.updateCallback == 'ui' then return M.OnLevelUpdate(dt, true) end
+end
+
 function M.OnStart()
+  if owned.started then return end        -- 宿主可能重复触发 OnStart（容器重建/重进），防重入
+  if not root then M.OnInit() end
+  if not root then error('找不到脚本宿主容器：请把 main.lua 挂在客户端画布的根容器节点上') end
+  owned.started = true
+  -- 【真机】事件透传开关：不打开 key/cursor 透传，子控件的监听收不到事件；
+  -- showCursor 必须开在**祖先容器**上（worker 的 cursorEventsEnabled 逐级往上找 kind=='container' 且 showCursor）。
+  pcall(function() script:EnableUpdate(true) end)
+  pcall(function() root.disableKeyEventPassthrough = true end)
+  pcall(function() root.disableCursorEventPassthrough = true end)
+  pcall(function() root.showCursor = true end)
+  -- 【官方文档要求】Root 必须覆盖整个画布：锚点 (0,0)-(1,1)、位置与尺寸差都为 0。
+  -- 编辑器里没配的话，子控件的绝对坐标就会相对一个「小盒子」定位 —— 整幅画面缩在左下角。
+  G_REAL.stretchFull(root)
   layout()
   isTouch = detectDevice()      -- 平台分流：只认 Mobile / MobileController，其余（含读不到）按 PC
   -- 纯黑背景板：**在所有控件之前**创建 → 兄弟序天然在最底层（新实例默认置顶，先建的在下面）。
   -- 模拟器试玩页/截图里的舞台底色是宿主画的渐变，真机底色也不可控 → 背景必须由 Lua 自己糊一层。
-  -- 尺寸取 **3 倍画布**居中（宽屏/超宽也不在边上露出宿主场景 —— 做法照抄 millastra-6nimmt 的
-  -- scripts/build.mjs：`rect(Background, 640,360, 3840,2160)`）。
+  --
+  -- 【2026-10-08 真机第二轮】铺**两层**，两层都不依赖 pivot 的绝对摆放：
+  --   ① bgPanel：stretch 锚点 (0,0)-(1,1)、尺寸差 0 → 精确铺满 Root（Root 已拉成铺满画布）＝ 铺满画布；
+  --   ② bgOver ：同样 stretch，但尺寸差 +2CW/+2CH（居中向四周各扩 CW/CH）→ 画布外一圈也是黑的，
+  --              宽屏/超宽/画布比逻辑画布大时不会露出宿主场景。
+  -- 只用 ① 时若宿主把子控件裁到画布，就铺不满某些比例；只用 ② 时若宿主对 stretch 的解释不同，
+  -- 也可能只盖住一块 —— 两层叠加后，最坏情况仍有一层是满的。
   bgPanel = spawn('rect')
   if bgPanel then
-    put(bgPanel, -CW, -CH, CW * 3, CH * 3)
+    G_REAL.stretchFull(bgPanel)
     tint(bgPanel, 0xFF000000)
     bgPanel:SetVisible(true)
     st(bgPanel).vis = true
+  end
+  bgOver = spawn('rect')
+  if bgOver then
+    G_REAL.stretchFull(bgOver)
+    pcall(function() bgOver:SetSizeDelta(CW * 2, CH * 2) end)   -- 相对父层四周各外扩 1 倍画布
+    tint(bgOver, 0xFF000000)
+    bgOver:SetVisible(true)
+    st(bgOver).vis = true
+  end
+  G_REAL.dumpGeom(root, 'root')
+  G_REAL.dumpGeom(bgPanel, 'bg1-stretch')
+  G_REAL.dumpGeom(bgOver, 'bg2-overscan')
+  -- 字形层：**独立于 bakedRoot**（bakedRoot 在池控件之下，字形必须在其上），每帧在 draw() 末尾置顶。
+  G_REAL.glyphLayer = spawn('bakedRoot')
+  if G_REAL.glyphLayer then
+    G_REAL.stretchFull(G_REAL.glyphLayer)
+    G_REAL.activate(G_REAL.glyphLayer)
   end
   -- 烘焙容器根：必须在 prewarm 之前创建 → 烘焙层在黑底之上、池控件之下。
   bakedRoot = spawn('bakedRoot')
@@ -1859,12 +2641,14 @@ function M.OnStart()
     st(bakedRoot).vis = true
   end
   fit = tryLoadFit()
+  textart = tryLoadTextArt()
   prewarm()
   cursorArea = take('cursor')
   pool.cursor = nil        -- 游标区不参与每帧显隐管理，始终铺满画布接收指针
   if cursorArea then cursorArea:SetVisible(true) end
   flash = spawn('rect')
   core = tryLoadCore()
+  music = tryLoadMusic()
   if core then
     local ok, s = pcall(function()
       return core.newTitle({ difficulty = difficulty(), scripts = attacks, hp = 92,
@@ -1887,36 +2671,149 @@ function M.OnStart()
   bindPointer()
   -- 显式层序（防「真机同级层叠顺序与模拟器相反」这类差异，见 6nimmt 的 AGENTS.md）：
   -- 背景钉最底、闪层钉最上；池内控件的相对顺序仍由创建顺序决定（后取的压在上面）。
+  if bgOver then pcall(function() bgOver:SetAsFirstSibling() end) end
   if bgPanel then pcall(function() bgPanel:SetAsFirstSibling() end) end
   if flash then pcall(function() flash:SetAsLastSibling() end) end
+  -- 进入游戏：**只发一次**的开局信号（服务端据此起 120 秒计时器；重开/重选难度不再发）
+  G_REAL.sendStartSignal()
   print(string.format('main start: build=%s device=%s touch=%s mode=%s pool=%d flash=%s cursor=%s',
     BUILD, deviceName, tostring(isTouch), mode, madeTotal, tostring(flash ~= nil), tostring(cursorArea ~= nil)))
 end
 
-local function requestSettlement()
-  if not (state and state.settleRequested) then return end
-  state.settleRequested = false
+-- 【2026-10-09 用户口径】把"发信号"拆出来，供两处复用：
+--   唯一触发点：结局页点「结 算」（ESC 不发信号）。
+-- 注意：这里**不改 state.result** —— 时间是否够、要不要弹提示、是否真结算，全部由服务端节点图按它自己的计时器决定。
+function G_REAL.sendSettleSignal(resultBool, why)
   if type(game.ServerSignal) ~= 'function' then
     print('main: 结算信号不可用（当前宿主没有 game.ServerSignal）')
     return
   end
   local ok, err = pcall(function()
     local sig = game.ServerSignal('SansFightSettle')
-    sig:AddString('result', tostring(state.result or 'victory'))
-    sig:AddInt('hp', math.floor(state.hp or 0))
-    sig:AddInt('kr', math.floor(state.kr or 0))
-    sig:AddInt('round', math.floor((state.round or 0) + 1))
+    -- 【2026-10-09 用户口径】result 改为**布尔**：胜利 = true(1) / 失败 = false(0)。
+    -- 真机实测（日志）：AddBool **只接受一个参数（值本身）**——
+    --   传 (名字, 值) 会报 bad argument count to 'AddBool' (2 expected, got 3)。
+    -- 所以这里「先试带名字，失败就退回只传值」；参数顺序仍按信号配置的声明顺序：result → hp → kr → round。
+    local function addBool(v)
+      if not pcall(function() sig:AddBool('result', v) end) then sig:AddBool(v) end
+    end
+    local function addInt(name, v)
+      if not pcall(function() sig:AddInt(name, v) end) then sig:AddInt(v) end
+    end
+    addBool(resultBool and true or false)
+    addInt('hp', math.floor((state and state.hp) or 0))
+    addInt('kr', math.floor((state and state.kr) or 0))
+    addInt('round', math.floor(((state and state.round) or 0) + 1))
     sig:SendSignal()
   end)
   if ok then
-    print('main: 已发送结算信号 SansFightSettle')
+    print('main: 已发送结算信号 SansFightSettle' .. tostring(why or ''))
   else
     print('main: 结算信号发送失败 :: ' .. tostring(err))
   end
 end
 
-function M.OnLevelUpdate(dt)
+-- 进入战斗时广播开局信号（服务端收到 → 起 120 秒计时器）
+function G_REAL.sendStartSignal()
+  -- 【2026-10-09 用户口径】整个会话**只发一次**：脚本挂载进入时就发，之后重开/重选难度/换回合都不再发。
+  if G_REAL.startSignalSent then return end
+  G_REAL.startSignalSent = true
+  if (G_REAL.cfg.startSignal or '') == '' then return end     -- 留空 = 不发（用户已改用界面控件组触发）
+  if type(game.ServerSignal) ~= 'function' then return end
+  local name = G_REAL.cfg.startSignal or 'SansFightStart'
+  local ok, err = pcall(function()
+    local sig = game.ServerSignal(name)
+    sig:SendSignal()
+  end)
+  if ok then
+    print('main: 已发送开局信号 ' .. tostring(name) .. '（服务端可据此起计时器）')
+  else
+    print('main: 开局信号发送失败 :: ' .. tostring(err))
+  end
+end
+
+local function requestSettlement()
+  if not (state and state.settleRequested) then return end
+  state.settleRequested = false
+  if music then music.stop() end      -- 循环到结算为止
+  -- 结局页：kill / spare / victory 等非 fail 的结局都算「胜利」→ true；fail → false
+  local win = ((state and state.result) ~= 'fail')
+  G_REAL.sendSettleSignal(win, string.format('（结局页结算 · result=%s → %s）',
+    tostring(state and state.result), win and 'true/1' or 'false/0'))
+end
+
+-- ---------------------------------------------------------------- 文本渲染「隔离探针」
+-- 【用途】回答"这台机器到底能不能渲染原生文本框"。按交接项目建议的做法：**另开一层独立容器**，
+-- 只画三样东西，不挂战斗内容、不受池清理/黑底/闪层影响：
+--   ① 白色参照矩形（证明 rect 路径正常）
+--   ② 画布里**手放**的文本框 TextProbe（如果存在）—— 我们**一个字都不写**，完全保持编辑器里的状态
+--   ③ 我们脚本实例化 + 写入的文本框（ASCII 与中文各一，外加对齐/自适应对照）
+-- 开启方式：lua/config.lua 里 C.textProbe = true（改完重建存档）。
+local function textProbeFrame()
+  frameBegin()
+  G_REAL.probeLayer = G_REAL.probeLayer or spawn('bakedRoot')
+  local layer = G_REAL.probeLayer
+  if layer ~= nil then
+    G_REAL.stretchFull(layer)
+    G_REAL.activate(layer)
+    -- 父链置顶：不只是把叶子提到最后，而是把承载它的**整层容器**提到同级最后
+    pcall(function() layer:SetAsLastSibling() end)
+  end
+  local function putText(c, txt, wx0, wy0, ww, size, col, align, minSize)
+    if c == nil then return end
+    put(c, wx(wx0), wyBottom(wy0 + size * 1.4), ww * S, size * 1.4 * S)
+    G_REAL.trySet(c, 'fontSize', function() c.fontSize = math.floor(size * S + 0.5) end)
+    if minSize then G_REAL.trySet(c, 'minimumFontSize', function() c.minimumFontSize = minSize end) end
+    G_REAL.trySet(c, 'fontColor', function() c.fontColor = G_REAL.apiColor(col) end)
+    G_REAL.trySet(c, 'bgColor', function() c.bgColor = G_REAL.apiColor(0x00000000) end)
+    G_REAL.trySet(c, 'text', function() c.text = safeUtf8(txt) end)
+    G_REAL.setAlign(c, align)
+    pcall(function() c:SetAsLastSibling() end)
+  end
+  -- ① 白矩形参照
+  rect(80, 60, 480, 26, C_WHITE)
+  -- ② 画布内手放、**不做任何写入**的文本框
+  if not G_REAL.probeLooked then
+    G_REAL.probeLooked = true
+    local ok, ch = pcall(function() return root:GetChild('TextProbe') end)
+    print('main: [probe] 画布内手放文本框 TextProbe = ' ..
+      ((ok and ch ~= nil) and '找到（脚本不会碰它，只观察它是否显示）' or '未找到（可在界面画布里放一个文本框并命名为 TextProbe）'))
+  end
+  -- ③ 脚本实例化 + 写入的文本框（四种对照）
+  local base = G_REAL.probePool or {}
+  G_REAL.probePool = base
+  local cases = {
+    { 'ABC123 脚本写入 / 左对齐 / 不缩', 80, 100, 480, 16, C_WHITE, 'Left', 16 },
+    { 'ABC123 脚本写入 / 居中 / 不缩', 80, 140, 480, 16, C_WHITE, 'Middle', 16 },
+    { '测试ABC123 中文', 80, 180, 480, 16, C_WHITE, 'Left', 16 },
+    { 'ABC123 大字号 40', 80, 240, 480, 40, C_WHITE, 'Left', 40 },
+  }
+  for i = 1, #cases do
+    local c = base[i]
+    if c == nil then c = take('text'); base[i] = c end
+    if c ~= nil then
+      local k = cases[i]
+      putText(c, k[1], k[2], k[3], k[4], k[5], k[6], k[7], k[8])
+    end
+  end
+  if not G_REAL.probeLogged then
+    G_REAL.probeLogged = true
+    local c = base[1]
+    if c ~= nil then
+      local function rd(kk) local ok, v = pcall(function() return c[kk] end); if ok and v ~= nil then return tostring(v) end return '?' end
+      print('main: [probe] 实例文本框回读 text="' .. rd('text') .. '" fontSize=' .. rd('fontSize')
+        .. ' min=' .. rd('minimumFontSize') .. ' adaptive=' .. rd('adaptiveFontSize')
+        .. ' align=' .. rd('horizontalAlignment') .. ' vAlign=' .. rd('verticalAlignment')
+        .. ' fontColor=' .. rd('fontColor') .. ' bgColor=' .. rd('bgColor'))
+      G_REAL.dumpGeom(c, 'probe-text')
+    end
+  end
+  frameEnd()
+end
+
+function M.OnLevelUpdate(dt, fromUI)
   frame = frame + 1
+  if G_REAL.cfg.textProbe then return textProbeFrame() end
   local cmds
   if mode == 'core' and state then
     -- 相位一变，触摸端的「待确认选中」就作废（否则跨状态会把不相干的项当成已选中过）
@@ -1927,6 +2824,7 @@ function M.OnLevelUpdate(dt)
     local c, x = consumeEdges()
     if applyPointer() then c = false end     -- 点击已被界面消费时不再另外发确认
     input.confirm, input.cancel = c, x
+    -- 【2026-10-09 用户口径】ESC **不发任何信号**（时间未到自行退出 = 系统的"未完成"，不需要处理）。
     -- 标题页：core.update 在 title 态不处理输入，这里自己处理（左右选难度 + 确认开局），边沿触发防连滚
     if state.state == 'title' then
       local l, r = input.left, input.right
@@ -1985,6 +2883,32 @@ function M.OnLevelUpdate(dt)
     end
     local ok, out = pcall(function() return core.update(state, coreInput, dt) end)
     requestSettlement()
+    -- 战斗 BGM：core 在 Game:start()（开局 / 重开）里把 runSeq +1 → 这里从头播。
+    -- 整场循环由 music 模块内部完成；结算在 requestSettlement() 里停。
+    if state.runSeq ~= lastRunSeq then
+      lastRunSeq = state.runSeq
+      if music then music.start() end
+    end
+    -- 【诊断】服务端变量探针：每 2 秒读一次 Level 自定义变量，值一变就打一行 ——
+    -- 用来从**客户端日志**判断服务端节点图跑到了哪一步（计时器 / SettleReady / 去重标记）。
+    -- 打不出或打出 '?（读不到/未声明）' ⇒ 变量没声明或名字不对 ⇒ 节点图那一步没跑。
+    G_REAL.varProbeT = (G_REAL.varProbeT or 0) + dt
+    if G_REAL.varProbeT >= 2 then
+      G_REAL.varProbeT = 0
+      local vars = G_REAL.cfg.probeVars
+      if type(vars) == 'table' then
+        G_REAL.varSeen = G_REAL.varSeen or {}
+        for _, vn in ipairs(vars) do
+          local okV, val = pcall(function() return game.GetGlobalCustomVariableValue('Level', vn) end)
+          val = okV and tostring(val) or '?（读不到/未声明）'
+          if G_REAL.varSeen[vn] ~= val then
+            G_REAL.varSeen[vn] = val
+            print(string.format('main: [var] %s = %s', tostring(vn), val))
+          end
+        end
+      end
+    end
+    if music then music.update(dt) end
     if ok and type(out) == 'table' and out[1] and out[1].kind then
       cmds = out
     else
@@ -2041,6 +2965,67 @@ function M.OnLevelUpdate(dt)
       absSoul and string.format('%.0f,%.0f', absSoul.x, absSoul.y) or 'nil',
       joy.active and string.format('on(%.2f,%.2f)', joy.dx, joy.dy) or 'off'))
   end
+end
+
+-- ---------------------------------------------------------------- 沙箱生命周期（清理）
+-- 输入状态复位：OnDisable / OnDestroy / 重新启用时都要清 —— 残留的"按住"会让灵魂一直朝一个方向走。
+function M.clearInput()
+  input.left, input.right, input.up, input.down = false, false, false, false
+  input.confirm, input.cancel = false, false
+  edgeConfirm, edgeCancel = false, false
+  confirmHeld = false
+  titlePrevL, titlePrevR = false, false
+  prevJumpKey = false
+  joy.active, joy.dx, joy.dy, joy.kx, joy.ky = false, 0, 0, 0, 0
+  owned.holds.confirm, owned.holds.cancel = {}, {}
+  ptr.down, ptr.moved, ptr.tapPending = false, false, false
+  clearPending()
+  -- core 靠 prevKeys 判按下沿；清空等价于"全没按"，不会误触发跳跃（见 Game:applyInput）。
+  if state then state.keys, state.prevKeys = {}, {} end
+end
+
+function M.OnDisable()
+  -- 【诊断】关卡被暂停/结束（服务端执行"结算关卡"或玩家离开时，客户端脚本会被暂停/销毁）
+  local sinceEsc = (frame or 0) - (G_REAL.escFrame or -99999)
+  print('main: [lifecycle] OnDisable' .. (sinceEsc <= 60
+    and '（疑似【玩家 ESC 强退】—— 不能当作服务端结算的证据）'
+    or '（关卡暂停或结束）'))
+  owned.enabled = false
+  M.clearInput()
+  if music then pcall(function() music.stop(); music.stopEffects() end) end
+end
+
+function M.OnEnable()
+  owned.enabled = true
+  if owned.started then M.clearInput() end
+end
+
+-- 卸载：摘掉键盘/游标监听 + 销毁**自建**控件；宿主 root 不是我们建的，绝不能销毁。
+function M.OnDestroy()
+  -- 【诊断】脚本被销毁 —— 症状解读：
+  --   点「结 算」后出现这行 ⇒ 服务端**确实执行了结算/结束关卡**（节点图在跑）
+  --   一直没有这行 ⇒ 服务端没有结算（信号没收到 / 图没跑到"结算关卡"）
+  local sinceEsc2 = (frame or 0) - (G_REAL.escFrame or -99999)
+  print('main: [lifecycle] OnDestroy' .. (sinceEsc2 <= 60
+    and '（疑似【玩家 ESC 强退】—— 不能当作服务端结算的证据）'
+    or '（若紧跟在点「结 算」之后，才是服务端结算/结束关卡）'))
+  M.OnDisable()
+  if root then
+    for _, l in ipairs(owned.keys) do
+      pcall(function() root:RemoveKeyEventListener(l.name, l.cb) end)
+    end
+  end
+  for _, l in ipairs(owned.cursors) do
+    pcall(function() (l.c or cursorArea):RemoveCursorEventListener(l.name, l.cb) end)
+  end
+  if cursorArea then pcall(function() cursorArea:RemoveAllCursorEventListeners() end) end
+  -- 【真机日志 2026-10-08】销毁阶段**不能**再调 DestroyClientUIControl：
+  --   「客户端控件生命周期处于创建或销毁时，无法调用 DestroyClientUIControl」
+  -- 我们建的控件都挂在宿主 root 下，容器销毁时引擎会一并回收 → 这里只清引用，不主动销毁。
+  owned.controls, owned.keys, owned.cursors = {}, {}, {}
+  owned.started = false
+  pool, memo = {}, {}
+  state = nil
 end
 
 -- 测试钩子：无头测试台（lua/_adapter.lua）与集成用例用它读逻辑层状态

@@ -1,0 +1,176 @@
+main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0
+main: geom[root] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[bg1-stretch] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[bg2-overscan] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(2560.0,1440.0)
+main: 平台 = 触摸分支（不注册键盘监听；左半屏摇杆 + 点按二次确认）
+main start: build=2026-10-08-sandbox-adapter device=Mobile touch=true mode=core pool=2019 flash=true cursor=true
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 触摸点按难度卡 1 → 选中（再点一次开局）
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 点按难度卡 1 → 开局
+music: start #1 (score=743 格 142.66s, 音效绑定 0 项)
+main: geom[baked:sans_body_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(115.2,112.8) size=(7.2,2.4)
+main: baked sans_body_default#1 96x48 rects=295
+main: geom[baked:sans_head_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_head_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(16.8,67.2) size=(7.2,2.4)
+main: baked sans_head_default#1 32x30 rects=177
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:sans_body_down] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_down] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(108.0,105.6) size=(7.2,2.4)
+main: baked sans_body_down#1 64x70 rects=299
+main: geom[baked:sans_head_blue] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_head_blue] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(16.8,67.2) size=(7.2,2.4)
+main: baked sans_head_blue#1 32x30 rects=181
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: geom[baked:sans_body_up] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_up] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(129.6,153.6) size=(7.2,2.4)
+main: baked sans_body_up#1 64x70 rects=309
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')
+main: draw ERR :: 1073742105:7948: attempt to call a nil value (global 'utf8Codepoints')

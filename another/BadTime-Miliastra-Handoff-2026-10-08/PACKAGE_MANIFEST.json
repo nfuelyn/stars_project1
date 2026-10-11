@@ -1,0 +1,368 @@
+{
+  "project": "Bad Time battle / Miliastra client Lua",
+  "snapshot_date": "2026-10-08",
+  "build": "2026-10-08-review-3-text-pause-stab",
+  "entry": "main.lua",
+  "handoff_document": "docs/项目交接与开发说明.md",
+  "file_count_excluding_manifest": 68,
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 2413,
+      "sha256": "031c48545d29c0b4d2773db60bdad6ae465910d788043fb7d4de1b64087a0cb9"
+    },
+    {
+      "path": "docs/CodeArt说明.md",
+      "bytes": 9917,
+      "sha256": "1e9b790ebd81b2e19572f4a6be3d9c82f240493e17a594834bf406ab08bcdbf2"
+    },
+    {
+      "path": "docs/previews/adapter-final.png",
+      "bytes": 9644,
+      "sha256": "11621c003b03929aa0f803805c2c1f5b16c75c67a190f816b1b35e33403dcec4"
+    },
+    {
+      "path": "docs/previews/adapter-menu.png",
+      "bytes": 8666,
+      "sha256": "186939799d0cd6c66c3dbd35db1a69592fb593bb09ce569ce50c41cab2a45d81"
+    },
+    {
+      "path": "docs/previews/adapter-opening-stab.png",
+      "bytes": 7906,
+      "sha256": "70d49e2e07245fa7d4ed23af41a439885f540bfb13e97042e768a56cd9beb596"
+    },
+    {
+      "path": "docs/previews/adapter-opening.png",
+      "bytes": 15143,
+      "sha256": "3329859a7ab230030b63666481acb93217db76f4c7c19407b660c8eab8e3d22d"
+    },
+    {
+      "path": "docs/previews/adapter-paused.png",
+      "bytes": 8207,
+      "sha256": "5990e048c06b11bb191d5bc74b48162431d1656c79b8f9bc1043892e22fae439"
+    },
+    {
+      "path": "docs/previews/adapter-platform.png",
+      "bytes": 7577,
+      "sha256": "58e4175f93e320c325346f475c057c81c0d1a374dba35248a6d5e907504c93d3"
+    },
+    {
+      "path": "docs/previews/adapter-result.png",
+      "bytes": 5832,
+      "sha256": "4bb7ca45d7911882052044d6059760207ec9e11ef2482810c7bf67effe6bb0e4"
+    },
+    {
+      "path": "docs/previews/adapter-title.png",
+      "bytes": 7154,
+      "sha256": "75c937e0b49eddcdfb4a650441bbefbdd730d6adbd3427b8b21f3284619f9ef1"
+    },
+    {
+      "path": "docs/previews/adapter-validation.json",
+      "bytes": 1635,
+      "sha256": "526c8a0f7b882f678901eaf9b224000cdae714c403ba9f731feaabc19fff9897"
+    },
+    {
+      "path": "docs/previews/codeart-characters.png",
+      "bytes": 37174,
+      "sha256": "954b732dd5c7263c7cb0bcb2475eb0ea5557a4cf70a28588d48ed47aa887f3c6"
+    },
+    {
+      "path": "docs/previews/codeart-elements.png",
+      "bytes": 86878,
+      "sha256": "ec28b2d6a3df1a644276f7267d4da9490a92b68dcb510208423d44a739c1e0f4"
+    },
+    {
+      "path": "docs/previews/codeart-scene.png",
+      "bytes": 6949,
+      "sha256": "407087dc38cecfa2facb1c08918bbbad94d002b50050d348e09bea86109da055"
+    },
+    {
+      "path": "docs/previews/codeart-validation.json",
+      "bytes": 2161,
+      "sha256": "227c72b52ae11e7f0451518e3261531de7a8297b1d77fe344d638999a5c32f76"
+    },
+    {
+      "path": "docs/审查与验证.md",
+      "bytes": 12852,
+      "sha256": "8ee33838431d895504e40e1a57e6df310e5e6a20ad4060746ac855b91f28ab7b"
+    },
+    {
+      "path": "docs/部署与设置.md",
+      "bytes": 24534,
+      "sha256": "3d7d0463788bff7770b1cd5d71f0e7fe70bb0b12b07aa52c0701ed15bf6456da"
+    },
+    {
+      "path": "docs/项目交接与开发说明.md",
+      "bytes": 27521,
+      "sha256": "f3819d9bc6f761bfe5e73754f5559361dd3e20ed77ed467f8a774e2bcc5963c6"
+    },
+    {
+      "path": "lua/attacks.lua",
+      "bytes": 28656,
+      "sha256": "0844ea93be28d46eccefa0e88300499d476d1432ae89075ba2a189f7f3b35b88"
+    },
+    {
+      "path": "lua/config.lua",
+      "bytes": 1781,
+      "sha256": "0f6d882a01aa3ead43309a93e18e60b37aea73fde583df66eafc90789fdc44ef"
+    },
+    {
+      "path": "lua/core.lua",
+      "bytes": 183292,
+      "sha256": "839a48fc2efef1e5536c6aba8d887279b086459e64fe9059eddc27a318e2f2ea"
+    },
+    {
+      "path": "lua/fitdata.lua",
+      "bytes": 17857,
+      "sha256": "a10243698829044715f3fb50f1098d9f8a9e4ff82f43197f24ebef6b2ce089f4"
+    },
+    {
+      "path": "lua/main.lua",
+      "bytes": 117378,
+      "sha256": "c2af0d88e1fb333449876df657c4b000305538a6ea192d9bf278adb3ea9b3796"
+    },
+    {
+      "path": "lua/music.lua",
+      "bytes": 10355,
+      "sha256": "be504f92d2382198e995d35c89445a3a45e175038544ba022d531954ad07e9d1"
+    },
+    {
+      "path": "lua/textart.lua",
+      "bytes": 323112,
+      "sha256": "649b12afcbb81003a44e1790b7f9b87dec8aa7e1612bd0778fbfbb3b8287b9ab"
+    },
+    {
+      "path": "main.lua",
+      "bytes": 684337,
+      "sha256": "f162e930c8c704011c4f023f1d690d10943dc8474175bd3c1294c656f5437f60"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3186,
+      "sha256": "03c1e8b8865274a17b342f31f794e79d5027c2494d3e33fdc4e7e27fee5adbfe"
+    },
+    {
+      "path": "reference/Battle.xml",
+      "bytes": 628580,
+      "sha256": "92161897251b4cade135b52292cfb0ae3a3e437c82ffdca06e564c7479b32467"
+    },
+    {
+      "path": "reference/main.original.lua",
+      "bytes": 477610,
+      "sha256": "91da121c5401f25b7dfd6d3d29f7eaf1a950597f7528f143941996bf99b5d6df"
+    },
+    {
+      "path": "reference/upstream/Items.xml",
+      "bytes": 3863,
+      "sha256": "a7e0d0bc9d8556176fa9f2b4fa3538c1e18a30855fb747c54f73aaad8eaf6d4a"
+    },
+    {
+      "path": "reference/upstream/sans_bluebone.csv",
+      "bytes": 527,
+      "sha256": "d698d3a883b1409eacf159b4fe3b663dd1f5521998f82f1e74ded150552b46f7"
+    },
+    {
+      "path": "reference/upstream/sans_bonegap1.csv",
+      "bytes": 292,
+      "sha256": "90441ab0083ed99eb7e501f2284aae7246aecfc3af7a293cc7da4a911c758306"
+    },
+    {
+      "path": "reference/upstream/sans_bonegap1fast.csv",
+      "bytes": 290,
+      "sha256": "148ac1aa095564326aa7a071f838e15f713ff5add1aef72f63c01f9281a4bfc4"
+    },
+    {
+      "path": "reference/upstream/sans_bonegap2.csv",
+      "bytes": 1466,
+      "sha256": "4f864f4bd431ecdd712453947338358471715acc15c3e76ca98b1f76a3cc727d"
+    },
+    {
+      "path": "reference/upstream/sans_boneslideh.csv",
+      "bytes": 215,
+      "sha256": "5aae574bff05f236e7cdb0f9a2b6dc68cde4f449a0bff772adac290c455f26ce"
+    },
+    {
+      "path": "reference/upstream/sans_boneslidev.csv",
+      "bytes": 222,
+      "sha256": "917ffe49cba653e25fa62f5e960fec262bc96eec5097efdee7de4609a5d12d35"
+    },
+    {
+      "path": "reference/upstream/sans_bonestab1.csv",
+      "bytes": 573,
+      "sha256": "e8a7bd5ced93fe826cd00baba0518aeb9b3a593e8cf635633e74aa7da9cc95b1"
+    },
+    {
+      "path": "reference/upstream/sans_bonestab2.csv",
+      "bytes": 573,
+      "sha256": "b3546228167bda3dc452935117055c946fb3801d238a0eb45051e23b61b28bce"
+    },
+    {
+      "path": "reference/upstream/sans_bonestab3.csv",
+      "bytes": 571,
+      "sha256": "8785c4ab0687ce091a329cecca3fb49045fc0a0815eb0508de8188925b7bccc5"
+    },
+    {
+      "path": "reference/upstream/sans_final.csv",
+      "bytes": 5641,
+      "sha256": "ff3d6f0c1b2c2f3bdb290109086ec3c9f7c3f6e628809512ac943dc7408c1078"
+    },
+    {
+      "path": "reference/upstream/sans_intro.csv",
+      "bytes": 1432,
+      "sha256": "d3e7e6a448e358a6f9eb70621c8dcea84a6b39b9506916fbec2ee5a0bb193620"
+    },
+    {
+      "path": "reference/upstream/sans_multi1.csv",
+      "bytes": 2978,
+      "sha256": "ca68aee9438e7f6615566468290cb5888b975ecd51ada1a5a2292ccff9317303"
+    },
+    {
+      "path": "reference/upstream/sans_multi2.csv",
+      "bytes": 2395,
+      "sha256": "676f7b979a5abab4986eeadd9bc836995d5ad10e370377fb406889523b117e29"
+    },
+    {
+      "path": "reference/upstream/sans_multi3.csv",
+      "bytes": 5115,
+      "sha256": "022250e25db3cd25104fd1c1d78603db8d6edc14beafad60360b65d290a79f92"
+    },
+    {
+      "path": "reference/upstream/sans_platformblaster.csv",
+      "bytes": 504,
+      "sha256": "52795a976149141383a148fd69526ffbbab233a978a1b77627f4162a3c8ae197"
+    },
+    {
+      "path": "reference/upstream/sans_platformblasterfast.csv",
+      "bytes": 504,
+      "sha256": "0312ef3aec4f170844e72a7cef4cf8b30f41a6c1703489cb8dcf64506f10e35a"
+    },
+    {
+      "path": "reference/upstream/sans_platforms1.csv",
+      "bytes": 388,
+      "sha256": "adae77d891d7b97a870c3dded34a07c2f82d67ca3d75326eeb7d64aa6148409f"
+    },
+    {
+      "path": "reference/upstream/sans_platforms2.csv",
+      "bytes": 586,
+      "sha256": "964b43f2d03eec8d28493f051e6553120b1f8468f11a2069868c51568e999171"
+    },
+    {
+      "path": "reference/upstream/sans_platforms3.csv",
+      "bytes": 549,
+      "sha256": "853d2bcb8fb9f0cb09eac8355fe1cc23d0d8558682e451ade592f5546eec9a7d"
+    },
+    {
+      "path": "reference/upstream/sans_platforms4.csv",
+      "bytes": 348,
+      "sha256": "3fb7dfa8347f5a6f493dc56fda62142e0b985d431e91085600aa0918d19a549d"
+    },
+    {
+      "path": "reference/upstream/sans_platforms4hard.csv",
+      "bytes": 348,
+      "sha256": "2c23db06eccc8f7eda2341abafb4ebfe9162f3e7ed5bfe026f73f4ea19a42cd2"
+    },
+    {
+      "path": "reference/upstream/sans_randomblaster1.csv",
+      "bytes": 810,
+      "sha256": "f880224de616df00f44a583706223eee3378692e1b1554440b3b2de2a1a8627a"
+    },
+    {
+      "path": "reference/upstream/sans_randomblaster2.csv",
+      "bytes": 810,
+      "sha256": "431246d750826a061a1bfd1668ab7f2f3e43a3d30c2ed5e51a2c76e253690e90"
+    },
+    {
+      "path": "reference/upstream/sans_spare.csv",
+      "bytes": 128,
+      "sha256": "bed1eb8e0b97bcba6478183b58f435f605e3754469eb8d80a24b40afe7ebba8e"
+    },
+    {
+      "path": "requirements-dev.txt",
+      "bytes": 122,
+      "sha256": "35dd351898d70507504f10ed58a6a7a1748c9015c73f51ed83afd0b12cd0acff"
+    },
+    {
+      "path": "tests/test_adapter.lua",
+      "bytes": 10933,
+      "sha256": "ef93004ba5f3798fc34bbed3b1c986df2b46052b4c0b732d177aa8635adb34c8"
+    },
+    {
+      "path": "tests/test_core.lua",
+      "bytes": 6555,
+      "sha256": "e5e2685967c3773af858e7920860ab8a34bc6dfefc44989e762d2de154649a46"
+    },
+    {
+      "path": "tests/test_render_flow.lua",
+      "bytes": 995,
+      "sha256": "2fdef008e8d3abc7273bd1e4701ba723d096aacf24df816db8f28b7cae8b9d05"
+    },
+    {
+      "path": "tools/build.py",
+      "bytes": 1260,
+      "sha256": "2be4b078cd236be0cb6954701af54ef6545049b6c47c0e6addeb26a2e27f00e2"
+    },
+    {
+      "path": "tools/consolidate_adapter_state.py",
+      "bytes": 1595,
+      "sha256": "8ae422d186ae19374b1850c48aec925bbf04c6ffc1fade680a689500d34b8ac0"
+    },
+    {
+      "path": "tools/extract_sources.py",
+      "bytes": 783,
+      "sha256": "800e534e45f2e0b53ed553824696b695b1862886c7d048d55b1bb36ca96914f3"
+    },
+    {
+      "path": "tools/finish_review_edits.py",
+      "bytes": 9313,
+      "sha256": "e279ba2f6f89cc3880da2149da9f3005a0d5cb3d192bd687ed11d0f10ce5c4ac"
+    },
+    {
+      "path": "tools/generate_attacks.py",
+      "bytes": 1103,
+      "sha256": "3613276121b7c43c27b08d2716e5ea849ce0813131e18104f5421f4c59699900"
+    },
+    {
+      "path": "tools/generate_textart.py",
+      "bytes": 1918,
+      "sha256": "53a4fde3424edb8d294ebe295cdb9e9959c4adea1ee51fd8e2ed0bcc9a047ab6"
+    },
+    {
+      "path": "tools/package_project.py",
+      "bytes": 2539,
+      "sha256": "9d18bfc02607294f6050669f11e23a54001b5fd97ed6fd494527c0ef5acc493c"
+    },
+    {
+      "path": "tools/preview_codeart.py",
+      "bytes": 7671,
+      "sha256": "574c6f99ad56c2e85abd5c08c276253a11ccb3867ba2a1c504e0c498d7d89e3a"
+    },
+    {
+      "path": "tools/render_adapter_preview.py",
+      "bytes": 6191,
+      "sha256": "156c07d7cb77a58ee1d18d16213789efec686d4b25acfa11280193e0b7dcbf3f"
+    },
+    {
+      "path": "tools/run_tests.py",
+      "bytes": 1581,
+      "sha256": "6d6a2a430f6272d7385fc073d4e5dc3e8e060cb6589775678f182608f252b3f0"
+    }
+  ],
+  "excluded": [
+    ".agents",
+    ".aws",
+    ".codex",
+    ".git",
+    ".idea",
+    ".pytest_cache",
+    ".venv",
+    ".vscode",
+    "__pycache__",
+    "deliverables",
+    "venv"
+  ],
+  "notes": [
+    "No parent knowledge base or Python environment is included.",
+    "No official game project save, UI templates, audio assets or server node graph is included.",
+    "The manifest does not hash itself."
+  ]
+}

@@ -285,9 +285,262 @@ node tools/run-lua.mjs lua/_input.lua          # 平台分流 + 四向矩阵 + �
 node tools/run-lua.mjs lua/_geometry.lua       # 绘制 == 判定逐帧对账（≈6 分钟，期望 33 PASS / 0 FAIL）
 node tools/run-lua.mjs lua/_flow.lua           # 20 回合整场流程 + 框/心几何（≈6 分钟，期望 溢出 0 / 出框 0 / 错误 0 / 结局文字已渲染）
 node tools/run-lua.mjs lua/_pool.lua           # 控件池峰值实测（≈25 分钟，BUDGET 的依据；"运行期追加"必须为 0）
+node tools/run-lua.mjs lua/probes/_probe_sandbox_adapter.lua   # 沙箱接轨层（候选索引/包装解开/生命周期/更新回调，≈2 秒）
 ```
 
 > **改完 Lua 必须先重建存档再试玩**：模拟器跑的是**存档里内嵌**的脚本（`scripts[].source`），
 > 不是工作区里的 `.lua` 文件 —— 改了 `main/core/attacks` 而不 `build-save`，试玩跑的还是旧代码。
 > 一眼判据：试玩日志 `main start: … pool=` 必须等于 `main.lua` 的 BUDGET 合计 + 1（闪层）。
 > 20 回合版的正确值是 **531**（旧版 355）。
+
+---
+
+## 2.1 真机编辑器：容器包装写法
+
+真机编辑器可能没有模拟器里的“根节点 / 子节点”文字，也可能要求客户端资产只能新增“容器节点”。按下面方式对应即可。
+
+### 服务端控件容器
+
+- 在服务端界面中新建一个“客户端控件容器”。
+- 在该容器项的属性面板中设置：
+  - `showCursor = true`
+  - `disableKeyEventPassthrough = false`
+  - `disableCursorEventPassthrough = false`
+  - `syncAllDevices = true`
+- 找到“脚本映射 / 挂载脚本 / Script Mapping”，把脚本 `1073741825` 挂到容器节点 `1073741857`。
+- 如果编辑器额外显示一个“容器节点 / 挂载节点”输入框，则把它的 GUID 设为 `1073741851`；没有该输入框时，直接在容器项上挂脚本。
+
+### 客户端模板：用容器节点包装
+
+如果客户端资产只能添加“容器节点”，不要强行找“图片节点 / 文本节点 / 光标节点”入口，改用包装结构：
+
+```text
+容器节点  GUID=1073743001  名称=矩形图元
+└─ 图片控件               imageId=100001
+
+容器节点  GUID=1073743002  名称=圆形图元
+└─ 图片控件               imageId=100002
+
+容器节点  GUID=1073743004  名称=文本图元
+└─ 文本框
+
+容器节点  GUID=1073743006  名称=圆环图元
+└─ 图片控件               imageId=100006
+
+容器节点  GUID=1073743007  名称=旋转图元
+└─ 图片控件               imageId=100001
+
+容器节点  GUID=1073743008  名称=旋转三角图元
+└─ 图片控件               imageId=100003
+
+容器节点  GUID=1073743009  名称=全屏光标区
+└─ 光标检测控件
+
+容器节点  GUID=1073743100  名称=烘焙容器·左下
+└─ 烘焙子控件由 Lua 运行期生成
+```
+
+容器包装的 GUID 必须仍然使用映射表里的 GUID；子控件类型按上表放置。`main.lua` 已兼容这种结构：实例化叶子模板时，如果拿到的是容器，会自动取容器的第一个子控件；直接图片/文字模板仍保持兼容。
+
+---
+
+## 2.2 真实千星 GUID 对照
+
+真实千星已确认以下通用模板：
+
+| 项目 | GUID |
+|---|---:|
+| 客户端控件容器 | `1073741856` |
+| 容器节点（脚本挂载点） | `1073741857` |
+| 客户端脚本 | `1073741825` |
+| 客户端模板·光标检测 | `1073741860` |
+| 客户端模板·容器节点 | `1073741862` |
+| 客户端模板·矩形 | `1073741865` |
+| 客户端模板·文本框 | `1073741867` |
+| 客户端模板·圆形 | `1073741871` |
+| 客户端模板·圆环 | `1073741875` |
+| 客户端模板·旋转图元 | `1073741877` |
+| 客户端模板·旋转三角形图元 | `1073741879` |
+
+各图片模板使用上述独立 GUID，**模板本身自带图案**。
+注意：适配层默认**不再调用 `SetImage`**（见 2.3）—— 模拟器的 `100001..100006` 是内置图元编号，
+真机没有对应资产，写上去会把本来有图案的图元刷成空白。只有确认真机图片资产 ID 后才在
+`lua/config.lua` 的 `C.images` 里填正整数。
+
+---
+
+## 2.3 沙箱接轨层（lua/config.lua + 候选索引）
+
+接轨部分集中在 `lua/main.lua`，环境相关的项集中在 `lua/config.lua`（**改完要 `node tools/build-save.mjs` 重建存档**）。
+
+| 项 | 默认 | 说明 |
+|---|---|---|
+| `C.updateCallback` | `'level'` | 只推进 `OnLevelUpdate`（与关卡暂停一致）。**只有**外部宿主只调用 `OnUpdate` 时才改 `'ui'`；两个都推进会每帧跑两遍 |
+| `C.device` | `'auto'` | 读 `game.GetDevice()`；`keyboard` / `touch` 可强制分支（真机调试） |
+| `C.templatesFirst` | `'sim'` | 先试模拟器索引（真机拿不到会返回 nil，自动接着试真机索引）；纯真机工程可改 `'real'` |
+| `C.legacyTemplateFallback` | `true` | 是否允许回退到模拟器 GUID |
+| `C.templates` | `nil` | 覆盖单个图元的模板索引（留 nil 用 `lua/main.lua` 里的候选列表） |
+| `C.images` | `nil` | `nil`/`0` = **沿用模板自带图片**（真机推荐）；只有确认真实图片资产 ID 才填正整数 |
+
+模板索引走**候选列表**，逐个试到实例化成功为止（不认识的索引只会返回 nil，不会污染结果）：
+
+| 图元 | 候选 1（用户确认的客户端控件模板） | 候选 2（交接包实测的挂载后索引） | 容器回退 |
+|---|---:|---:|---:|
+| 矩形 | `1073741865` | `1073741887` | `1073741862` / `1073741884` |
+| 圆形 | `1073741871` | `1073741889` | 同上 |
+| 圆环 | `1073741875` | `1073741890` | 同上 |
+| 旋转图元 | `1073741877` | `1073741891` | 同上 |
+| 旋转三角形 | `1073741879` | `1073741888` | 同上 |
+| 文本框 | `1073741867` | `1073741886` | 同上 |
+| 光标检测 | `1073741860` | `1073741885` | 同上 |
+| 模拟器 | `1073743001 / 3002 / 3004 / 3006 / 3007 / 3008 / 3009` + 容器 `1073743100 / 3101 / 3102` | — | — |
+
+接轨层的硬约束（`lua/probes/_probe_sandbox_adapter.lua` 逐条断言）：
+
+1. **类型不能靠 `prefabIndex` 判**：包装模板的父层与叶子 `prefabIndex` 相同，用它短路就永远钻不进叶子
+   → 只能拿到空容器（屏幕全黑 / 只有一张空图）。只认叶子接口（`SetImage` / `text` / `AddCursorEventListener`）。
+2. 包装层要**拉伸铺满父容器**，叶子要归一化成左下 `(0,0)`（旋转件中心 `(0.5,0.5)`），父子都要
+   `SetActive(true)` + `SetVisible(true)`。
+3. 颜色统一走 `Color(r,g,b,a)`（真机要 ColorValue，整数直接写 `imageColor/fontColor/bgColor` 不生效）；`fontSize` 必须是整数。
+4. `script.object` 就是脚本挂载的根容器节点，优先拿它当 `root`（回退 `1073741857 / 1073741856 / 1`），
+   并在这个 root 上开 `showCursor` / `disableKeyEventPassthrough` / `disableCursorEventPassthrough`。
+5. `memo` 的键是**控件对象本身**，不是 `c.Id`（真机运行期身份是小写 `id`，`c.Id` 可能是 nil，
+   会把所有控件串成同一份状态）。
+6. `OnStart` 幂等（宿主可能重复触发）；`OnDestroy` 摘掉键盘/游标监听 + 销毁**自建**控件，绝不销毁宿主 root。
+7. 真机模板是「容器 + 叶子」→ 每个实例都带子控件，**不做** 2000 份批量预热，改按需创建（否则真机卡死）。
+
+自检：`node tools/run-lua.mjs lua/probes/_probe_sandbox_adapter.lua` → 期望 `31 PASS / 0 FAIL`。
+
+### 5.4 当前本机实际导入路径
+
+```text
+clientImportRoot:
+C:\Users\19637\AppData\LocalLow\miHoYo\原神\BeyondLocal\248255821\Beyond_Local_Save_Level\1073741827\external_lua_file
+
+脚本相对路径:
+main.lua
+```
+
+外部目标文件为 `external_lua_file\main.lua`，内容为当前存档的 `assets.scripts[1073742105].source` 自足包。
+## 2.4 真机接口类型（2026-10-08 真机日志实测）
+
+真机日志给出三条**类型**事实 + 一条销毁期限制，适配层已按「先字符串、抛错再枚举」双通道实现
+（模拟器与真机共用同一段代码，不靠分支猜平台）：
+
+| 真机报错 | 适配层做法 |
+|---|---|
+| `AddKeyEventListener` 要 `KeyEventType`，给字符串就抛 | `G_REAL.addKeyEvent`：先字符串（模拟器/试玩页就是字符串），抛错再注册 `Enum.KeyEventType.<name>`；返回真正生效的键供 `OnDestroy` 摘除 |
+| `AddCursorEventListener` 要 `CursorEventType` | `G_REAL.addCursorEvent`，同上 |
+| `horizontalAlignment` 要 `TextHorizontalAlignment` | `G_REAL.setAlign`：第一次先试字符串，被拒就永久切枚举（只探测一次） |
+| 销毁阶段不能调 `DestroyClientUIControl` | `OnDestroy` 只摘监听 + 清引用，不主动销毁控件（容器销毁时引擎回收） |
+
+**确认键**：`Enum.KeyEventType` 的键盘项里**没有** `KeyboardMenuConfirmKey`（只有 `ControllerMenuConfirmKey`）。
+适配层把「确认」做成多来源聚合：`KeyboardMenuConfirmKey`（试玩页）+ `ControllerMenuConfirmKey` +
+`KeyboardJumpKey` + `KeyboardNormalAttackKey`（J）+ `KeyboardInteractKey`（F/E）；
+「取消」为 `KeyboardMenuBackKey` + `ControllerMenuBackKey` + `KeyboardDropKey`。
+任一来源按住即算按住（`confirmHeld` 按来源聚合，蓝心长按跳跃高度才准）；枚举里没有的来源只打印
+「跳过可选键」，不算错误。
+
+真机自检（正常）：
+
+```text
+main init: root=true canvas=1600x900 scale=1.875 ox=200.0 oy=0.0
+main: 检测到真机模板，跳过大批量预热，改为按需创建控件
+main: 跳过可选键 KeyboardMenuConfirmKeyDown（本宿主不认字符串键名，枚举里也没有这一项）
+main start: build=2026-10-08-sandbox-adapter device=KeyboardAndMouse touch=false mode=core pool=4 …
+```
+
+真机上 `pool=` 很小是正常的（预热被主动跳过、控件按需创建）。**不应**再出现
+`main: draw ERR` / 方向键 `bind fail` / `游标监听注册失败` / `无法调用 DestroyClientUIControl`。
+
+### 14.3 确认键还是没反应？用键位诊断
+
+`lua/config.lua` 里把 `C.keyDiag = true`（改完重建存档），OnStart 会把 `Enum.KeyEventType` 里**所有**
+事件都挂上「按到就打印」的监听，日志会先打一行：
+
+```text
+main: [keyDiag] 已挂 <N> 个按键监听（随便按键，看日志打出的事件名）
+```
+
+然后在关卡里按你打算用做「确认」的物理键，日志会打出它对应的事件名，例如
+`main: [keyDiag] KeyboardJumpKeyDown`。把那个名字发我，或直接写进 `lua/config.lua` 的候选表
+（`lua/main.lua` 的 `bindKeys()` 里那两行 `ipairs({...})`）即可。诊断完把 `C.keyDiag` 改回 `false`
+（它会额外挂一百多个监听，只适合排查用）。
+
+---
+
+## 2.5 锚点 / pivot：真机上「黑底只黑左下角」的根因（2026-10-08 真机实证）
+
+### 现象
+真机（PC 1600×900）里黑色背景**只铺了屏幕左下角一块**，其它图元也整体偏移，看起来像「坐标原点跑到了屏幕中心」。
+
+### 根因
+千星编辑器里新建的控件，RectTransform 默认是 Unity 那套：**锚点 (0.5,0.5)、pivot (0.5,0.5)**。
+而适配层 `put()` / `putRot()` 用的是「锚点在左下角 (0,0)、pivot 也在左下角」的口径 ——
+`SetAnchoredPosition(cx,cy)` 表示「**锚点到控件左下角**的偏移」。两者不一致时：
+
+- 黑底背景：尺寸 3 倍画布、位置 `(-CW,-CH)`。pivot=0.5 时这个位置变成「**面板中心**」，
+  于是面板中心被放到画布左下角外，只有右下四分之一盖住画布 → 只剩左下角是黑的。
+- 其它图元：同理按 pivot 反向偏移半宽半高 → 整幅画面错位。
+
+### 修法（已实现）
+1. `instantiateTemplate` 里**无条件**调用 `G_REAL.normalizeLeaf(c, kind)`（不再只在「容器包装」分支里做）：
+   - 轴对齐件（rect / circle / ring / text / baked）：`anchorMin = anchorMax = pivot = (0,0)`
+   - 旋转件与中心容器（rot / rtri / bakedC）：`= (0.5,0.5)`
+   - 全屏件（cursor / bakedRoot）：`anchorMin (0,0)`、`anchorMax (1,1)`、`sizeDelta 0`、`anchoredPosition 0`
+2. `OnStart` 里把**宿主 root 也拉成铺满画布**（官方文档要求 Root 覆盖画布，锚点 (0,0)-(1,1)、尺寸差 0）——
+   用户没在编辑器里配的话，子控件的绝对坐标会相对一个「小盒子」定位。
+3. 图片叶子额外清掉 **羽化 / 遮罩 / 填充裁切**（`enableMask=false`、`enableSoftEdge=false`、`enableFill=false`），
+   否则拉伸到全屏的黑底会被裁成一小块或边缘发虚。
+
+> 参照物：交接包 `D:\stars\another\...\lua\main.lua` 的 `instantiateTemplate` 同样是**无条件**
+> `SetAnchorMin/SetAnchorMax/SetPivot/SetAnchoredPosition`；其 `docs/部署与设置.md` 还明确要求
+> 「Root 锚点 (0,0)-(1,1)、位置与尺寸差异都为 0」「图片用基础完整显示、清空软边和填充裁切」
+> 「矩形模板要能被拉伸到 1px 小块及全屏尺寸」「父层有内边距/网格/自动布局要先移除」。
+
+### 编辑器里仍需你确认的两点
+- `rect` 模板：纯白实心块、alpha 255、**无羽化 / 无遮罩 / 不用填充裁切**，能拉伸（代码会拉成 1px 小条与 3 倍全屏）。
+- 父层（客户端控件容器 / 根节点）不要有内边距、网格布局、自动布局 —— 否则比例锚点会偏移。
+
+> 关于「有没有用图片模板自带的资源」：`C.images = nil/0` 表示**沿用模板自带图片**、不调 `SetImage`
+> （交接包的 `config.lua` 也是全 0）。真机日志里 `baked sans_body_default … rects=295` 说明 CodeArt
+> 贴图配方已在正常生成 —— 这次的问题**不是**图片资源，而是 RectTransform 的锚点/pivot。
+
+自检：`node tools/run-lua.mjs lua/probes/_probe_sandbox_adapter.lua`
+→ `PASS 60 / FAIL 0`（含「真机直接模板、Unity 默认中心锚点」替身：断言黑底 pivot 归零、
+3 倍画布覆盖、光标区/烘焙根拉伸铺满）。
+
+---
+
+## 2.6 文本框 / 龙骨炮（CodeArt 烘焙）在真机上的口径 —— 2026-10-08
+
+### 黑底（已修）
+`bgPanel`（stretch 锚点、尺寸差 0）＋ `bgOver`（stretch 锚点、尺寸差 `+2CW/+2CH`，四周各外扩 1 倍画布）
+两层叠加：第一层精确铺满 Root（Root 已被 `stretchFull` 拉成铺满画布），第二层兜住画布外沿。
+两层都不依赖 pivot 的绝对摆放。
+
+### 文本框
+按交接包文档「背景完全透明、固定字号、不启用自动压缩字号、顶对齐」逐条对齐：
+
+| 属性 | 写法 | 为什么 |
+|---|---|---|
+| `bgColor` | `Color(0,0,0,0)` | 模板自带底色会糊在画面上 |
+| `adaptiveFontSize` | `false` | 真机模板若开着自动压缩，长句会被压小/挤在一起 |
+| `verticalAlignment` | `Enum.TextVerticalAlignment.Top` | 我们的排版按「y 是文本框顶边」算 |
+| `horizontalAlignment` | `Enum.TextHorizontalAlignment.{Left,Middle,Right}` | 真机只吃枚举（字符串会抛） |
+| `fontSize` | 整数 | 小数会抛异常 |
+
+诊断：第一次画文字会打 `main: [diag] 第一个文本框 raw="…" size=… align=…`，随后 `geom[…text…]` 回读几何。
+
+### 龙骨炮 / Sans（CodeArt 烘焙子块）
+`newBakedInstance` 里每个像素块现在都显式设 **`SetPivot(0.5,0.5)` + `SetAnchoredPosition(0,0)`**，
+与比例锚点（anchorMin/Max = 图块占比）配套。只给比例锚点、pivot 留在 0 时，真机按「锚点到 pivot」解释位置，
+**每个像素块会偏半个自身尺寸** —— 龙骨炮/Sans 的烘焙模型就会糊成一团（交接包 `another` 的
+`newBakedInstance` 是同口径）。
+
+诊断：
+- `main: [diag] blaster bake=… block=… rects=… sc=… deg=…` —— 第一次画炮时打出走的是哪条路径（
+  `block=true` = 走 fit 像素配方；`block=false` = 回退到参数化外观）。
+- `main: geom[baked:<素材>] …` / `main: geom[baked-child:<素材>] …` —— 每种素材第一次创建时回读
+  容器与首个像素块的 anchor/pivot/pos/size。
+- `main: geom[root] …` / `geom[bg1-stretch] …` / `geom[bg2-overscan] …` —— 启动时回读根与两层黑底。

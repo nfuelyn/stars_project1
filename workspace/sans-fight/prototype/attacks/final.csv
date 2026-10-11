@@ -141,7 +141,7 @@
 0,SansSlam,3
 0.03333,BoneStab,2,48,1.4,1
 0,BoneStab,3,48,1.4,1
-0.9,BlackScreen,1
+2.2,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
@@ -150,7 +150,7 @@
 0,SansSlam,0
 0.03333,BoneStab,0,38.4,1.9,1
 0,BoneStab,1,38.4,1.9,1
-0.9,BlackScreen,1
+2.2,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash

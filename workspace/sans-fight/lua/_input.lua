@@ -541,11 +541,13 @@ ok('touch4-reaches-enemy', tk.waitState('enemy', 600))
 tk.startRound(1)
 tk.stepSafe(3)
 
--- press the stick at world (100,300) (left half, clear of every clickable rect) and drag by dw
+-- 【2026-10-11 用户口径·固定摇杆】基准点**固定**在 HOME(84,392)（原神预设位）：按下点取 HOME，
+-- 之后手指相对 HOME 的偏移 = 摇杆向量（旧测试按"基准=按下点"写，已同步）。
+local JOY_HOME_X, JOY_HOME_Y = 84, 392
 local function joyPush(env, dwx, dwy)
-  env.up(100, 300); env.stepSafe(1)
-  env.down(100, 300)
-  env.drag(100 + dwx, 300 + dwy)
+  env.up(JOY_HOME_X, JOY_HOME_Y); env.stepSafe(1)
+  env.down(JOY_HOME_X, JOY_HOME_Y)
+  env.drag(JOY_HOME_X + dwx, JOY_HOME_Y + dwy)
   env.stepSafe(1)
   return env.main.dirs()
 end
@@ -579,7 +581,7 @@ for _, c in ipairs(TOUCH4) do
   ok('touch4-' .. c.name .. '-geom-same-source', g ~= nil and (
     (c.axis == 'x' and (g.knob.x - g.ring.x) * c.sign > 0)
     or (c.axis == 'y' and (g.knob.y - g.ring.y) * c.sign < 0)))
-  tk.up(100 + c.dwx, 300 + c.dwy)
+  tk.up(JOY_HOME_X + c.dwx, JOY_HOME_Y + c.dwy)
   tk.stepSafe(1)
   eq('touch4-' .. c.name .. '-release-clears', tk.main.dirs()[c.name], false)
   m4n = m4n + 1
@@ -616,7 +618,7 @@ do
   -- 注意：蓝心现在**永远在动**（按住上升 / 松开等速下落），所以「原地不动」只对 x 成立；
   -- y 的行为由 core_selftest 的 blue-jump 段（0.25s 上升 / 0.75s 下落）负责断言。
   ok('touch4-dead-y-monotonic', s1.y >= s0.y - 0.001)
-  tk.up(104, 304)
+  tk.up(JOY_HOME_X + 4, JOY_HOME_Y + 4)
   tk.stepSafe(1)
   m4n = m4n + 1
 end

@@ -398,7 +398,8 @@ local function run()
   ok(has(g, 'hit hp='), '白骨重叠且静止 → 出现 hit（颜色规则不适用于白）')
   ok(g.hp < hpW, '白骨命中扣血（' .. hpW .. ' → ' .. g.hp .. '）')
 
-  -- 蓝/橙交替生成：确认两种颜色都出现过（原 selftest 的 sawBlue/sawOrange）
+  -- 【2026-10-09 用户口径·剔除现有橙骨】内置 blue_bone 兜底生成器**只出蓝骨**
+  --   （原版 Files/sans_bluebone.csv 只有 6 行 Color=1；蓝/橙交替是本端口自创，已移除）。
   g = newGame({ seed = 3, startRound = 3 })
   local sawBlue, sawOrange = false, false
   for _ = 1, 60 * 12 do
@@ -410,10 +411,9 @@ local function run()
         if b.color == 'orange' then sawOrange = true end
       end
     end
-    if sawBlue and sawOrange then break end
   end
-  ok(sawBlue and sawOrange,
-     '蓝骨与橙骨都会出现（sawBlue=' .. tostring(sawBlue) .. ' sawOrange=' .. tostring(sawOrange) .. '）')
+  ok(sawBlue, '内置 blue_bone 生成蓝骨（sawBlue=' .. tostring(sawBlue) .. '）')
+  ok(not sawOrange, '内置生成器不再出橙骨（sawOrange=' .. tostring(sawOrange) .. '）')
 
   -- ------------------------------------------------------ 确定性（C10）
   head('determinism：同 seed + 同输入 → 同日志（C10）')
@@ -750,8 +750,9 @@ local function run()
 
   local menuResult
   for _, c in ipairs(M.render(g)) do if c.kind == 'menu' then menuResult = c end end
-  ok(menuResult and #menuResult.items == 2 and menuResult.items[1] == '结 算' and menuResult.items[2] == '重 开' and menuResult.index == 1,
-     '结局页按钮：结算在左、重开在右，默认选中重开')
+  ok(menuResult and #menuResult.items == 3 and menuResult.items[1] == '结 算' and menuResult.items[2] == '重 开'
+     and menuResult.items[3] == '重选难度' and menuResult.index == 1,
+     '结局页按钮：结算 / 重开 / 重选难度，默认选中重开')
   g:applyInput({ left = true })
   ok(g.resultIndex == 0, '结局页左键可切到结算')
   g:applyInput({ confirm = true })
@@ -759,6 +760,8 @@ local function run()
   local victoryTitle = false
   for _, c in ipairs(M.render(g)) do if c.kind == 'hudText' and c.text == '胜 利 结 算' then victoryTitle = true end end
   ok(victoryTitle, '结算后显示「胜 利 结 算」标题')
+  g:retitle()
+  ok(g.state == 'title' and g.result == nil, '「重选难度」→ 回到标题页（可重新选难度）')
 
   head('extra-spare：最终回合选仁慈 → 饶恕结局（C16 对照）')
   g = newGame({ seed = 1, noSpawn = true, noScriptRounds = true, startRound = 23 })
@@ -1055,12 +1058,15 @@ local function run()
   gres:startEnemy(1); gres:finish('fail', 'hp_zero')
   local cRes = checkBox(gres, 'result')
   ok(cMenu and cAtk and cSub and cRes ~= nil, 'menu/sub/attack/result 都能拿到 box 指令')
-  local function sameY(tag, c)
-    if c and math.abs(c.y - yEnemy) > 0.01 then
-      yMismatch[#yMismatch + 1] = string.format('%s y=%.1f (enemy y=%.1f)', tag, c.y, yEnemy)
+  -- 【2026-10-10 用户口径】我方行动期框**尺寸固定**：menu/sub/attack/result 一律 575×140
+  --   （原来 y/高沿用敌人回合的框 → 每回合框大小都不同；位置仍由中心约束保证不跑偏）
+  local function fixedSize(tag, c)
+    if c and (math.abs(c.w - 575) > 0.01 or math.abs(c.h - 140) > 0.01) then
+      yMismatch[#yMismatch + 1] = string.format('%s %.0fx%.0f（应为 575x140）', tag, c.w, c.h)
     end
   end
-  sameY('menu', cMenu); sameY('attack', cAtk); sameY('sub', cSub); sameY('result', cRes)
+  -- 只约束「我方控制」的三相（menu / sub / attack）；结局页的框沿用当时的框（不属我方控制阶段，不约束）
+  fixedSize('menu', cMenu); fixedSize('attack', cAtk); fixedSize('sub', cSub)
   -- ④ 跑满一整轮真实流程，确认没有中途冒出越界/偏移的框
   local gr = newGame({ seed = 7, startRound = 6 })
   for _ = 1, 600 do
@@ -1072,7 +1078,7 @@ local function run()
      (#overs > 0 and ('（越界 ' .. #overs .. ' 次：' .. table.concat(overs, '; ') .. '）') or ''))
   ok(#offCenter == 0, '所有 box 中心 = (320, 308.5)' ..
      (#offCenter > 0 and ('（异常：' .. table.concat(offCenter, '; ') .. '）') or ''))
-  ok(#yMismatch == 0, 'menu/sub/attack/result 的框 y 与 enemy 相同（不再上移）' ..
+  ok(#yMismatch == 0, 'menu/sub/attack/result 的框尺寸固定 575×140（我方行动期大小不再随回合变化）' ..
      (#yMismatch > 0 and ('（异常：' .. table.concat(yMismatch, '; ') .. '）') or ''))
   note('检查了 ' .. checked .. ' 个 box 指令；示例 ' .. table.concat(samples, ' '))
 
@@ -1114,7 +1120,9 @@ local function run()
 
   head('menu-long-box / act-no-note / item-scroll：我方行动三项优化')
   do
-    -- ① 我方回合框只加宽（33..608 = 575），y/高与敌方回合一致 ⇒ Sans（y = 框顶-16-148）零位移
+    -- ① 我方回合框**固定 575×140 且居中**（x 33..608、中心 y = 308.5）
+    --    【2026-10-10 用户口径】原来"只加宽、y/高沿用敌方回合"→ 每回合框高都不同（140/165/…），
+    --    看着"大小不固定"；改成固定尺寸+居中后，我方回合的框与 Sans 位置都稳定。
     local gm2 = newGame({ seed = 1, noSpawn = true })
     gm2:startEnemy(1)
     local be = boxOf(gm2)
@@ -1122,8 +1130,9 @@ local function run()
     local bm = boxOf(gm2)
     ok(bm and math.abs(bm.w - 575) < 0.01 and math.abs(bm.x - 33) < 0.01,
        string.format('menu-long-box：我方回合框 = 33..608（x=%.0f w=%.0f）', bm.x, bm.w))
-    ok(bm and math.abs(bm.y - be.y) < 0.01 and math.abs(bm.h - be.h) < 0.01,
-       string.format('menu-long-box：y/高与敌方回合一致（y %.1f→%.1f h %.1f→%.1f）⇒ Sans 零位移', be.y, bm.y, be.h, bm.h))
+    ok(bm and math.abs(bm.h - 140) < 0.01 and math.abs((bm.y + bm.h / 2) - 308.5) < 0.01,
+       string.format('menu-long-box：我方回合框固定 575×140 且居中（h %.1f 中心 y %.1f；敌方回合 h %.1f）',
+                     bm.h, bm.y + bm.h / 2, be.h))
     -- ② 行动面板：既没有「结束回合」备注，也没有底部作用说明
     M.menuChoose(gm2, 1)
     local sp2
@@ -1247,7 +1256,8 @@ local function run()
   -- 【2026-10-06 用户口径】三个 bonestab 的「升起骨墙」统一削薄 + 留 2 个缺口（dist 16/18→9、warn→1.2）；
   --   sans_bonestab3 另外降次数（Loop 9→6）+ 周期 +1s：
   --   dist 18→12、Loop 9→6、周期 0.23333→1.23333，BoneStab 追加 lanes=5 / gapEvery=2。
-  local want = { '9,1.2,0.33333', '9,1.2,0.2', '9,1.2,0.25' }
+  -- 【2026-10-11 用户口径】非 final 的「拖拽后升起的骨刺」厚度 ×1.5：dist 9 → 13.5
+  local want = { '13.5,1.2,0.33333', '13.5,1.2,0.2', '13.5,1.2,0.25' }
   for k, sc in ipairs(ab) do
     local got = tostring(sc.csv):match('BoneStab,[^\n]-,(%d+%.?%d*,%d+%.?%d*,%d+%.?%d*)')
     ok(got == want[k], string.format('A-9：%s 参数 = %s（期望 %s）', sc.name, tostring(got), want[k]))
@@ -1256,28 +1266,45 @@ local function run()
     if sc.name == 'sans_bonestab3' then
       -- 【2026-10-06】按 bone_battle.lua 修正后：BoneStab 不再分道/留缺口，改成
       -- 「一整块厚度 = distance+8 的面板，以 speed=distance*10 滑入 distance 像素」。
-      ok(tostring(sc.csv):find('BoneStab,$Direction,9,1.2,0.25', 1, true) ~= nil,
+      ok(tostring(sc.csv):find('BoneStab,$Direction,13.5,1.2,0.25', 1, true) ~= nil,
          'A-9：sans_bonestab3 参数已按参考（dist/warn/stay，无分道参数）')
       ok(tostring(sc.csv):find('SET,Loop,6', 1, true) ~= nil,
          'A-9：sans_bonestab3 骨墙次数 9 → 6（降密度）')
     end
   end
-  head('orange-sweep：ROUND23 骨刺段每轮一根 + ROUND22 末尾骨带段一根（同机制橙骨）')
-  -- 用户口径（2026-10-07）：橙骨有两处，机制相同（整框宽横骨、dir=1 向下、color=2）：
-  --   ① ROUND23（= 内部 22 = sans_bonestab3）骨刺阶段：**每一轮骨刺各一根**（共 6 根）；
-  --   ② ROUND22（= 内部 21 = multi3）末尾那段的贴地骨带：该段每次播放一根。
+  head('orange-sweep：橙骨只加在 ROUND22 / ROUND23 两处（2026-10-09 用户口径）')
+  -- 用户口径：① multi3 贴地骨带段 1 根；② sans_bonestab3 骨刺段每轮 1 根（脚本 1 行，播放 6 次）。
+  --   其它脚本一律不得再有 Color=2 骨行；内置生成器也不出橙（见上面 orange-bone 组）。
+  local orangeRows, orangeBy = {}, {}
+  for _, sc in ipairs(A) do
+    local n = 0
+    for line in tostring(sc.csv):gmatch('[^\n]+') do
+      local tt = line:gsub('^%s+', '')
+      if tt ~= '' and tt:sub(1, 1) ~= '#' then
+        local c = {}
+        for cell in tt:gmatch('[^,]*') do c[#c + 1] = cell end
+        local cmd = c[2]
+        local ci = (cmd == 'BoneV' or cmd == 'BoneH') and 8
+                   or ((cmd == 'BoneVRepeat' or cmd == 'BoneHRepeat') and 10 or -1)
+        if ci > 0 and tonumber(c[ci]) == 2 then n = n + 1 end
+      end
+    end
+    if n > 0 then orangeRows[#orangeRows + 1] = sc.name .. '×' .. n; orangeBy[sc.name] = n end
+  end
+  ok(#orangeRows == 1 and (orangeBy['sans_bonestab3'] or 0) == 1 and (orangeBy['multi3'] or 0) == 0,
+     '橙骨恰好 1 处：仅 sans_bonestab3（ROUND23）；ROUND22 的橙骨已按用户要求删除（实测：'
+       .. table.concat(orangeRows, ',') .. '）')
   local csvBt3, csvM3
   for _, sc in ipairs(A) do
     if sc.name == 'sans_bonestab3' then csvBt3 = sc.csv end
     if sc.name == 'multi3' then csvM3 = sc.csv end
   end
-  ok(csvBt3 ~= nil and csvBt3:find('0,BoneH,241,216,165,1,180,2', 1, true) ~= nil,
-     'sans_bonestab3：每轮骨刺配一根橙色横骨（x=241 宽=165=整框，dir=1 向下，color=2）')
   ok(csvBt3 ~= nil and csvBt3:find('JMPZ,27,$Loop', 1, true) ~= nil,
-     'sans_bonestab3：循环出口已随插入行同步（JMPZ 26 → 27）')
-  ok(csvM3 ~= nil and csvM3:find('0,BoneH,121,266,405,1,160,2', 1, true) ~= nil,
-     'multi3（玩家口径 ROUND22）末尾骨带段也有同款橙色横骨（整框宽 405）')
-
+     'sans_bonestab3：循环出口 = 27（插入橙骨行后行号 +1）')
+  ok(csvBt3 ~= nil and csvBt3:find('BoneH,241,216,165,1,180,2', 1, true) ~= nil,
+     'ROUND23 橙骨：x=241 / y=216 / 宽=165（整框）/ dir=1 / speed=180 / color=2')
+  ok(csvM3 ~= nil and csvM3:find('BoneH,121,266,405,1,160,2', 1, true) == nil,
+     'ROUND22（multi3）不再有橙骨（用户口径：那段应保留"站在骨缝不动也能过"）')
   head('final-spiral：持续光束（BlastTime<=0）不做终点钳制 —— 旋转龙骨炮轴心不跳')
   do
     -- 阶段④每发：起点 = 轴心(320,306) + 450u、终点 = 轴心 + 150u。

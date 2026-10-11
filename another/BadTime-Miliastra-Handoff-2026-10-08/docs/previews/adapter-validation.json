@@ -1,0 +1,83 @@
+{
+  "offline": true,
+  "mockAPI": true,
+  "scenes": [
+    {
+      "file": "adapter-title.png",
+      "visibleControls": {
+        "container": 1194,
+        "rect": 1128,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-paused.png",
+      "visibleControls": {
+        "container": 1422,
+        "rect": 1346,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-opening-stab.png",
+      "visibleControls": {
+        "container": 1192,
+        "rect": 1073,
+        "circle": 64,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-menu.png",
+      "visibleControls": {
+        "container": 1396,
+        "rect": 1237,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-opening.png",
+      "visibleControls": {
+        "container": 1389,
+        "rect": 1086,
+        "rot": 184,
+        "circle": 64,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-platform.png",
+      "visibleControls": {
+        "container": 1167,
+        "rect": 1014,
+        "circle": 104,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-final.png",
+      "visibleControls": {
+        "container": 1324,
+        "rect": 1001,
+        "rot": 272,
+        "cursor": 1
+      },
+      "errors": []
+    },
+    {
+      "file": "adapter-result.png",
+      "visibleControls": {
+        "container": 1173,
+        "rect": 789,
+        "cursor": 1
+      },
+      "errors": []
+    }
+  ]
+}

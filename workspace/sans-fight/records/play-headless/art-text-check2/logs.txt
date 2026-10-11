@@ -1,0 +1,528 @@
+main init: root=true canvas=1280x720 scale=1.500 ox=160.0 oy=0.0
+main: geom[root] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[bg1-stretch] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[bg2-overscan] anchor=(0.0,0.0)-(1.0,1.0) pivot=(0.5,0.5) pos=(0.0,0.0) size=(2560.0,1440.0)
+main: 平台 = 触摸分支（不注册键盘监听；左半屏摇杆 + 点按二次确认）
+main start: build=2026-10-08-sandbox-adapter device=Mobile touch=true mode=core pool=2019 flash=true cursor=true
+main: geom[baked:glyph:28857:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:28857:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,22.5) size=(3.0,1.5)
+main: baked glyph:28857:-4602152#1 18x20 rects=21
+main: geom[baked:glyph:38590:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38590:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(12.0,24.0) size=(1.5,1.5)
+main: baked glyph:38590:-4602152#1 18x20 rects=28
+main: geom[baked:glyph:24230:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24230:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(12.0,22.5) size=(1.5,1.5)
+main: baked glyph:24230:-4602152#1 18x20 rects=21
+main: geom[baked:glyph:21345:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21345:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,21.0) size=(1.5,3.0)
+main: baked glyph:21345:-4602152#1 18x20 rects=10
+main: geom[baked:glyph:36873:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36873:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(3.0,1.5)
+main: baked glyph:36873:-4602152#1 18x20 rects=24
+main: geom[baked:glyph:20013:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20013:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,19.5) size=(3.0,3.0)
+main: baked glyph:20013:-4602152#1 18x20 rects=9
+main: geom[baked:glyph:183:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:183:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,10.5) size=(3.0,3.0)
+main: baked glyph:183:-4602152#1 6x20 rects=1
+main: geom[baked:glyph:20877:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20877:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(21.0,1.5)
+main: baked glyph:20877:-4602152#1 18x20 rects=14
+main: baked glyph:28857:-4602152#2 18x20 rects=21
+main: geom[baked:glyph:19968:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:19968:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,12.0) size=(24.0,1.5)
+main: baked glyph:19968:-4602152#1 18x20 rects=2
+main: geom[baked:glyph:27425:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:27425:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,22.5) size=(3.0,1.5)
+main: baked glyph:27425:-4602152#1 18x20 rects=33
+main: geom[baked:glyph:24320:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24320:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(21.0,1.5)
+main: baked glyph:24320:-4602152#1 18x20 rects=10
+main: geom[baked:glyph:22987:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22987:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.0,19.5) size=(3.0,4.5)
+main: baked glyph:22987:-4602152#1 18x20 rects=29
+main: [diag] 文字走 CodeArt 矩形字形（textart height=20，字号基准 16）首帧样例="点难度卡选中    ·    再点一次开始" size=16 align=Middle
+main: geom[baked:glyph:24377:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24377:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(21.0,36.75) size=(2.625,5.25)
+main: baked glyph:24377:-1#1 18x20 rects=27
+main: geom[baked:glyph:24149:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24149:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(13.125,39.375) size=(2.625,2.625)
+main: baked glyph:24149:-1#1 18x20 rects=23
+main: geom[baked:glyph:23457:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:23457:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(18.375,39.375) size=(2.625,2.625)
+main: baked glyph:23457:-1#1 18x20 rects=17
+main: geom[baked:glyph:21028:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21028:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,28.875) size=(5.25,13.125)
+main: baked glyph:21028:-1#1 18x20 rects=19
+main: geom[baked:glyph:31616:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:31616:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.1875,30.9375) size=(2.0625,2.0625)
+main: baked glyph:31616:-1#1 18x20 rects=25
+main: geom[baked:glyph:21333:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21333:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,30.9375) size=(2.0625,2.0625)
+main: baked glyph:21333:-1#1 18x20 rects=20
+main: geom[baked:glyph:24930:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24930:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,14.625) size=(2.25,2.25)
+main: baked glyph:24930:-10066330#1 18x20 rects=24
+main: geom[baked:glyph:36895:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36895:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,16.875) size=(1.125,1.125)
+main: baked glyph:36895:-10066330#1 18x20 rects=27
+main: geom[baked:glyph:183:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:183:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,7.875) size=(2.25,2.25)
+main: baked glyph:183:-10066330#1 6x20 rects=1
+main: geom[baked:glyph:38388:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38388:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,16.875) size=(1.125,1.125)
+main: baked glyph:38388:-10066330#1 18x20 rects=15
+main: geom[baked:glyph:38548:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38548:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,15.75) size=(4.5,1.125)
+main: baked glyph:38548:-10066330#1 18x20 rects=28
+main: geom[baked:glyph:22823:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22823:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.875,13.5) size=(2.25,4.5)
+main: baked glyph:22823:-10066330#1 18x20 rects=16
+main: baked glyph:183:-10066330#2 6x20 rects=1
+main: geom[baked:glyph:39044:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:39044:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,15.75) size=(18.0,1.125)
+main: baked glyph:39044:-10066330#1 18x20 rects=24
+main: geom[baked:glyph:35686:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:35686:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,16.875) size=(1.125,1.125)
+main: baked glyph:35686:-10066330#1 18x20 rects=27
+main: geom[baked:glyph:38271:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38271:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,11.25) size=(2.25,5.625)
+main: baked glyph:38271:-10066330#1 18x20 rects=17
+main: geom[baked:glyph:26222:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:26222:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,30.9375) size=(4.125,2.0625)
+main: baked glyph:26222:-11776#1 18x20 rects=22
+main: geom[baked:glyph:36890:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36890:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.0625,30.9375) size=(4.125,2.0625)
+main: baked glyph:36890:-11776#1 18x20 rects=29
+main: geom[baked:glyph:25512:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25512:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,15.75) size=(2.25,3.375)
+main: baked glyph:25512:-3558806#1 18x20 rects=22
+main: geom[baked:glyph:33616:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:33616:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(5.625,16.875) size=(1.125,1.125)
+main: baked glyph:33616:-3558806#1 18x20 rects=19
+main: geom[baked:glyph:22256:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22256:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.0625,28.875) size=(28.875,2.0625)
+main: baked glyph:22256:-1#1 18x20 rects=20
+main: geom[baked:glyph:38590:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38590:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(16.5,33.0) size=(2.0625,2.0625)
+main: baked glyph:38590:-1#1 18x20 rects=28
+main: geom[baked:glyph:22522:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22522:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,15.75) size=(2.25,2.25)
+main: baked glyph:22522:-10066330#1 18x20 rects=19
+main: geom[baked:glyph:20934:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20934:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.875,16.875) size=(1.125,1.125)
+main: baked glyph:20934:-10066330#1 18x20 rects=25
+main: baked glyph:36895:-10066330#2 18x20 rects=27
+main: geom[baked:glyph:24230:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24230:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(9.0,16.875) size=(1.125,1.125)
+main: baked glyph:24230:-10066330#1 18x20 rects=21
+main: geom[baked:glyph:21407:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21407:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.125,28.875) size=(28.875,2.0625)
+main: baked glyph:21407:-1#1 18x20 rects=25
+main: geom[baked:glyph:20316:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20316:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.1875,28.875) size=(4.125,4.125)
+main: baked glyph:20316:-1#1 18x20 rects=18
+main: geom[baked:glyph:21407:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21407:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,15.75) size=(15.75,1.125)
+main: baked glyph:21407:-10066330#1 18x20 rects=25
+main: geom[baked:glyph:29256:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:29256:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,12.375) size=(2.25,5.625)
+main: baked glyph:29256:-10066330#1 18x20 rects=29
+main: geom[baked:glyph:26080:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:26080:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,15.75) size=(14.625,1.125)
+main: baked glyph:26080:-10066330#1 18x20 rects=15
+main: geom[baked:glyph:25932:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25932:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.5,16.875) size=(4.5,1.125)
+main: baked glyph:25932:-10066330#1 18x20 rects=24
+main: geom[baked:glyph:24103:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24103:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,15.75) size=(1.125,3.375)
+main: baked glyph:24103:-10066330#1 18x20 rects=22
+main: geom[baked:glyph:49:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:49:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,19.125) size=(3.375,1.125)
+main: baked glyph:49:-10066330#1 11x20 rects=5
+main: baked glyph:24103:-10066330#2 18x20 rects=22
+main: geom[baked:glyph:65288:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65288:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(14.625,15.75) size=(1.125,1.125)
+main: baked glyph:65288:-10066330#1 18x20 rects=9
+main: geom[baked:glyph:24046:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24046:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.5,16.875) size=(1.125,1.125)
+main: baked glyph:24046:-10066330#1 18x20 rects=17
+main: geom[baked:glyph:36317:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36317:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,15.75) size=(5.625,1.125)
+main: baked glyph:36317:-10066330#1 18x20 rects=20
+main: geom[baked:glyph:25991:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25991:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.875,18.0) size=(1.125,1.125)
+main: baked glyph:25991:-10066330#1 18x20 rects=21
+main: geom[baked:glyph:26723:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:26723:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,14.625) size=(2.25,3.375)
+main: baked glyph:26723:-10066330#1 18x20 rects=23
+main: geom[baked:glyph:72:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:72:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,15.75) size=(1.125,4.5)
+main: baked glyph:72:-10066330#1 11x20 rects=5
+main: geom[baked:glyph:45:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:45:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,13.5) size=(5.625,1.125)
+main: baked glyph:45:-10066330#1 11x20 rects=1
+main: geom[baked:glyph:48:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:48:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,19.125) size=(4.5,1.125)
+main: baked glyph:48:-10066330#1 11x20 rects=12
+main: geom[baked:glyph:52:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:52:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.5,18.0) size=(3.375,2.25)
+main: baked glyph:52:-10066330#1 11x20 rects=9
+main: geom[baked:glyph:47:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:47:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.75,19.125) size=(1.125,2.25)
+main: baked glyph:47:-10066330#1 11x20 rects=10
+main: geom[baked:glyph:86:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:86:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,18.0) size=(2.25,2.25)
+main: baked glyph:86:-10066330#1 11x20 rects=10
+main: baked glyph:45:-10066330#2 11x20 rects=1
+main: baked glyph:48:-10066330#2 11x20 rects=12
+main: geom[baked:glyph:54:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:54:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,19.125) size=(4.5,1.125)
+main: baked glyph:54:-10066330#1 11x20 rects=7
+main: geom[baked:glyph:65289:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65289:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,15.75) size=(1.125,1.125)
+main: baked glyph:65289:-10066330#1 18x20 rects=9
+main: 阶段 nil → title (round=1 hp=92)
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 触摸点按难度卡 1 → 选中（再点一次开局）
+main: geom[baked:glyph:20877:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20877:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(21.0,1.5)
+main: baked glyph:20877:-11776#1 18x20 rects=14
+main: geom[baked:glyph:28857:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:28857:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,22.5) size=(3.0,1.5)
+main: baked glyph:28857:-11776#1 18x20 rects=21
+main: geom[baked:glyph:19968:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:19968:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,12.0) size=(24.0,1.5)
+main: baked glyph:19968:-11776#1 18x20 rects=2
+main: geom[baked:glyph:27425:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:27425:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,22.5) size=(3.0,1.5)
+main: baked glyph:27425:-11776#1 18x20 rects=33
+main: geom[baked:glyph:24320:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24320:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(21.0,1.5)
+main: baked glyph:24320:-11776#1 18x20 rects=10
+main: geom[baked:glyph:22987:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22987:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.0,19.5) size=(3.0,4.5)
+main: baked glyph:22987:-11776#1 18x20 rects=29
+main: geom[baked:glyph:183:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:183:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,10.5) size=(3.0,3.0)
+main: baked glyph:183:-11776#1 6x20 rects=1
+main: baked glyph:28857:-11776#2 18x20 rects=21
+main: geom[baked:glyph:20854:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20854:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.5,21.0) size=(1.5,3.0)
+main: baked glyph:20854:-11776#1 18x20 rects=18
+main: geom[baked:glyph:23427:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:23427:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,22.5) size=(1.5,1.5)
+main: baked glyph:23427:-11776#1 18x20 rects=14
+main: geom[baked:glyph:38590:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38590:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(12.0,24.0) size=(1.5,1.5)
+main: baked glyph:38590:-11776#1 18x20 rects=28
+main: geom[baked:glyph:24230:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24230:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(12.0,22.5) size=(1.5,1.5)
+main: baked glyph:24230:-11776#1 18x20 rects=21
+main: geom[baked:glyph:21345:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21345:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(10.5,21.0) size=(1.5,3.0)
+main: baked glyph:21345:-11776#1 18x20 rects=10
+main: geom[baked:glyph:21487:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21487:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,21.0) size=(24.0,1.5)
+main: baked glyph:21487:-11776#1 18x20 rects=11
+main: geom[baked:glyph:25913:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25913:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(13.5,24.0) size=(1.5,1.5)
+main: baked glyph:25913:-11776#1 18x20 rects=29
+main: geom[baked:glyph:36873:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36873:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.5,21.0) size=(3.0,1.5)
+main: baked glyph:36873:-11776#1 18x20 rects=24
+main: geom[baked:glyph:31616:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:31616:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.1875,30.9375) size=(2.0625,2.0625)
+main: baked glyph:31616:-11776#1 18x20 rects=25
+main: geom[baked:glyph:21333:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21333:-11776] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,30.9375) size=(2.0625,2.0625)
+main: baked glyph:21333:-11776#1 18x20 rects=20
+main: geom[baked:glyph:24930:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24930:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,14.625) size=(2.25,2.25)
+main: baked glyph:24930:-3558806#1 18x20 rects=24
+main: geom[baked:glyph:36895:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36895:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,16.875) size=(1.125,1.125)
+main: baked glyph:36895:-3558806#1 18x20 rects=27
+main: geom[baked:glyph:183:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:183:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,7.875) size=(2.25,2.25)
+main: baked glyph:183:-3558806#1 6x20 rects=1
+main: geom[baked:glyph:38388:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38388:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,16.875) size=(1.125,1.125)
+main: baked glyph:38388:-3558806#1 18x20 rects=15
+main: geom[baked:glyph:38548:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38548:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,15.75) size=(4.5,1.125)
+main: baked glyph:38548:-3558806#1 18x20 rects=28
+main: geom[baked:glyph:22823:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:22823:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.875,13.5) size=(2.25,4.5)
+main: baked glyph:22823:-3558806#1 18x20 rects=16
+main: baked glyph:183:-3558806#2 6x20 rects=1
+main: geom[baked:glyph:39044:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:39044:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,15.75) size=(18.0,1.125)
+main: baked glyph:39044:-3558806#1 18x20 rects=24
+main: geom[baked:glyph:35686:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:35686:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,16.875) size=(1.125,1.125)
+main: baked glyph:35686:-3558806#1 18x20 rects=27
+main: geom[baked:glyph:38271:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38271:-3558806] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,11.25) size=(2.25,5.625)
+main: baked glyph:38271:-3558806#1 18x20 rects=17
+main: geom[baked:glyph:26222:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:26222:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,30.9375) size=(4.125,2.0625)
+main: baked glyph:26222:-1#1 18x20 rects=22
+main: geom[baked:glyph:36890:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36890:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.0625,30.9375) size=(4.125,2.0625)
+main: baked glyph:36890:-1#1 18x20 rects=29
+main: geom[baked:glyph:25512:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25512:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,15.75) size=(2.25,3.375)
+main: baked glyph:25512:-10066330#1 18x20 rects=22
+main: geom[baked:glyph:33616:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:33616:-10066330] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(5.625,16.875) size=(1.125,1.125)
+main: baked glyph:33616:-10066330#1 18x20 rects=19
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=true moved=false
+main: 点按难度卡 1 → 开局
+music: start #1 (score=743 格 142.66s, 音效绑定 0 项)
+main: geom[baked:sans_body_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(115.2,112.8) size=(7.2,2.4)
+main: baked sans_body_default#1 96x48 rects=295
+main: geom[baked:sans_head_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_head_default] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(16.8,67.2) size=(7.2,2.4)
+main: baked sans_head_default#1 32x30 rects=177
+main: geom[baked:glyph:76:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:76:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.4375,10.96875) size=(1.21875,10.96875)
+main: baked glyph:76:-1#1 11x20 rects=2
+main: geom[baked:glyph:86:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:86:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,19.5) size=(2.4375,2.4375)
+main: baked glyph:86:-1#1 11x20 rects=10
+main: geom[baked:glyph:49:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:49:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.65625,20.71875) size=(3.65625,1.21875)
+main: baked glyph:49:-1#1 11x20 rects=5
+main: geom[baked:glyph:57:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:57:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.4375,20.71875) size=(4.875,1.21875)
+main: baked glyph:57:-1#1 11x20 rects=11
+main: geom[baked:glyph:72:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:72:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,17.0625) size=(1.21875,4.875)
+main: baked glyph:72:-1#1 11x20 rects=5
+main: geom[baked:glyph:80:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:80:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,20.71875) size=(7.3125,1.21875)
+main: baked glyph:80:-1#1 11x20 rects=5
+main: baked glyph:57:-1#2 11x20 rects=11
+main: geom[baked:glyph:50:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:50:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.4375,20.71875) size=(4.875,1.21875)
+main: baked glyph:50:-1#1 11x20 rects=9
+main: geom[baked:glyph:47:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:47:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.3125,20.71875) size=(1.21875,2.4375)
+main: baked glyph:47:-1#1 11x20 rects=10
+main: baked glyph:57:-1#3 11x20 rects=11
+main: baked glyph:50:-1#2 11x20 rects=9
+main: geom[baked:glyph:75:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:75:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,15.75) size=(2.25,4.5)
+main: baked glyph:75:-3562497#1 11x20 rects=12
+main: geom[baked:glyph:82:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:82:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.125,19.125) size=(5.625,1.125)
+main: baked glyph:82:-3562497#1 11x20 rects=10
+main: geom[baked:glyph:48:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:48:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.25,19.125) size=(4.5,1.125)
+main: baked glyph:48:-3562497#1 11x20 rects=12
+main: geom[baked:glyph:82:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:82:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,20.71875) size=(6.09375,1.21875)
+main: baked glyph:82:-1#1 11x20 rects=10
+main: geom[baked:glyph:79:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:79:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.4375,20.71875) size=(6.09375,1.21875)
+main: baked glyph:79:-1#1 11x20 rects=11
+main: geom[baked:glyph:85:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:85:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,12.1875) size=(1.21875,9.75)
+main: baked glyph:85:-1#1 11x20 rects=5
+main: geom[baked:glyph:78:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:78:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,20.71875) size=(2.4375,1.21875)
+main: baked glyph:78:-1#1 11x20 rects=9
+main: geom[baked:glyph:68:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:68:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.21875,20.71875) size=(6.09375,1.21875)
+main: baked glyph:68:-1#1 11x20 rects=8
+main: baked glyph:49:-1#2 11x20 rects=5
+main: baked glyph:47:-1#2 11x20 rects=10
+main: baked glyph:50:-1#3 11x20 rects=9
+main: geom[baked:glyph:52:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:52:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.875,19.5) size=(3.65625,2.4375)
+main: baked glyph:52:-1#1 11x20 rects=9
+main: geom[baked:glyph:38590:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:38590:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,16.5) size=(1.03125,1.03125)
+main: baked glyph:38590:-7697782#1 18x20 rects=28
+main: geom[baked:glyph:24230:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24230:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.25,15.46875) size=(1.03125,1.03125)
+main: baked glyph:24230:-7697782#1 18x20 rects=21
+main: geom[baked:glyph:31616:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:31616:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.09375,15.46875) size=(1.03125,1.03125)
+main: baked glyph:31616:-7697782#1 18x20 rects=25
+main: geom[baked:glyph:21333:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21333:-7697782] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.125,15.46875) size=(1.03125,1.03125)
+main: baked glyph:21333:-7697782#1 18x20 rects=20
+main: geom[baked:glyph:65288:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65288:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(17.0625,18.375) size=(1.3125,1.3125)
+main: baked glyph:65288:-1#1 18x20 rects=9
+main: geom[baked:glyph:24038:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:24038:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(4.6875,12.1875) size=(1.875,1.875)
+main: baked glyph:24038:-4602152#1 18x20 rects=13
+main: geom[baked:glyph:21322:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21322:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.5625,10.3125) size=(1.875,4.6875)
+main: baked glyph:21322:-4602152#1 18x20 rects=11
+main: geom[baked:glyph:23631:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:23631:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.875,13.125) size=(12.1875,0.9375)
+main: baked glyph:23631:-4602152#1 18x20 rects=19
+main: geom[baked:glyph:25302:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25302:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.875,12.1875) size=(1.875,2.8125)
+main: baked glyph:25302:-4602152#1 18x20 rects=26
+main: geom[baked:glyph:21160:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21160:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(9.375,12.1875) size=(0.9375,2.8125)
+main: baked glyph:21160:-4602152#1 18x20 rects=24
+main: geom[baked:glyph:31227:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:31227:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(8.4375,15.0) size=(0.9375,0.9375)
+main: baked glyph:31227:-4602152#1 18x20 rects=34
+main: baked glyph:21160:-4602152#2 18x20 rects=24
+main: geom[baked:glyph:183:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:183:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.9375,6.5625) size=(1.875,1.875)
+main: baked glyph:183:-4602152#1 6x20 rects=1
+main: geom[baked:glyph:28857:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:28857:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.5625,14.0625) size=(1.875,0.9375)
+main: baked glyph:28857:-4602152#1 18x20 rects=21
+main: geom[baked:glyph:20987:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20987:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.5625,13.125) size=(1.875,1.875)
+main: baked glyph:20987:-4602152#1 18x20 rects=9
+main: geom[baked:glyph:36873:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:36873:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.9375,13.125) size=(1.875,0.9375)
+main: baked glyph:36873:-4602152#1 18x20 rects=24
+main: geom[baked:glyph:39033:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:39033:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(5.625,13.125) size=(9.375,0.9375)
+main: baked glyph:39033:-4602152#1 18x20 rects=18
+main: baked glyph:36873:-4602152#2 18x20 rects=24
+main: geom[baked:glyph:20013:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20013:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.5625,12.1875) size=(1.875,1.875)
+main: baked glyph:20013:-4602152#1 18x20 rects=9
+main: geom[baked:glyph:65292:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65292:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.8125,3.75) size=(1.875,0.9375)
+main: baked glyph:65292:-4602152#1 18x20 rects=3
+main: geom[baked:glyph:20877:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20877:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.9375,13.125) size=(13.125,0.9375)
+main: baked glyph:20877:-4602152#1 18x20 rects=14
+main: geom[baked:glyph:27425:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:27425:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(6.5625,14.0625) size=(1.875,0.9375)
+main: baked glyph:27425:-4602152#1 18x20 rects=33
+main: baked glyph:28857:-4602152#2 18x20 rects=21
+main: baked glyph:20987:-4602152#2 18x20 rects=9
+main: geom[baked:glyph:30830:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:30830:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.5,14.0625) size=(1.875,0.9375)
+main: baked glyph:30830:-4602152#1 18x20 rects=31
+main: geom[baked:glyph:35748:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:35748:-4602152] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.875,14.0625) size=(0.9375,0.9375)
+main: baked glyph:35748:-4602152#1 18x20 rects=24
+main: 阶段 title → enemy (round=0 hp=92)
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:20182:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20182:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.9375,18.375) size=(2.625,2.625)
+main: baked glyph:20182:-1#1 18x20 rects=18
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:27809:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:27809:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.3125,19.6875) size=(1.3125,1.3125)
+main: baked glyph:27809:-1#1 18x20 rects=26
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:26377:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:26377:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(7.875,18.375) size=(1.3125,2.625)
+main: baked glyph:26377:-1#1 18x20 rects=14
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:sans_body_down] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_down] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(108.0,105.6) size=(7.2,2.4)
+main: baked sans_body_down#1 64x70 rects=299
+main: geom[baked:sans_head_blue] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_head_blue] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(16.8,67.2) size=(7.2,2.4)
+main: baked sans_head_blue#1 32x30 rects=181
+main: geom[baked:glyph:25171:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25171:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.9375,17.0625) size=(1.3125,3.9375)
+main: baked glyph:25171:-1#1 18x20 rects=14
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:25307:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25307:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.625,17.0625) size=(2.625,3.9375)
+main: baked glyph:25307:-1#1 18x20 rects=22
+main: geom[baked:glyph:21628:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21628:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(14.4375,19.6875) size=(5.25,1.3125)
+main: baked glyph:21628:-1#1 18x20 rects=22
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:65292:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65292:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.9375,5.25) size=(2.625,1.3125)
+main: baked glyph:65292:-1#1 18x20 rects=3
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:20808:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20808:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.9375,18.375) size=(2.625,2.625)
+main: baked glyph:20808:-1#1 18x20 rects=16
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:21160:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:21160:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(13.125,17.0625) size=(1.3125,3.9375)
+main: baked glyph:21160:-1#1 18x20 rects=24
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:25163:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:25163:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(11.8125,19.6875) size=(6.5625,1.3125)
+main: baked glyph:25163:-1#1 18x20 rects=9
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:20102:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:20102:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(1.3125,18.375) size=(18.375,1.3125)
+main: baked glyph:20102:-1#1 18x20 rects=6
+main: geom[baked:glyph:12290:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:12290:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.625,5.25) size=(2.625,1.3125)
+main: baked glyph:12290:-1#1 18x20 rects=5
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:glyph:65289:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:65289:-1] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(2.625,18.375) size=(1.3125,1.3125)
+main: baked glyph:65289:-1#1 18x20 rects=9
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorDown x=305.5 y=375.0 click=false moved=false
+main: 游标 CursorUp x=305.5 y=375.0 click=false moved=false
+main: geom[baked:sans_body_up] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:sans_body_up] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(129.6,153.6) size=(7.2,2.4)
+main: baked sans_body_up#1 64x70 rects=309
+main: geom[baked:glyph:54:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(0.0,0.0) size=(0.0,0.0)
+main: geom[baked-child:glyph:54:-3562497] anchor=(0.0,0.0)-(0.0,0.0) pivot=(0.0,0.0) pos=(3.375,19.125) size=(4.5,1.125)
+main: baked glyph:54:-3562497#1 11x20 rects=7
+main: baked glyph:49:-1#3 11x20 rects=5

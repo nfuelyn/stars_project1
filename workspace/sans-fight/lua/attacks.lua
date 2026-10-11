@@ -3,7 +3,7 @@
   ---------------------------------------------------------------------------
   生成器：tools/gen-attacks.mjs
   来源：  prototype/attacks/*.csv（27 个）
-  生成日期：2026-10-07
+  生成日期：2026-10-11
 
   每项 = { name = "sans_xxx", csv = <该 CSV 的全文> }
   core.lua 通过 M.newGame({ scripts = require("attacks") }) 注入使用；
@@ -156,7 +156,7 @@ local M = {
 0,SansSlam,3
 0.03333,BoneStab,2,48,1.4,1
 0,BoneStab,3,48,1.4,1
-0.9,BlackScreen,1
+2.2,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
@@ -165,7 +165,7 @@ local M = {
 0,SansSlam,0
 0.03333,BoneStab,0,38.4,1.9,1
 0,BoneStab,1,38.4,1.9,1
-0.9,BlackScreen,1
+2.2,BlackScreen,1
 0,Sound,Flash
 0.1,BlackScreen,0
 0,Sound,Flash
@@ -571,15 +571,10 @@ $Wait2,SET,LastDir,$Direction
 0,HeartTeleport,330,304
 0,Platform,309,314,41,0,0
 0,Platform,309,354,41,0,0
-
 # 【2026-10-06 用户口径·round22】贴地那排骨头：25 根 × 间距 16（缝仅 6px，灵魂宽 16 钻不过去）
-#   → 10 根 × 间距 40（缝 30px，能容下灵魂），高 30 → 15（大小减半）；横向覆盖宽度不变。
+#   → 10 根 × 间距 40（缝 30px，能容下灵魂）；横向覆盖宽度不变。（注：以下"10×40"是目标口径，当前未生效）
 # 底边骨带：贴底边(框底 391) + 顶部到第二块板(y=354) => 单根竖骨 y=354/h=37
 0,BoneVRepeat,121,354,37,2,0,20,20
-# 【2026-10-07 用户口径·ROUND22（玩家口径）末尾骨带段】同款橙色扫场横骨：
-#   x=121 / y=266（框顶 276 上方 10px）/ 宽=405（= 框宽 121..526，覆盖整框）/ dir=1 向下 / speed=160 / color=2 橙。
-#   与 ROUND23（sans_bonestab3）骨刺阶段那根**同一机制**：不动（不按方向键）才受伤。
-0,BoneH,121,266,405,1,160,2
 0,RND,Side,2
 0,JMPZ,Attack5Other,$Side
 0,BoneV,521,280,35,2,240
@@ -1058,7 +1053,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,9,1.2,0.33333
+0.2,BoneStab,$Direction,13.5,1.2,0.33333
 0.6,JMPABS,6
 0,EndAttack
 ]==] },
@@ -1087,7 +1082,7 @@ $Wait2,SET,LastDir,$Direction
 0,SansBody,HandUp
 0,JMPREL,1
 0.26666,SansSlam,$Direction
-0.2,BoneStab,$Direction,9,1.2,0.2
+0.2,BoneStab,$Direction,13.5,1.2,0.2
 0.93333,JMPABS,6
 0,EndAttack
 ]==] },
@@ -1121,11 +1116,10 @@ $Wait2,SET,LastDir,$Direction
 0,JMPREL,1
 0.26666,SansSlam,$Direction
 # 【2026-10-06 二次口径】尺寸再减半 dist 18→9、出现 warn 0.4→1.2、升起 out 0.22→1.02
-# 【2026-10-07 用户口径·round22 骨刺阶段】每一轮骨刺都配一根橙色横骨：
-#   x=241 / y=216（框顶 226 上方 10px，骨厚 10）/ 宽=165（= 框宽 241..406）/ dir=1 向下 / speed=180 / color=2 橙。
-#   180px/s → 0.97s 扫过框高 165，1.47s 飞出屏（< 每轮 1.5s），保证"每轮只有一根在场"。
+# 【2026-10-09 用户口径·ROUND23】每一轮骨刺都配一根橙色横骨（x=241 框左 / y=216 框顶上方 10px / 宽=165 整框 /
+#   dir=1 向下 / speed=180 / color=2）；1.47s 飞出屏 < 每轮 1.5s ⇒ 每轮只有一根在场。
 0,BoneH,241,216,165,1,180,2
-0,BoneStab,$Direction,9,1.2,0.25
+0,BoneStab,$Direction,13.5,1.2,0.25
 1.23333,JMPABS,6
 0,EndAttack
 ]==] },

@@ -156,6 +156,10 @@ do
   local okR, consumedR = pcall(tap, 320, 320)
   eq('result-tap-ok', okR, true)
   eq('result-tap-consumed', consumedR, true)
+  -- 【2026-10-11 用户口径】重开改为二次确认（PC 也要）：同一位置再点一次才真的重开
+  local okR2, consumedR2 = pcall(tap, 320, 320)
+  eq('result-tap2-ok', okR2, true)
+  eq('result-tap2-consumed', consumedR2, true)
   for _ = 1, 4 do pcall(main.OnLevelUpdate, 1.0 / 30.0) end
   -- 重开走的是 core.restart → start()：直接回到回合 0 的敌方阶段（原作也是"继续打"，不回标题页）
   eq('restart-to-round0', main.state().state, 'enemy')

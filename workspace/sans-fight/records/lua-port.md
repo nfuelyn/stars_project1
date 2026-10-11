@@ -216,7 +216,7 @@ phase  += speed * dt * 0.5         （每帧推进）
 | 平台在红魂回合的站立 | ⚠️ 设计取舍 | 红魂**没有重力**（与 JS 一致），所以红魂只会被平台挡住；蓝魂才有"掉到平台顶面站住" |
 | `SansSlam` 的砸击伤害 | ⚠️ 未接线 | 引擎记录了 `slamDamage`，但 `Game` 侧没有消费它（JS 也没有）；"壁ドン 0 伤害"目前只是标志位 + 自测断言 |
 | 最终回合三段的**具体脚本内容** | ⚠️ 复用既有脚本 | 契约只要求"分三段"，本移植复用 `sans_bluebone`/`sans_bonegap1`/`sans_intro`；原版 `sans_final` 的四阶段编排**未接**（脚本已在 `attacks.lua` 里，可直接换） |
-| 音效/音乐 | ❌ 不实现 | `Sound`/`Music` 只记日志 |
+| 音效/音乐 | ✅ 战斗 BGM（音效拟合） | 攻击脚本里的 `Sound`/`Music` 仍只记日志；整场 BGM 由 `lua/music.lua` 用 `game.PlayAudio2D` 逐音符拼，见 `docs/music-fit.md` |
 | HP 92 档 | ⚠️ 未跑自测 | 自测用的是 JS 基准 20；`main.lua` 用 `hp=92` 时**规则不变**（KR 上限、每 0.5s 扣 1 等都与上限无关），但没有针对 92 的断言 |
 
 ## 8. 自测清单（166 条）
@@ -258,3 +258,123 @@ node tools/run-lua.mjs lua/_flow.lua           →  框变化 31 次，绘制框
 否则会被脚本弹幕污染出假失败。
 
 `easy/normal/hard/original` 四档 900 帧空跑均无报错，`hud.phase` 正常推进。
+
+---
+
+## 适配层（`lua/main.lua`）沙箱接轨修订 —— 2026-10-08
+
+来源：`D:\stars\another`（`BadTime-Miliastra-Handoff-2026-10-08` 的 `lua/main.lua` + `千星沙箱接口总结.md`）。
+范围：**只动 `lua/main.lua` 的沙箱接轨部分**，并新增 `lua/config.lua`；战斗逻辑（`core/attacks/fitdata`）一行未动。
+
+| # | 问题（修订前） | 修订后 |
+|---|---|---|
+| 1 | 真机模板索引只有一套，写死 | `G_REAL` 存**候选列表**（用户确认的 1865/1871/1875/1877/1879/1867/1860/1862 + 交接包的 1887/1889/1890/1891/1888/1886/1885/1884 + 容器节点），逐个试到成功为止 |
+| 2 | `isKindControl` 用 `c.prefabIndex == 模板索引` 短路 → 包装模板永远钻不进叶子，只能拿到空容器 | 只按**叶子接口**判类型（`SetImage` / `text` / `AddCursorEventListener`）；包装层 `stretchWrapper` 拉伸、叶子 `normalizeLeaf` 归一化成左下/中心 |
+| 3 | `SetImage(..., 100001..100006)` 无条件调用（那是模拟器内置图元编号，真机无此资产 → 图元刷成空白，且真机 pcall 外会每帧报错堆积） | `IMAGE_ID` 默认 0 = **沿用模板自带图片**；只有 `> 0` 才调 `SetImage` |
+| 4 | 颜色直接写整数（真机要 ColorValue） | 统一 `G_REAL.apiColor()` → `Color(r,g,b,a)`；宿主没有 `Color` 时原样返回整数（离线自测不变） |
+| 5 | `memo[c.Id]` 当键（真机运行期身份是小写 `id`，`c.Id` 可能为 nil → 所有控件串成一份状态） | `memo[c]`（控件对象本身） |
+| 6 | `OnUpdate` 空实现 + `OnLevelUpdate` 推进，没有配置项 | `G_REAL.cfg.updateCallback`：默认 `'level'` 只走 `OnLevelUpdate`；`'ui'` 时 `OnUpdate` 转发（两个都推进 = 每帧两遍，禁止） |
+| 7 | 只注册监听、从不卸载；没有 `OnEnable/OnDisable/OnDestroy` | 监听回调留引用 → `OnDestroy` 逐个 `RemoveKeyEventListener` / `RemoveCursorEventListener` + `RemoveAllCursorEventListeners`，再 `DestroyClientUIControl` 自建控件（**不销毁宿主 root**） |
+| 8 | 真机也会预热约 2000 份（每个实例带子控件 → 卡死） | 检测到真机（包装模板/真机索引）→ 打印一次提示并改为**按需创建** |
+| 9 | root 只从 `game.GetClientUIControl(1)` 取 | 优先 `script.object`，回退 `1073741857 / 1073741856 / 1`；并开启 `showCursor` / `disableKeyEventPassthrough` / `disableCursorEventPassthrough`；`OnStart` 幂等 |
+| 10 | 设备分流写死 | `C.device = 'auto' / 'keyboard' / 'touch'`（真机调试） |
+
+新增环境配置 `lua/config.lua`（内联进主脚本，改完要重建存档）：`updateCallback` / `device` / `templatesFirst` /
+`legacyTemplateFallback` / `templates` / `images`。默认值保证模拟器与离线自测行为不变。
+
+新增探针 `lua/probes/_probe_sandbox_adapter.lua`（已并入 `tools/verify-all.mjs`）：模拟「真机容器包装模板 +
+`script.object` 宿主」，断言候选索引回落、包装解开、叶子归一化、颜色类型、`images=0` 不调 `SetImage`、
+真机不预热、`OnStart` 幂等、`OnDestroy` 清理、`OnUpdate` 开关。
+
+验证：
+
+- `node tools/verify-all.mjs --quick` → **9 / 9 通过**（含新探针 `31 PASS / 0 FAIL`）
+- `node tools/run-lua.mjs lua/_geometry.lua` → `PASS 29 / FAIL 0`（修订前同一份夹具是 `17 PASS / 12 FAIL`：
+  「真机 GUID 优先」把离线假引擎的图元类型打乱，6 类实体的绘制==判定几何全部对不上）
+- `node tools/run-lua.mjs lua/_pool.lua` → `draw ERR=0`、`未注册 guid 实例化=0`，各 guid 实例化次数
+  **恰好等于** `BUDGET`（rect 202 / circle 443 / text 15 / ring 2 / rot 1350 / rtri 4 / cursor 1 / bakedRoot 1）→ **运行期追加 0**
+- 已重建存档并把内联脚本同步到 `external_lua_file\main.lua`（490029 字节，
+  SHA-256 `F5B5781F1124947B0AE7E28095C44705214D0A35183442E3776446D86A7E42D7`）
+
+真机日志侧的对应关系：`external_lua_file\ErrorLog.txt`（2026-10-08 13:55）记的是
+「脚本发生循环调用错误，未发送给日志的报错目前已堆积 1000 条」——与「每帧一个报错」一致，
+上面第 3 条（真机 `SetImage` 到不存在的资产）与第 2 条（拿到空容器后把文本/颜色属性写到容器上）
+正是最可能的两个来源。本次修订后如仍复现，请在千星里开脚本日志把首条报错发我。
+
+---
+
+## 真机日志回归（第二轮）—— 2026-10-08 20:45
+
+用户贴回真机（PC 1600×900）脚本日志，报错集中在**接口类型**，共四类，全部已修：
+
+| 真机报错/警告 | 原因 | 修法 |
+|---|---|---|
+| `bad argument #2 to 'AddKeyEventListener' (KeyEventType expected, got string)` ×13 | 真机要 `Enum.KeyEventType.*` 枚举项 | `G_REAL.addKeyEvent`：先字符串（模拟器/试玩页）→ 抛错再枚举；记下**真正生效的键**供 `OnDestroy` 摘除 |
+| `bad argument #2 to 'AddCursorEventListener' (CursorEventType expected, got string)` ×4 | 真机要 `Enum.CursorEventType.*` | `G_REAL.addCursorEvent`，同上 |
+| `bad argument #2 to 'horizontalAlignment' (TextHorizontalAlignment expected, got string)`（每帧） | 真机要 `Enum.TextHorizontalAlignment.*` | `G_REAL.setAlign`：第一次探测，被拒就永久切枚举（不每帧白抛） |
+| 警告 `客户端控件生命周期处于创建或销毁时，无法调用 DestroyClientUIControl` | 销毁阶段禁止主动销毁 | `OnDestroy` 只摘监听 + 清引用（控件挂在宿主 root 下，随容器回收） |
+
+顺带修掉一个**会直接影响可玩性**的隐藏问题：`Enum.KeyEventType` 的键盘项里**没有** `KeyboardMenuConfirmKey`
+（`worker.js` 的 `pl()`：键盘表只有 Move/Jump/Drop/Interact/NormalAttack/CharacterSkill/Craftsperson…；
+`MenuConfirmKey` / `MenuBackKey` 只在控制器表）。所以真机上「确认」原本永远绑不上 → 标题页按开始没反应。
+现在确认/取消改成**多来源聚合**：
+
+- 确认 = `KeyboardMenuConfirmKey`（试玩页注入的字符串）+ `ControllerMenuConfirmKey` + `KeyboardJumpKey`
+  + `KeyboardNormalAttackKey`(J) + `KeyboardInteractKey`(F、E)
+- 取消 = `KeyboardMenuBackKey` + `ControllerMenuBackKey` + `KeyboardDropKey`
+- 按来源记按住状态再聚合（`owned.holds`）：一个来源抬起不会顶掉另一个还按着的来源 —— 蓝心长按跳跃
+  的高度由按住时长决定，这个状态必须准。
+- 枚举里不存在的来源只打印「跳过可选键 …」，不再算 `bind fail`。
+
+探针同步扩到「真机只吃枚举」的严格替身（字符串一律抛错、枚举里按真实 `pl()` 的表给项），
+并新增断言：方向键/确认键/取消键/游标必须拿到枚举形态、`horizontalAlignment` 写成枚举、
+字符串形态一个都不许写进去、按 `ControllerMenuConfirmKey` 能真的开局、`OnDestroy` 必须用**同形态**的键摘监听。
+
+验证：
+
+- `node tools/run-lua.mjs lua/probes/_probe_sandbox_adapter.lua` → `PASS 48 / FAIL 0`（上一轮是 31）
+- `node tools/verify-all.mjs --quick` → **9 / 9 通过**
+- 外部文件已重新同步：`external_lua_file\main.lua` = 494961 字节
+
+补充（同日第二轮）：真机枚举里没有 `KeyboardMenuConfirmKey`，确认/取消改成多来源聚合；
+另外新增 `lua/config.lua` 的 `C.keyDiag = true` 键位诊断开关（把 `Enum.KeyEventType` 全量事件挂上
+「按到就打印」的监听，用来查真机物理键对应的事件名）。
+
+- `lua/probes/_probe_sandbox_adapter.lua` → `PASS 50 / FAIL 0`（含真机只吃枚举 + 键位诊断开关）
+
+## 真机日志回归（第三轮）：锚点 / pivot 归一化 —— 2026-10-08
+
+现象（用户真机实测）：**黑色背景只铺了屏幕左下角**，其它图元整体偏移，「原点像跑到了屏幕中心」。
+
+根因：真机模板的 RectTransform 是 Unity 默认（锚点/pivot = 0.5,0.5），而适配层
+`put()/putRot()` 按「锚点 + 左下角」口径摆图。黑底是 3 倍画布、位置 `(-CW,-CH)`：
+pivot=0.5 时这个位置变成「面板中心」，只有右下四分之一盖住画布 → 只剩左下角黑。
+旧实现只在「容器包装」分支里归一化，**真机的直接模板没走到那一支**。
+
+修法（对齐交接包 `another/lua/main.lua` 的 `instantiateTemplate`）：
+
+1. `instantiateTemplate` **无条件** `G_REAL.normalizeLeaf(c, kind)`：
+   rect/circle/ring/text/baked → `(0,0)`；rot/rtri/bakedC → `(0.5,0.5)`；cursor/bakedRoot → 拉伸铺满。
+2. `OnStart` 把宿主 root 也拉成铺满画布（官方文档要求 Root 锚点 (0,0)-(1,1)、位置/尺寸差 0）。
+3. 图片叶子清 `enableMask / enableSoftEdge / enableFill`（交接包文档：图片用基础完整显示、无软边、无填充裁切）。
+
+探针新增 §J：用「真机直接模板 + Unity 默认中心锚点」替身启动，断言黑底 pivot 归零、
+位置 `(-CW,-CH)`、尺寸 3 倍画布、旋转件保持中心锚点、光标区/烘焙根拉伸铺满。
+
+- `node tools/run-lua.mjs lua/probes/_probe_sandbox_adapter.lua` → `PASS 60 / FAIL 0`
+- `node tools/verify-all.mjs --quick` → 9 / 9
+- 模拟器无头试玩（`records/play-headless/anchor-check`）→ `错误 0`，画面正常
+
+第四轮（2026-10-08 深夜，真机反馈「黑底只黑左下角 / 文本框不正常 / 龙骨炮模型有问题」）：
+
+1. **黑底**：改成两层 —— `bgPanel`（stretch、尺寸差 0，铺满 Root）＋ `bgOver`（stretch、尺寸差 +2CW/+2CH，
+   四周外扩 1 倍画布），都不依赖 pivot 的绝对摆放。用户确认「黑底铺满了」。
+2. **文本框**：按交接包文档补齐 `bgColor=透明`、`adaptiveFontSize=false`、`verticalAlignment=Top`（枚举）、
+   `horizontalAlignment` 枚举、`fontSize` 整数。
+3. **CodeArt 烘焙子块**：`newBakedInstance` 的每个像素块补 `SetPivot(0.5,0.5)` + `SetAnchoredPosition(0,0)`
+   （比例锚点必须配中心 pivot，否则真机上每块偏半个自身尺寸 → 龙骨炮/Sans 模型糊掉）。
+4. **诊断**：新增 `geom[root|bg1|bg2|baked:*|baked-child:*]` 几何回读、`[diag] blaster bake/block/rects`、
+   `[diag] 第一个文本框 raw/size/align`；锚点类写入失败不再静默（`G_REAL.trySet`）。
+
+- 探针 §J（黑底两层）、§K（烘焙子块口径）→ `PASS 65 / FAIL 0`
+- `verify-all --quick` → 9 / 9

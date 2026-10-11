@@ -139,7 +139,14 @@ local BOX_CX, BOX_CY = 320, 308.5
 -- 默认框 (240,226)-(400,391) 的下沿就是 391）。这里给的是**逻辑提示值**：
 -- 适配层会按 `min(box.y + box.h + 12, 480 - 46)` 统一挪位（移动端还要与摇杆区让位）。
 -- 别把它当成"画在框内"—— 曾经这么写过，是错的。
-local MENU = { bw = 110, bh = 42, gap = 10, y = 400 }   -- 真值来自 Animations/UIFight|Act|Item|Mercy = 110×42
+-- 【方案 A1·2026-10-09】按钮 x 用**原版非等距**布局（Layouts/BattleScreen.xml L400-503：
+--   UIFight 32 / UIAct 184 / UIItem 344 / UIMercy 496，间距 152/160/152，整行 32..606）。
+--   gap 保留只为兼容旧引用（xs 存在时不再参与排布）。
+-- 【2026-10-09 用户口径】四个选项 **以屏幕中心为对称**：左右边距严格相等、彼此等距。
+--   总宽 = 4×110 + 3×gap = 574（沿用原版整行宽度）→ 左边距 = (VW(640) - 574)/2 = 33，右边距同样 33；
+--   相邻间距 = (574 - 110)/3 = 154.667 ⇒ x = 33 / 187.667 / 342.333 / 497
+local MENU = { bw = 110, bh = 42, gap = 154.66666666667 - 110, y = 400,
+               xs = { 33, 187.66666666667, 342.33333333333, 497 } }   -- 真值来自 Animations/UIFight|Act|Item|Mercy = 110×42
 local MENU_LABELS = { "攻击", "行动", "道具", "仁慈" }
 local BOX_OFF_X, BOX_OFF_Y = 240, 226  -- 攻击脚本坐标 -> 游戏坐标的平移量
 local SCRIPT_BOX_W, SCRIPT_BOX_H = 160, 165
@@ -1485,14 +1492,41 @@ end
 function Game:start()
   self.tune = DIFFS[self.diffKey] or DIFFS.normal
   self:resetRun()
+  -- 【音乐】开战 / 重开战斗都走这里：给宿主层一个单调递增的场次号。
+  -- 适配层（main.lua）看到它变化就让 BGM 从第 0 格重播，逻辑见 lua/music.lua。
+  self.runSeq = (self.runSeq or 0) + 1
   self:log('game_start hp=' .. self.hp .. ' kr=' .. self.kr .. ' round=' .. self.round ..
            ' seed=' .. tostring(self.bootSeed) .. ' diff=' .. self.tune.key)
   self:startEnemy(self.bootRound > 1 and self.bootRound or 0)
 end
 
 function Game:restart()
+
   self:log('restart')
   self:start()
+end
+
+-- 【2026-10-11 用户口径·重开二次确认（PC 也要）】第一次调用只"上膛"并提示，再确认一次才真的重开。
+function Game:requestRestart()
+  if self.restartArmed then
+    self.restartArmed = false
+    self:restart()
+    return
+  end
+  self.restartArmed = true
+  self:say('再按一次确认重开　（结算 = 结束本局）')
+  self:log('restart_armed')
+end
+
+-- 【2026-10-09 用户口径】「重选难度」：回到标题页重新选难度（本局进度丢弃）。
+--   复用标题页流程：state='title' → 玩家左右选卡 → 确认 = M.titleChoose(g) → g:start()。
+function Game:retitle()
+  self:log('retitle')
+  self:resetRun()
+  self.result = nil
+  self.resultIndex = 1
+  self.settleRequested = false
+  self.state = 'title'
 end
 
 local function makeWorld(g, name)
@@ -1569,7 +1603,7 @@ function Game:startEnemy(n)
   self.wave = 0
   self.wavesAlive = {}
   self.floorLock = 0
-  self.colorFlip = false
+  -- （colorFlip 已随'内置橙骨剔除'一并移除）
   self.walls = {}
   self.world = nil
   self.sine = {}
@@ -1677,9 +1711,11 @@ function Game:endEnemy()
   self.whiteT = nil
   self.floorLock = 0
   self.state = 'menu'
-  -- 【2026-10-07 用户口径】我方行动期固定长框：**只改宽度**（y/高沿用本回合的框）
-  --   → 子面板有 559px 可用；Sans 由框顶推导 ⇒ 框顶不变 ⇒ Sans 零位移。
-  self.box = { x = MENU_BOX_L - BOX_OFF_X, y = self.box.y, w = MENU_BOX_R - MENU_BOX_L, h = self.box.h }
+  -- 【2026-10-10 用户口径】我方行动期（菜单 / 子面板 / 攻击条）战斗框**固定尺寸 575×140**：
+  --   原来只改宽度、**高度沿用上一段攻击的框** → 每回合框高都不同（140 / 165 / …），看着"大小不固定"。
+  --   注意 y（框顶）仍沿用本回合的顶：Sans 的位置是由框顶推导的，固定顶才能保证他不会在阶段间跳动。
+  self.box = { x = MENU_BOX_L - BOX_OFF_X, y = (BOX_CY - 70) - BOX_OFF_Y,
+               w = MENU_BOX_R - MENU_BOX_L, h = 140 }
   self.menuIndex = 0
   -- 最后一回合打完之后 final = true：原作里这时 Sans 已经力竭、躲不开，
   -- 玩家在菜单里选「攻击」就是致命一击（stopAttack 按 self.final 走"必中"分支），
@@ -1989,6 +2025,11 @@ end
 
 function Game:stopAttack()
   if self.state ~= 'attack' then return end
+  -- 【2026-10-10 修复】已经结算过就不再结算：
+  --   攻击条按下后状态仍是 'attack'（还有 attackHold ≈1s 才进敌方回合），
+  --   这期间连按空格会反复调用本函数 → 反复重设 sansDodge（闪避动画重放）+ 重放台词。
+  --   加这道幂等保护后，一次攻击只结算一次。
+  if self.attackResult ~= nil then return end
   local acc = 1 - math.abs(self.attackCursor - 0.5) * 2
   if self.final then
     self.attackResult = 'hit'; self.attackHold = 1.2
@@ -2673,8 +2714,9 @@ function Game:update(dt)
     elseif d.pattern == 'bone_wall' then
       self:spawnWall(d.p.gap); self.spawnT = self:it(d.p.interval)
     elseif d.pattern == 'blue_bone' then
-      self.colorFlip = not self.colorFlip     -- 蓝/橙交替
-      self:spawnBlue(self.rng() < 0.5, self.colorFlip and 'blue' or 'orange')
+      -- 【2026-10-09 用户口径·剔除现有橙骨】原版 `sans_bluebone` 只有蓝骨（Files/sans_bluebone.csv：6 行 Color=1），
+      --   本端口内置兜底生成器原来是"蓝/橙交替"（自创）→ 现在**只出蓝骨**，橙骨一律由脚本显式下发。
+      self:spawnBlue(self.rng() < 0.5, 'blue')
       self.spawnT = self:it(d.p.blue)
     elseif d.pattern == 'blaster' then
       self:spawnBlaster(self.enemyT > self:it(4) and 2 or 1)
@@ -2980,9 +3022,16 @@ function Game:applyInput(input)
   self.jumpHeld = (input.jumpHeld or input.confirm) and true or false
   if self.state == 'result' then
     -- 结算在左、重开在右；默认仍选重开，保留原确认键重开手感。
-    if e.left or e.right then self.resultIndex = 1 - (self.resultIndex or 1) end
+    -- 三项：0=结算 1=重开 2=重选难度（左右循环，默认停在「重开」）
+    if e.left then self.resultIndex = ((self.resultIndex or 1) - 1) % 3 end
+    if e.right then self.resultIndex = ((self.resultIndex or 1) + 1) % 3 end
+    -- 【2026-10-11 用户口径】结局页「重开」要二次确认（键盘与鼠标同口径）；换项即撤销
+    if e.left or e.right then self.restartArmed = false end
     if e.confirm then
-      if (self.resultIndex or 1) == 0 then self:settle() else self:restart() end
+      local ri = self.resultIndex or 1
+      if ri == 0 then self:settle()
+      elseif ri == 1 then self:requestRestart()
+      else self:retitle() end
     end
   elseif self.state == 'attack' then
     if e.confirm then self:stopAttack() end
@@ -3004,6 +3053,10 @@ end
 -- 渲染（纯函数，不改状态）
 -- ==========================================================================
 local function menuLayout()
+  if MENU.xs ~= nil then                      -- 方案 A1：原版显式 x 表（非等距）
+    local xs = MENU.xs
+    return xs[1], (xs[#xs] + MENU.bw) - xs[1]
+  end
   local total = MENU.bw * 4 + MENU.gap * 3
   local x0 = (VW - total) / 2
   return x0, total
@@ -3155,6 +3208,10 @@ function M.render(g)
       push(cmds, { kind = 'hudText', text = D.note, x = 32 + i * 145 + 65, y = 262, size = 12,
                    color = sel and '#c9b26a' or '#666666', align = 'center' })
     end
+    -- 【2026-10-10 修复】PC 端提示原来画在 y=300，而标题页那行提示在 y=296（字号 16）→ **两者重叠**。
+    --   这里下移到 y=336（标题提示 296、难度注释 262，之间留出空档），并缩短文案。
+    push(cmds, { kind = 'hudText', text = 'PC：空格 确认开局（鼠标不可选定）', x = VW / 2, y = 336, size = 13,
+                 color = '#c9b26a', align = 'center' })
     return cmds
   end
   if g.state == 'result' then
@@ -3164,10 +3221,13 @@ function M.render(g)
               or ((g.result == 'spare') and '饶 恕 结 局' or '击 倒 结 局'))
     push(cmds, { kind = 'hudText', text = t, x = VW / 2, y = 145, size = 36,
                  color = (g.result == 'fail') and '#ff2d2d' or '#ffcc33', align = 'center' })
-    push(cmds, { kind = 'menu', x = VW / 2 - 140, y = 220, w = 130, gap = 20, h = 36,
-                 items = { '结 算', '重 开' }, index = (g.resultIndex or 1), visible = true })
-    push(cmds, { kind = 'hudText',
-                 text = ((g.resultIndex or 1) == 0) and '确认键：结算并退出奇域' or '确认键：重新开始',
+    -- 结算 / 重开 / 重选难度（三项居中排开：130×3 + 20×2 = 430 ⇒ x 从 105 起）
+    local ri = g.resultIndex or 1
+    local hint = (ri == 0) and '确认键：结算并退出奇域'
+                 or ((ri == 1) and '确认键：同难度重新开始' or '确认键：回到标题页重选难度')
+    push(cmds, { kind = 'menu', x = VW / 2 - 215, y = 220, w = 130, gap = 20, h = 36,
+                 items = { '结 算', '重 开', '重选难度' }, index = ri, visible = true })
+    push(cmds, { kind = 'hudText', text = hint,
                  x = VW / 2, y = 280, size = 12, color = '#bbbbbb', align = 'center' })
     return cmds
   end
@@ -3306,6 +3366,7 @@ function M.render(g)
   -- 菜单
   if g.state == 'menu' or g.state == 'attack' or g.state == 'sub' then
     push(cmds, { kind = 'menu', x = MENU_X0, y = MENU.y, w = MENU.bw, h = MENU.bh,
+                 xs = MENU.xs,          -- 【修复】必须带出去：main 的 menuButtonRect 靠它做"以屏幕中心对称 + 等距"
                  items = MENU_LABELS, index = g.menuIndex, visible = true,
                  active = (g.state == 'menu'), interlude = g.interlude and true or false })
     if g.state == 'attack' then
@@ -3508,6 +3569,7 @@ function M.subBack(g) g:subBack() end
 function M.stopAttack(g) g:stopAttack() end
 function M.debugHurt(g, kind) return g:debugHurt(kind) end
 function M.restart(g) g:restart() end
+function M.requestRestart(g) g:requestRestart() end
 function M.settle(g) g:settle() end
 function M.hasLog(g, s) return g:hasLog(s) end
 
