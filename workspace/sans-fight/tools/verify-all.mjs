@@ -33,6 +33,7 @@ const SUITES = [
   ['_title',        'lua/_title.lua',        /title regression: (\d+) pass \/ (\d+) fail/,            '标题页/难度选择'],
   ['_input',        'lua/_input.lua',        /input regression: (\d+) pass \/ (\d+) fail/,            '平台分流 + 四向矩阵'],
   ['_probe_sandbox_adapter', 'lua/probes/_probe_sandbox_adapter.lua', /PASS (\d+) \/ FAIL (\d+)/,     '沙箱接轨层：候选索引/包装模板/生命周期/更新回调'],
+  ['_probe_blue_fall', 'lua/probes/_probe_blue_fall.lua', /PASS (\d+) \/ FAIL (\d+)/, '蓝心方向重力：自由落体终端 243 / maxFall 语义（见 §4.1）'],
   ['_geometry',     'lua/_geometry.lua',     /PASS (\d+) \/ FAIL (\d+)/,                              '绘制 == 判定几何（慢，约 6 分钟）'],
   ['_pool',         'lua/_pool.lua',         /各类峰值之和 = (\d+)/,                                   '控件池峰值实测（最慢，约 25 分钟）'],
 ];
