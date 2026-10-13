@@ -32,3 +32,5 @@
 - `prompt_bonestab_floor_rise.md`
 - `prompt_reduce_floor_bone_width.md`
 - `prompt_sans_final_fall_right.md`
+- `Sans_Fight_原版蓝心运动逻辑与现状对比.md`
+- `Sans_Fight_Sans发言_原版替换与位置_修改文档.md`

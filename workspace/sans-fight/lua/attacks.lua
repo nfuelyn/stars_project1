@@ -3,7 +3,7 @@
   ---------------------------------------------------------------------------
   生成器：tools/gen-attacks.mjs
   来源：  prototype/attacks/*.csv（27 个）
-  生成日期：2026-10-11
+  生成日期：2026-10-13
 
   每项 = { name = "sans_xxx", csv = <该 CSV 的全文> }
   core.lua 通过 M.newGame({ scripts = require("attacks") }) 注入使用；

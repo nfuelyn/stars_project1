@@ -19,7 +19,11 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-11-bone-knob'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-13-blue-fall'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+
+-- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
+--   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
+M.MENU_HEART_DY = 3
 
 local G = {
   -- 模拟器内部模板 GUID
@@ -421,7 +425,8 @@ end
 -- 【方案 A3】选中红心画在**按钮内部左侧 16px**、垂直居中（原版按钮贴图的 Heart 图像点 = 0.145455×110 ≈ 16px）
 local function menuHeartRect(cmd, i)
   local bx, y, _, bh = menuButtonRect(cmd, i)
-  return bx + 7, y + bh / 2 - 9, 20, 18
+  -- 【2026-10-13】跟随 M.MENU_HEART_DY 下移，保证"点红心"仍然命中
+  return bx + 7, y + bh / 2 - 9 + (M.MENU_HEART_DY or 0), 20, 18
 end
 
 -- 命中按钮行：**先按按钮矩形**（彼此不重叠），再按左侧红心（允许与邻居轻微重叠）
@@ -1498,16 +1503,17 @@ end
 
 -- 红心标记（菜单选中项用），与原作一致：心停在选中按钮左侧
 local function heart(cx, cy, col, r)
-  r = r or 6
-  -- 【2026-10-10 重画】原来的圆瓣直径只有 0.62r（远小于三角的 2.3r×1.5r），
-  --   两个小圆 + 一个大三角 → 看起来就是"圆和三角重叠"。按原版心形重排：
-  --   ① 两个圆瓣直径 = r，圆心在 (cx ∓ 0.5r, cy - 0.5r) → 上半部正好铺满 cx±r、cy-r..cy
-  --   ② 下尖三角宽 = 2r（与两瓣外缘对齐）、高 = r，顶边接在两瓣中线、尖朝下到 cy + 0.5r
-  --   两瓣与三角在中线处相切重叠 ≈ 半个三角高 → 拼成完整心形（不会再是"两个小圆 + 大三角"）。
-  local d = r
-  local a = circle(cx - r * 0.5 - d / 2, cy - r * 0.5 - d / 2, d, col)
-  local b = circle(cx + r * 0.5 - d / 2, cy - r * 0.5 - d / 2, d, col)
-  local t = rtri(cx, cy, r * 2, r, 180, col)
+  -- 【2026-10-13 用户口径】菜单栏 / 选项栏的红心**直接用战斗里那颗心的模型**（drawSoul 的几何逐字照抄）：
+  --   两瓣：直径 9，瓣中心 = 心中心 − 重力方向*2.5 ± 垂直方向*3.5；尖：15×9 三角，尖朝重力方向
+  --   菜单里的心恒为初始朝向 dir=1（尖朝下）；外接半径 ≈8 = SOUL_R ⇒ 与战斗中的心**同尺寸同形状**。
+  --   （旧实现在这里是另一套"2r×r 的小几何"（r=7/6），所以菜单/选项的心与战斗的心看着不一样。）
+  --   r 参数保留签名但**不再参与几何** —— 尺寸一律按战斗模型，杜绝两处不一致。
+  local sax, say = 0, 1
+  local spx, spy = -say, sax
+  local lbx, lby = cx - sax * 2.5, cy - say * 2.5
+  local a = circle(lbx + spx * 3.5 - 4.5, lby + spy * 3.5 - 4.5, 9, col)
+  local b = circle(lbx - spx * 3.5 - 4.5, lby - spy * 3.5 - 4.5, 9, col)
+  local t = rtri(cx + sax * 3.5, cy + say * 3.5, 15, 9, 180, col)
   -- 记录本帧用到的红心控件：帧末统一置顶，避免被按钮黑底（rect 池）之类按创建顺序盖住
   local hs = G_REAL.hearts
   if hs ~= nil then
@@ -1550,7 +1556,8 @@ local function drawMenu(cmd)
     rect(bx, by, bw, 1, edge); rect(bx, by + bh - 1, bw, 1, edge)
     rect(bx, by, 1, bh, edge); rect(bx + bw - 1, by, 1, bh, edge)
     -- 【方案 A3】红心在按钮内左 16px、垂直居中（原版 Heart 图像点）
-    if selected then heart(bx + 16, by + bh / 2, C_RED, 7) end
+    -- 【2026-10-13】灵魂（心）整体下移 M.MENU_HEART_DY 像素（原来是 by+bh/2 正中）
+    if selected then heart(bx + 16, by + bh / 2 + (M.MENU_HEART_DY or 0), C_RED, 7) end
     -- 【方案 A4】标签让出左侧心位：从 bx+26 起、宽 bw-32，仍居中（中文 2 字 ≈44px 不会压到心）
     text(it, bx + 26, ty, bw - 32, fs, selected and C_HP or C_WHITE, 'Middle')
   end

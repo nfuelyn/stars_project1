@@ -60,14 +60,18 @@ local GRAVITY = 600               -- 蓝魂重力（px/s^2）
 --   HEART_JUMP_STRENGTH  = 180  起跳初速（px/s）
 --   HEART_JUMPHOLD_CUTOFF = 30  按住时把上升速度托回 -30 → 按住期间以 30px/s 匀速上升（= 变高跳，线性）
 --   MaxFallSpeed          = 750
---   Gravity 按 dy（= PlayerHeart.CustomMovement.dy）分**四档**。XML 里是 4 个并列事件，用 DownSpeed = -dy 判定：
---       DownSpeed < 240 && DownSpeed > 15   → 540   即 dy < -15        （**上升中**：快速减速）
---       DownSpeed ≤ 15 && DownSpeed > -30   → 180   即 -15 ≤ dy < 30   （顶点附近）
---       DownSpeed ≤ -30 && DownSpeed > -120 → 450   即 30 ≤ dy < 120   （下落）
---       DownSpeed ≤ -120                    → 180   即 dy ≥ 120        （快落）
+--   Gravity 按 **DownSpeed** 分档。XML 里是 4 个**并列**事件（不是 else-if）；DownSpeed 在四个角度分支里
+--   各自赋值（Battle.xml L3873/L3930/L3987/L4044）：Angle0 = +dx / Angle90 = +dy / Angle180 = -dx / Angle270 = -dy
+--   ⇒ DownSpeed = **沿重力方向的速度分量**（与重力同向为正）= 本文件 alongG() 算出的 dsp。
+--       DownSpeed > 15  && DownSpeed < 240  → 540   （正在下落：强加速）
+--       DownSpeed ≤ 15  && DownSpeed > -30  → 180   （顶点附近：滞空）
+--       DownSpeed ≤ -30 && DownSpeed > -120 → 450   （上冲中速：硬刹车）
+--       DownSpeed ≤ -120                    → 180   （上冲高速：保持冲劲）
+--       DownSpeed ≥ 240                     → 四个事件**全不命中** → Gravity 保持 0（本帧不加重力）
 -- BTS 与我们的世界同为 640×480、单位同为 px/s → **1:1 直接用**，不需要换算。
 --
--- ⚠ 2026-10-05 修（真 bug）：旧实现写成 `vy < -30 → 180` / `vy > 240 → 540`，**把 180/540 用反了**。
+-- ⚠ 2026-10-05 修（真 bug）：旧实现写成 `vy < -30 → 180` / `vy > 240 → 540`，把「沿重力速度」误当成
+--   「世界 y 速度」，等效于把 180/540 用反。
 --   后果：轻按一下弹到 87px（0.62 框高，原版只有 ~30px = 1/5 框高），而按住只多 3px/s 级的手感差，
 --   玩家报的「跳太高」「长按不改变高度」都是这一处。按上面四档改回后：轻按 ≈30px、按住 +30px/s 线性增长。
 local JUMP_STRENGTH = 180       -- 保留：红魂/砸击相关逻辑仍读它
@@ -236,26 +240,41 @@ local ACT_OPTIONS = {
 local SUB_TITLE = { act = '行动', item = '道具', mercy = '仁慈' }
 
 local LINES = {
-  surprise = '（他没有打招呼，先动手了。）',
-  r1 = '站住别动，让我看看你躲得怎么样。',
-  r2 = '骨头是会走路的东西，别被它撞上。',
-  r3 = '蓝色的骨头：别动。你动一下，它就咬你。',
-  r4 = '抬头看看，朋友。',
-  r5 = '你还没死？那我再认真一点。',
-  -- 20 回合版把台词按"阶段"分了组（原来只有 r1..r6，回合 >6 时全都落到 r6，
-  -- 于是 ROUND 20 / 20 的屏幕上还写着"你已经撑过六回合了" —— 试玩截图里抓到的）。
-  r6 = '……你已经撑过六回合了。',
-  mid = '撑过一半了？那我换个打法。',            -- 内部号 6..10
-  late = '你还在动。越来越有意思了。',              -- 内部号 12..16（中场之后）
-  spiral1 = '站好，抬头看。',                      -- 内部号 17
-  spiral2 = '别眨眼。',                            -- 内部号 18
-  spiral3 = '——好吧。轮到你了。',                  -- 内部号 19（最后一回合）
-  dodge = '（他侧身闪开了）',
-  refuse = '（他摇了摇头）',
-  flee = '（他摇了摇头）你逃不掉的。',
-  final = '好吧。轮到你了。',
-  midpoint = '……中场。他停手了。',
+  -- 【2026-10-13 用户口径】"研究原版仓库内 sans 的发言，全面替换" ——
+  --   原版 BTS（D:\c2-sans-fight-src\Event sheets\Battle.xml）里，Sans 在战斗中**只有两句**：
+  --     L1416（SansTired 之后，函数 Win1）："huff... puff..."
+  --     L1483（紧接着，函数 Win2）       ："alright, i guess you win."
+  --   其余所有时机（第 1~5 回合、中场、螺旋档…）**原版一个字都没有**（Sans 全程沉默）。
+  --   因此这里照原版办理：对不上的键一律空串，渲染层遇到空串就不画（见 renderWorld 的台词守卫）。
+  tired = '呼……呼……',                  -- 原版 "huff... puff..."
+  win   = '好吧。算你赢了。',            -- 原版 "alright, i guess you win."
+  -- 以下时机原版没有台词（全面替换口径下 = 不说话）
+  surprise = '', r1 = '', r2 = '', r3 = '', r4 = '', r5 = '', r6 = '',
+  mid = '', late = '', spiral1 = '', spiral2 = '', spiral3 = '', final = '',
+  midpoint = '', dodge = '', refuse = '', flee = '',
+  -- 旧口径（每回合都说话的版本）原样收在同一张表里：把 extra 改成 true 即可回退
+  extra = false,
+  extraText = {
+    surprise = '（他没有打招呼，先动手了。）',
+    r1 = '站住别动，让我看看你躲得怎么样。',
+    r2 = '骨头是会走路的东西，别被它撞上。',
+    r3 = '蓝色的骨头：别动。你动一下，它就咬你。',
+    r4 = '抬头看看，朋友。',
+    r5 = '你还没死？那我再认真一点。',
+    r6 = '……你已经撑过六回合了。',
+    mid = '撑过一半了？那我换个打法。',
+    late = '你还在动。越来越有意思了。',
+    spiral1 = '站好，抬头看。',
+    spiral2 = '别眨眼。',
+    spiral3 = '——好吧。轮到你了。',
+    dodge = '（他侧身闪开了）',
+    refuse = '（他摇了摇头）',
+    flee = '（他摇了摇头）你逃不掉的。',
+    final = '好吧。轮到你了。',
+    midpoint = '……中场。他停手了。',
+  },
 }
+if LINES.extra then for k, v in pairs(LINES.extraText) do LINES[k] = v end end
 
 -- 本回合该说哪句：把台词按阶段分组（0 = 见面杀；1..5 = r1..r5；6..10 = mid；
 -- 11 = 中场那句由 endEnemy 说；12..16 = late；17/18/19 = 三档螺旋各自的台词）。
@@ -1745,6 +1764,9 @@ function Game:settle()
 end
 
 function Game:finish(outcome, reason)
+  -- 【2026-10-13 用户口径】原版结局台词（Battle.xml L1483 "alright, i guess you win."）：
+  --   只在**饶恕/击倒**（即"赢了"）时说；fail（玩家阵亡）不说。
+  if (outcome == 'spare' or outcome == 'kill') and LINES.win ~= '' then self:say(LINES.win) end
   self.result = outcome
   self.resultIndex = 1
   self.settleRequested = false
@@ -2440,7 +2462,8 @@ function Game:update(dt)
     --        DownSpeed <= -120            → 180   （高速上冲，保持冲劲）
     --        -120 < DownSpeed <= -30      → 450   （中速上升，迅速刹车）
     --        -30  < DownSpeed <=  15      → 180   （顶点附近，滞空）
-    --        其它（> 15）                  → 540   （下落，重）
+    --        15   < DownSpeed <  240      → 540   （下落，重）
+    --        DownSpeed >= 240             →   0   （**死区**：四档全不命中 → 本帧不加重力）
     --   ② 松键截断（HEART_JUMPHOLD_CUTOFF = 30）：松手瞬间若仍上冲且速度 > 30，
     --      把沿重力分量**直接钳到 -30** —— 轻点=小跳、按住=满跳，**不再用按住计时**。
     --   ③ 横向：先清零「垂直」分量，再按轴直接赋值 ±150（按住 Cancel = 75）。
@@ -2462,11 +2485,15 @@ function Game:update(dt)
     if self.soul.jumping and not self.jumpHeld and dsp < -HEART_CUTOFF then
       setAlongG(-HEART_CUTOFF); dsp = -HEART_CUTOFF
     end
-    -- ① 分段重力
-    local grav = GRAVITY_FALL
-    if dsp <= -120 then grav = GRAVITY_UP_FAST
-    elseif dsp <= -30 then grav = GRAVITY_UP_SLOW
-    elseif dsp <= 15 then grav = GRAVITY_APEX end
+    -- ① 分段重力（原版 = 四个**并列** IF；Gravity 声明为 static=0 → 每帧先归 0）
+    local grav = 0
+    if dsp > 15 then
+      if dsp < 240 then grav = GRAVITY_FALL end     -- 15 < DownSpeed < 240 → 540
+    elseif dsp > -30 then grav = GRAVITY_APEX       -- -30 < DownSpeed ≤ 15 → 180
+    elseif dsp > -120 then grav = GRAVITY_UP_SLOW   -- -120 < DownSpeed ≤ -30 → 450
+    else grav = GRAVITY_UP_FAST end                 -- DownSpeed ≤ -120 → 180
+    -- ※ DownSpeed ≥ 240 → grav 保持 0：原版这里四个事件全不命中，本帧**不加重力**。
+    --   自由落体因此停在 ≈243 px/s（= 27 帧 × 540·dt），而不是一路加速到 MaxFallSpeed(750)。
     -- ④ 前方 0.2px 有固体（框边/平台）就不加重力
     local sB, gBx, gBy, sAx = self:groundQuery()
     if (sAx + 0.2) < sB then setAlongG(dsp + grav * dt) end
@@ -2835,6 +2862,14 @@ function Game:update(dt)
     end
   end
 
+  -- 【2026-10-13 用户口径】原版在 SansTired 之后说 "huff... puff..."（Battle.xml Win1）
+  do
+    local sw = self.world
+    if sw and sw.sans and sw.sans.anim == 'Tired' and not self.tiredSaid then
+      self.tiredSaid = true
+      self:say(LINES.tired)
+    end
+  end
   -- 碰撞（world 实体在脚本坐标；soul/walls 在框内相对坐标；统一换算到脚本坐标比对）
   if w2 then
     local SX, SY = self.soul.x + BOX_OFF_X, self.soul.y + BOX_OFF_Y
@@ -3359,7 +3394,14 @@ function M.render(g)
   push(cmds, { kind = 'hudText', text = 'KR ' .. math.floor(g.kr + 0.5), x = 272, y = hudY, size = 12, color = '#c9a3ff', align = 'left' })
   push(cmds, { kind = 'hudText', text = 'ROUND ' .. (g.round + 1) .. ' / ' .. TOTAL_ROUNDS, x = VW - 150, y = hudY, size = 13, color = '#ffffff', align = 'right' })
   push(cmds, { kind = 'hudText', text = '难度 ' .. (g.tune and g.tune.label or '普通'), x = VW - 20, y = hudY + 1, size = 11, color = '#8a8a8a', align = 'right' })
-  push(cmds, { kind = 'hudText', text = utf8sub(g.line, g.lineShown), x = VW / 2, y = 86, size = 14, color = '#ffffff', align = 'center' })
+  -- 【2026-10-13 用户口径】台词改画在 **Sans 头顶上方**（原版是头顶的 SpeechBubble），
+  --   并且**空台词不画**（全面替换口径下多数时机不说话）。算式与 sans 命令的 y 同源。
+  if g.line and g.line ~= '' then
+    local lineY = (boxAbs.y - 16 - SANS_H) - 30
+    if lineY < 2 then lineY = 2 end
+    push(cmds, { kind = 'hudText', text = utf8sub(g.line, g.lineShown), x = VW / 2, y = lineY, size = 14,
+                 color = '#ffffff', align = 'center' })
+  end
   if g.flash > 0 then
     push(cmds, { kind = 'flash', alpha = 0.35 * g.flash / 0.12 })
   end
