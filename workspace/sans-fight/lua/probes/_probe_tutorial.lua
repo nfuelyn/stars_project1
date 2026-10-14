@@ -32,6 +32,16 @@ do
   end
 end
 
+-- 战斗态必须照旧画 Sans + 血量条（别把教程的裁剪误伤到正片）
+do
+  local ge = M.newTitle({ scripts = A })
+  M.titleChoose(ge, 0)
+  for _ = 1, 5 do M.update(ge, {}, DT) end
+  local ke = {}
+  for _, c in ipairs(M.render(ge)) do ke[c.kind] = true end
+  ok(ke.sans and ke.hudBar, '战斗态照旧画 Sans + 血量条')
+end
+
 -- 选「直接开始」
 local gs = M.newTitle({ scripts = A, hp = 92, tutorial = true })
 M.tutChoose(gs, 1)
@@ -48,6 +58,16 @@ local kinds = {}
 for _, c in ipairs(cmds) do kinds[c.kind] = true end
 ok(kinds.box and kinds.soul and kinds.hudText,
    '教程态渲染含 box/soul/hudText（box=' .. tostring(kinds.box) .. ' soul=' .. tostring(kinds.soul) .. '）')
+-- 【2026-10-14 用户口径】教程态**不画** Sans 与血量/回合那一行 HUD（会和指令条打架）
+ok(not kinds.sans, '教程态不画 Sans')
+ok(not kinds.hudBar, '教程态不画血量条')
+do
+  local hudRow = 0
+  for _, c in ipairs(cmds) do
+    if c.kind == 'hudText' and (c.y or 0) >= 400 then hudRow = hudRow + 1 end
+  end
+  ok(hudRow == 0, '教程态没有 y>=400 的 HUD 行（实际 ' .. hudRow .. ' 条）')
+end
 
 local function step(inp, n) for _ = 1, (n or 1) do M.update(g, inp, DT) end end
 local function lesson() return M.tutLessonKey(g) end

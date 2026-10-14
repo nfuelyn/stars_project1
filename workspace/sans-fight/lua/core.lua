@@ -3470,6 +3470,8 @@ function M.render(g)
   --   torso = Default / ...（脚本 SansTorso）
   --   anim  = Idle / ... / Tired
   --   sweat = 0..3（汗滴数量）  dodge = 0..1（1 = 刚闪开，适配层据此侧移）
+  -- 【2026-10-14 用户口径】教程态**不画 Sans** —— 教程里 Sans 会压住指令条/战斗区，视觉很乱。
+  if g.state ~= 'tutorial' then
   do
     local sk = g.world and g.world.sans or nil
     push(cmds, { kind = 'sans',
@@ -3480,6 +3482,7 @@ function M.render(g)
                  anim = (sk and sk.anim) or 'Idle',
                  sweat = (sk and sk.sweat) or 0,
                  dodge = g.sansDodge or 0, alpha = 1 })
+  end
   end
 
   -- 【场地实体只在战斗态渲染】
@@ -3583,12 +3586,15 @@ function M.render(g)
   -- 也就是整行**紧贴选项栏上方**，不再占用屏幕顶部（顶部只留 Sans 的台词）。
   -- 左侧 = LV / HP / 血条 / KR，右侧 = ROUND / 难度；中间留白给 Sans 本人（世界 x≈288..352）。
   local hudY = 403
+  -- 【2026-10-14 用户口径】教程态**不画血量/回合那一行 HUD**（教程还没选难度，且会和指令条打架）。
+  if g.state ~= 'tutorial' then
   push(cmds, { kind = 'hudText', text = 'LV 19', x = 20, y = hudY, size = 13, color = '#ffffff', align = 'left' })
   push(cmds, { kind = 'hudText', text = 'HP ' .. g.hp .. '/' .. g.maxHP, x = 76, y = hudY, size = 13, color = '#ffffff', align = 'left' })
   push(cmds, { kind = 'hudBar', x = 168, y = hudY + 1, w = 96, h = 11, hp = g.hp, kr = g.kr, max = g.maxHP })
   push(cmds, { kind = 'hudText', text = 'KR ' .. math.floor(g.kr + 0.5), x = 272, y = hudY, size = 12, color = '#c9a3ff', align = 'left' })
   push(cmds, { kind = 'hudText', text = 'ROUND ' .. (g.round + 1) .. ' / ' .. TOTAL_ROUNDS, x = VW - 150, y = hudY, size = 13, color = '#ffffff', align = 'right' })
   push(cmds, { kind = 'hudText', text = '难度 ' .. (g.tune and g.tune.label or '普通'), x = VW - 20, y = hudY + 1, size = 11, color = '#8a8a8a', align = 'right' })
+  end
   -- 【2026-10-14】新手教程：指令条（画在战斗框上方，不挡 Sans / 骨头）
   if g.state == 'tutorial' then
     local L = TUT[g.tutIdx or 1] or TUT[1]
