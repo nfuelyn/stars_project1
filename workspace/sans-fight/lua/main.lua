@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-14-tutorial'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-14-tutorial-fix'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2909,7 +2909,13 @@ function M.OnLevelUpdate(dt, fromUI)
     --   ② 交给 core 的 up/down 掩掉：core 的移动段对 up/down 一样吃（Game:update 里 vy），
     --      不掩的话蓝魂按住上会"飘"，与「只读左右」的语义不符。
     -- 红魂（red）完全不走这一支：「上」照旧是正常上移，W 不会触发跳跃。
-    local blue = (state.state == 'enemy') and state.soul ~= nil and state.soul.mode == 'blue'
+    -- 【2026-10-14 修复】原来这里写死 'enemy' → **教程的蓝心小节整条适配都走不到**，后果两条：
+    --   ① 「与重力反向的方向键」跳不起来（教程提示却写着要按方向键）；
+    --   ② coreInput 退化成原始 input ⇒ core 的 jumpHeld 只在按下沿那一帧为真
+    --      ⇒ 下一帧就被"松键截断"剪掉 ⇒ **跳跃幅度极小**（用户报的正是这条）。
+    --   教程和敌人回合本来就共用同一套蓝魂物理，所以把 tutorial 一起纳入。
+    local blue = (state.state == 'enemy' or state.state == 'tutorial')
+                 and state.soul ~= nil and state.soul.mode == 'blue'
     local coreInput = input
     if blue then
       -- 【2026-10-06 依据 blue_soul.lua / 原作 PlayerMovement】

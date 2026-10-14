@@ -35,6 +35,8 @@ const SUITES = [
   ['_probe_sandbox_adapter', 'lua/probes/_probe_sandbox_adapter.lua', /PASS (\d+) \/ FAIL (\d+)/,     '沙箱接轨层：候选索引/包装模板/生命周期/更新回调'],
   ['_probe_blue_fall', 'lua/probes/_probe_blue_fall.lua', /PASS (\d+) \/ FAIL (\d+)/, '蓝心方向重力：自由落体终端 243 / maxFall 语义（见 §4.1）'],
   ['_probe_tutorial', 'lua/probes/_probe_tutorial.lua', /PASS (\d+) \/ FAIL (\d+)/, '新手教程：二选一 / 6 节推进 / 退出（2026-10-14）'],
+  ['_probe_tutorial_main', 'lua/probes/_probe_tutorial_main.lua', /PASS (\d+) \/ FAIL (\d+)/, 'main 层：二选一键盘入口 + 蓝心教程跳跃（2026-10-14）'],
+  ['_probe_textart_coverage', 'lua/probes/_probe_textart_coverage.lua', /PASS (\d+) \/ FAIL (\d+)/, '渲染文案用字是否都在 textart 字形库内（缺字会画成 ?）'],
   ['_geometry',     'lua/_geometry.lua',     /PASS (\d+) \/ FAIL (\d+)/,                              '绘制 == 判定几何（慢，约 6 分钟）'],
   ['_pool',         'lua/_pool.lua',         /各类峰值之和 = (\d+)/,                                   '控件池峰值实测（最慢，约 25 分钟）'],
 ];

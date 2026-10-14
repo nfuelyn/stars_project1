@@ -20,6 +20,18 @@ M.tutAskMove(g, 1); ok(g.tutAskIndex == 1, '右移 → 索引 1（直接开始�
 M.tutAskMove(g, 1); ok(g.tutAskIndex == 0, '再右移 → 环回索引 0（进入教程）')
 M.tutAskMove(g, -1); ok(g.tutAskIndex == 1, '左移 → 索引 1')
 
+-- 二选一：两张卡必须**整体居中**（2026-10-14 用户口径；原来是照抄 4 张难度卡的左对齐）
+do
+  local cards = {}
+  for _, c in ipairs(M.render(g)) do if c.kind == 'menu' then cards[#cards + 1] = c end end
+  ok(#cards == 2, '二选一有 2 张卡（实际 ' .. #cards .. '）')
+  if #cards == 2 then
+    local mid = (cards[1].x + cards[1].w / 2 + cards[2].x + cards[2].w / 2) / 2
+    ok(math.abs(mid - 320) < 0.6, string.format('两卡中心落在屏幕中轴 320（实际 %.1f）', mid))
+    ok(cards[1].x < cards[2].x, '左边是「进入引导」、右边是「直接开始」')
+  end
+end
+
 -- 选「直接开始」
 local gs = M.newTitle({ scripts = A, hp = 92, tutorial = true })
 M.tutChoose(gs, 1)

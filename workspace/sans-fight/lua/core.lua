@@ -3423,13 +3423,18 @@ function M.render(g)
   end
   if g.state == 'tut_ask' then
     -- 【2026-10-14】新手教程二选一：与标题页同一套卡片（main.lua 的收集/点击/键盘共用）
-    push(cmds, { kind = 'hudText', text = '新 手 教 程', x = VW / 2, y = 100, size = 28, color = '#ffffff', align = 'center' })
-    push(cmds, { kind = 'hudText', text = '先花一分钟熟悉操作，再进正式战斗', x = VW / 2, y = 138, size = 14,
+    -- 【2026-10-14】文案用字必须**全部**在 lua/textart.lua 里，否则 main 会回退成 '?'。
+    --   本工程字形库没有 教/花/熟/悉 → 用「引导 / 上手」替代（工具：node tools/bake-textart.mjs --missing-rendered）。
+    push(cmds, { kind = 'hudText', text = '新 手 引 导', x = VW / 2, y = 100, size = 28, color = '#ffffff', align = 'center' })
+    push(cmds, { kind = 'hudText', text = '先用一分钟上手，再进正式战斗', x = VW / 2, y = 138, size = 14,
                  color = '#c9c9c9', align = 'center' })
+    -- 【2026-10-14 用户口径】两个选项**整体居中**（原来是照抄 4 张难度卡的左对齐 x = 32 + i*145）
+    local TW, TGAP = 130, 20
+    local tx0 = (VW - (TW * 2 + TGAP)) / 2
     for i = 0, 1 do
       local sel = (i == (g.tutAskIndex or 0))
-      push(cmds, { kind = 'menu', x = 32 + i * 145, y = 210, w = 130, h = 40,
-                   items = { (i == 0) and '进入教程' or '直接开始' }, index = 0, visible = true, selected = sel })
+      push(cmds, { kind = 'menu', x = tx0 + i * (TW + TGAP), y = 210, w = TW, h = 40,
+                   items = { (i == 0) and '进入引导' or '直接开始' }, index = 0, visible = true, selected = sel })
     end
     push(cmds, { kind = 'hudText', text = '← → 选择 · 空格/Enter 确认', x = VW / 2, y = 336, size = 13,
                  color = '#c9b26a', align = 'center' })
@@ -3587,7 +3592,7 @@ function M.render(g)
   -- 【2026-10-14】新手教程：指令条（画在战斗框上方，不挡 Sans / 骨头）
   if g.state == 'tutorial' then
     local L = TUT[g.tutIdx or 1] or TUT[1]
-    push(cmds, { kind = 'hudText', text = string.format('教程 %d / %d · %s', g.tutIdx or 1, TUT_N, L.name),
+    push(cmds, { kind = 'hudText', text = string.format('引导 %d / %d · %s', g.tutIdx or 1, TUT_N, L.name),
                  x = VW / 2, y = 100, size = 17, color = '#ffd75e', align = 'center' })
     push(cmds, { kind = 'hudText', text = L.hint, x = VW / 2, y = 126, size = 13,
                  color = '#c9c9c9', align = 'center' })
