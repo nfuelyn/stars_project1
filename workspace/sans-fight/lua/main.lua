@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-13-blue-fall'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-14-invuln-alpha'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -1458,7 +1458,11 @@ local function drawSoul(cmd)
   local x, y = cmd.x, cmd.y
   absSoul = { x = x, y = y }                   -- 记绝对坐标，供指针转向比较
   local col = (cmd.mode == 'blue') and C_BLUE or C_RED
-  if cmd.invuln and (frame % 8) < 4 then col = 0x66FFFFFF end
+  -- 【2026-10-14 用户口径 · 方案 A】闪烁改成透明度淡出：心**始终画**，只用 core 给的 alpha 调透明。
+  --   删掉旧的 `frame % 8 < 4 → 染成 40% 白` —— 那是按**渲染帧**算的第二套相位，会和 core
+  --   按秒算的相位拍频（闪得没规律），而且帧率一变闪烁速度就跟着变。
+  local sa = cmd.alpha
+  if sa ~= nil and sa < 1 then col = shade(col, sa) end
   -- 【2026-10-05 修】心整体**以 (x,y) 为中心**、外接半径 ≈8（= SOUL_R / HEART_HIT 同一口径）。
   -- 旧画法整体偏到右下（圆心在 x+3.5、底尖到 y+13），贴框时红心会露到框外，
   -- 而碰撞/钳位用的是中心 ±8 —— 现在视觉、碰撞、钳位三者同一个尺寸。

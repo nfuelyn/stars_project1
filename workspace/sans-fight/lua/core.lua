@@ -2100,7 +2100,8 @@ function Game:hurt(kind, karma, src)
   self.krActive = self.kr > 0
   if src and src.karma and src.karma >= 3 then src.karma = 2 end
   self.invuln = self.tune.invuln          -- 原作没有无敌帧 -> 原作档只有 0.15s
-  self.flash = 0.12
+  -- 【2026-10-14 用户口径】删掉受击的整屏白闪（原来 self.flash = 0.12 会推一条全屏闪层命令）。
+  --   受击反馈保留：心的透明度闪烁（见 renderWorld 的 soul 命令）+ SansShake + 日志。
   if kind == 'blue' then self:log('hit_blue hp=' .. self.hp .. ' kr=' .. self.kr)
   elseif kind == 'orange' then self:log('hit_orange hp=' .. self.hp .. ' kr=' .. self.kr)
   else self:log('hit hp=' .. self.hp .. ' kr=' .. self.kr) end
@@ -3250,7 +3251,7 @@ function M.render(g)
     return cmds
   end
   if g.state == 'result' then
-    push(cmds, { kind = 'flash', alpha = 1 })
+    -- 【2026-10-14 用户口径】删掉结束时的整屏白屏（原来每帧推 alpha=1 的全屏闪层）。
     local t = (g.result == 'victory') and '胜 利 结 算'
               or ((g.result == 'fail') and 'GAME OVER'
               or ((g.result == 'spare') and '饶 恕 结 局' or '击 倒 结 局'))
@@ -3374,8 +3375,12 @@ function M.render(g)
     end
   end
   -- 灵魂（**一律按游戏内的灵魂渲染**，转成绝对坐标；保证屏幕上只有一个灵魂、不会跳）
+  -- 【2026-10-14 用户口径 · 方案 A】无敌帧不再"整颗心不画"（旧实现 visible = not blink），
+  --   改成**始终绘制 + 透明度淡出**：心永远看得见，闪烁只体现在 alpha 上。
+  --   相位仍按秒算（invuln*20 取样）→ 与渲染帧率无关（main.lua 旧的 frame%8 那套已删）。
   local invuln = (g.invuln > 0)
   local blink = invuln and (math.floor(g.invuln * 20) % 2 == 0)
+  local soulAlpha = blink and 0.30 or 1
   local soulX, soulY = VW / 2, VH / 2                 -- 兜底：屏幕中心（绝对坐标）
   local soulMode = 'red'
   if g.soul then
@@ -3383,7 +3388,7 @@ function M.render(g)
   end
   push(cmds, { kind = 'soul', x = soulX, y = soulY, mode = soulMode,
                dir = (g.soul and g.soul.dir) or 1,
-               invuln = invuln, visible = not blink })
+               invuln = invuln, visible = true, alpha = soulAlpha })
   -- HUD —— 位置照参考实现（BTS 的 Background 图层）：HP 文字 y≈402、血条 y≈416、按钮行 y=432。
   -- 也就是整行**紧贴选项栏上方**，不再占用屏幕顶部（顶部只留 Sans 的台词）。
   -- 左侧 = LV / HP / 血条 / KR，右侧 = ROUND / 难度；中间留白给 Sans 本人（世界 x≈288..352）。
@@ -3402,9 +3407,8 @@ function M.render(g)
     push(cmds, { kind = 'hudText', text = utf8sub(g.line, g.lineShown), x = VW / 2, y = lineY, size = 14,
                  color = '#ffffff', align = 'center' })
   end
-  if g.flash > 0 then
-    push(cmds, { kind = 'flash', alpha = 0.35 * g.flash / 0.12 })
-  end
+  -- 【2026-10-14 用户口径】闪层命令已全部移除（受击 / 结束都不再全屏闪）。
+  --   g.flash 字段与衰减保留但恒为 0：这里不再下发任何 flash 命令。
   -- 菜单
   if g.state == 'menu' or g.state == 'attack' or g.state == 'sub' then
     push(cmds, { kind = 'menu', x = MENU_X0, y = MENU.y, w = MENU.bw, h = MENU.bh,

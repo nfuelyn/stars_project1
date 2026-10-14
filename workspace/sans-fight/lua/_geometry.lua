@@ -417,11 +417,10 @@ local function stateRects(st, sx, sy)
     add('platform', rs)
   end
   do   -- 灵魂（帧② → ③ 平移一次）
-    -- 无敌帧里 core 会把心做成闪烁（visible=false），main 的 drawSoul 直接不画 ——
-    -- 这是"可见性"不是"位置"，这里按 core 同一条规则跳过，避免误报。
-    local blink = (st.invuln or 0) > 0 and (math.floor((st.invuln or 0) * 20) % 2 == 0)
+    -- 【2026-10-14 方案 A】无敌帧不再隐藏整颗心（只改 alpha），所以**不再跳过**闪烁帧 ——
+    -- 心在任何帧都该被画出来，跳过会误报成"绘制缺失"。
     local rs = {}
-    if st.soul and st.state == 'enemy' and not blink then
+    if st.soul and st.state == 'enemy' then
       local x, y = st.soul.x + BOX_OFF_X + sx, st.soul.y + BOX_OFF_Y + sy
       local b1 = rectOf(x - 8, y - 7, 9, 9); if b1 then rs[#rs + 1] = b1 end
       local b2 = rectOf(x - 1, y - 7, 9, 9); if b2 then rs[#rs + 1] = b2 end

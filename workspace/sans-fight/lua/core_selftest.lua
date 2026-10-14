@@ -310,6 +310,48 @@ local function run()
   step(gB, 1.7)
   ok(countHits(gB) == 1, '普通档：0.8s 无敌帧吃掉第二次（命中 ' .. countHits(gB) .. ' 次）')
 
+  -- --------------------- 方案 A：无敌帧 = 始终画心 + alpha 淡出（2026-10-14 用户口径）
+  do
+    local gI = newGame({ hp = 20, noSpawn = true, difficulty = 'normal' })
+    step(gI, 0.2)
+    gI.invuln = 0.5                       -- 给一个 30 帧（1/60）的无敌窗口
+    local hidden, drawn, dim = 0, 0, 0
+    local alphas = {}
+    for _ = 1, 30 do
+      local soul = nil
+      for _, c in ipairs(M.render(gI)) do if c.kind == 'soul' then soul = c end end
+      if soul then
+        if soul.visible == false then hidden = hidden + 1 else drawn = drawn + 1 end
+        local a = soul.alpha; if a == nil then a = 1 end
+        alphas[#alphas + 1] = a
+        if a < 1 then dim = dim + 1 end
+      end
+      M.update(gI, {}, DT)
+    end
+    ok(hidden == 0, string.format('方案A：无敌帧不再隐藏整颗心（visible=false 出现 %d 次）', hidden))
+    ok(drawn == 30, string.format('方案A：无敌帧期间心每帧都在下发绘制（%d/30）', drawn))
+    ok(dim > 0 and dim < 30, string.format('方案A：出现淡出帧且不是全程淡（%d/30 帧 alpha<1）', dim))
+  end
+
+  -- --------------------- 白屏已删：受击 / 结束都不再下发 flash 命令（2026-10-14 用户口径）
+  do
+    local gH = newGame({ hp = 5, noSpawn = true, hitsAt = { 0.3 } })
+    local hitFlash = 0
+    for _ = 1, 60 do
+      for _, c in ipairs(M.render(gH)) do if c.kind == 'flash' then hitFlash = hitFlash + 1 end end
+      M.update(gH, {}, DT)
+    end
+    ok(hitFlash == 0, string.format('受击不再全屏白闪（60 帧里 flash 命令 %d 条）', hitFlash))
+    local gR = newGame({ hp = 1, noSpawn = true, hitsAt = { 0.5 } })
+    step(gR, 1.0)
+    local resFlash = 0
+    for _ = 1, 10 do
+      for _, c in ipairs(M.render(gR)) do if c.kind == 'flash' then resFlash = resFlash + 1 end end
+      M.update(gR, {}, DT)
+    end
+    ok(resFlash == 0, string.format('结束态不再全屏白屏（flash 命令 %d 条）', resFlash))
+  end
+
   -- --------------------------------------- 死亡唯一来源：直接命中
   head('first-fail：直接命中把 HP 打到 0 才 fail（C1/C4）')
   g = newGame({ hp = 1, noSpawn = true, hitsAt = { 1.0 } })
@@ -997,12 +1039,13 @@ local function run()
     local hitInGap, ggGap = sineHitProbe(0, 0)       -- 走廊中心
     ok(not hitInGap, '灵魂站在走廊中心 → 不命中（HP=' .. ggGap.hp .. '）')
     ok(ggGap.hp == M.MAX_HP, string.format('走廊中心 HP 不变（%d → %d）', M.MAX_HP, ggGap.hp))
+    -- 【2026-10-14】flash 已从 core 全部移除（受击/结束都不再全屏闪），白名单跟着删。
     local kinds = { bone = 1, blaster = 1, box = 1, soul = 1, hudText = 1, menu = 1,
-                    platform = 1, flash = 1, wall = 1, sine = 1, stab = 1, sub = 1, attackBar = 1 }
+                    platform = 1, wall = 1, sine = 1, stab = 1, sub = 1, attackBar = 1 }
     for k in pairs(kinds) do if probe[k] then seenAll[#seenAll + 1] = k end end
     table.sort(seenAll)
   end
-  ok(#seenAll >= 13, '实测出现的绘制 kind：' .. table.concat(seenAll, ','))
+  ok(#seenAll >= 12, '实测出现的绘制 kind：' .. table.concat(seenAll, ','))
 
   head('extra-box-bounds：战斗框永远在世界内、居中、且各状态同一位置（用户反馈"框到处移动"）')
   -- 回归三个叠加的 bug：
