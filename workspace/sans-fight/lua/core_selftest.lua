@@ -1559,6 +1559,45 @@ local function run()
   ok(type(hud.phase) == 'string' and type(hud.round) == 'number', 'hud phase 是字符串 / round 是数字')
   ok(hud.phase == 'enemy', 'enemy 回合 phase=enemy（实际 ' .. hud.phase .. '）')
 
+  -- ------------------------------------------------ 新手教程阶段（2026-10-14）
+  head('tutorial：二选一 → 6 节 → 回到开始菜单（用户口径）')
+  -- 默认**不进**教程：既有 700+ 条断言都靠这一条。
+  --   注意用 M.newTitle（= 建局但停在 title），**不能用 M.newGame**（那个会直接 g:start() 进 enemy）。
+  local gt0 = M.newTitle({ scripts = A })
+  ok(gt0.state == 'title', '默认建局停在 title（实际 ' .. tostring(gt0.state) .. '）')
+  local gt = M.newTitle({ scripts = A, tutorial = true })
+  ok(gt.state == 'tut_ask', 'newTitle({tutorial=true}) → tut_ask（实际 ' .. tostring(gt.state) .. '）')
+  ok(gt.tutAskIndex == 0, '二选一默认停在「进入教程」')
+  M.tutAskMove(gt, 1); ok(gt.tutAskIndex == 1, 'tutAskMove(+1) → 索引 1')
+  M.tutAskMove(gt, 1); ok(gt.tutAskIndex == 0, 'tutAskMove 环回 0')
+  -- 选「直接开始」→ 开始菜单
+  M.tutChoose(gt, 1)
+  ok(gt.state == 'title', '选「直接开始」→ title（实际 ' .. tostring(gt.state) .. '）')
+  -- 选「进入教程」→ 第 1 节（tutChoose 只在 tut_ask 态生效，所以另起一局）
+  local gt2 = M.newTitle({ scripts = A, tutorial = true })
+  M.tutChoose(gt2, 0)
+  ok(gt2.state == 'tutorial' and M.tutIndex(gt2) == 1, 'tutChoose(0) → tutorial / 第 1 节')
+  ok(M.tutLessonKey(gt2) == 'redmove', '第 1 节 = redmove')
+  -- 教程态渲染必须落进战斗段（box / soul / hudText），否则玩家看不到框与心
+  do
+    local kk = {}
+    for _, c in ipairs(M.render(gt2)) do kk[c.kind] = true end
+    ok(kk.box and kk.soul and kk.hudText, '教程态渲染含 box/soul/hudText')
+  end
+  -- 教程内被打：不判负、HP 有下限、state 不变
+  do
+    local gh2 = M.newTitle({ scripts = A, hp = 3, tutorial = true })
+    M.tutChoose(gh2, 0)
+    for _ = 1, 30 do M.update(gh2, {}, DT) end
+    gh2.invuln = 0
+    M.debugHurt(gh2, 'hit')
+    ok(gh2.state == 'tutorial' and gh2.hp >= 2,
+       '教程内被打不判负（state=' .. tostring(gh2.state) .. ' hp=' .. tostring(gh2.hp) .. '）')
+    -- 取消键 = 退出教程
+    M.update(gh2, { cancel = true }, DT)
+    ok(gh2.state == 'title', '取消键 → 退出教程回 title（实际 ' .. tostring(gh2.state) .. '）')
+  end
+
   -- ---------------------------------------------------------------- 汇总
   io.write("\n------------------------------\n")
   io.write(string.format("PASS %d / FAIL %d\n", R.pass, R.fail))

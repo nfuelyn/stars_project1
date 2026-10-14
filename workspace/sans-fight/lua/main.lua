@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-14-invuln-alpha'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-14-tutorial'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -1899,8 +1899,8 @@ local function draw(cmds)
       end
       boxTarget = { x = bx, y = by, w = bw, h = bh }
     elseif cmd.kind == 'menu' then
-      if state and state.state == 'title' then
-        -- 标题页：每张难度卡各是一条 menu 命令，画在原位（core 给的 y=210），**不**挪到框下。
+      if state and (state.state == 'title' or state.state == 'tut_ask') then
+        -- 标题页 / 教程二选一：每张卡各是一条 menu 命令，画在原位（core 给的 y=210），**不**挪到框下。
         titleCards[#titleCards + 1] = cmd
       else
         -- 按钮行 y：以**屏幕中心**为参照的固定值（CENTER_Y + MENU_ROW_DY_TOP = 432，逐像素对齐参考实现），
@@ -1925,6 +1925,7 @@ local function draw(cmds)
     end
   end
   -- 标题页提示行（core 只发标题 + 四张难度卡与注释，操作提示由本层补；两平台给不同的提示）
+  local askNow = (state ~= nil and state.state == 'tut_ask')      -- 【2026-10-14】教程二选一页
   local titleNow = (state ~= nil and state.state == 'title')
   if titleNow then
     if isTouch then
@@ -1944,7 +1945,7 @@ local function draw(cmds)
     if DRAW[cmd.kind] then
       -- 标题页**不画战斗框**：core 在 title 态也会推一条 box（战斗态复用同一位置），
       -- 但它会把白框横穿四张难度卡 —— 直接跳过绘制，其它状态照旧。
-      local skip = (cmd.kind == 'box' and titleNow)
+      local skip = (cmd.kind == 'box' and (titleNow or askNow))
       if not skip then
         if cmd.kind == 'box' then drawnBox = true end
         drawnKinds[#drawnKinds + 1] = cmd.kind
@@ -2293,6 +2294,30 @@ handleClick = function(px, py)
   if not core or not state then return false end
   local twx, twy = toWorld(px, py)
   local st = state.state
+  -- 【2026-10-14】新手教程二选一：与标题页共用卡片，只是动作换成 tutChoose（触摸同样二段确认）
+  if st == 'tut_ask' then
+    for i = 1, #titleCards do
+      local card = titleCards[i]
+      if inRect(twx, twy, card.x - 8, card.y - 8, card.w + 16, card.h + 16) then
+        if isTouch and not samePending('tut', i - 1) then
+          local cur = state.tutAskIndex or 0
+          if i - 1 ~= cur then pcall(function() core.tutAskMove(state, (i - 1) - cur) end) end
+          markPending('tut', i - 1)
+          print(string.format('main: 触摸点按教程选项 %d → 选中（再点一次确认）', i))
+          return true
+        end
+        clearPending()
+        pcall(function() core.tutChoose(state, i - 1) end)
+        print(string.format('main: 点按教程选项 %d', i))
+        return true
+      end
+    end
+    if not isTouch then
+      pcall(function() core.tutChoose(state, state.tutAskIndex or 0) end)
+      print('main: 点按教程页空白 → 用当前选项')
+    end
+    return true
+  end
   -- 标题页（难度选择）：点难度卡直接以该档开局；点空白 = 用当前选中的档开局（防"点了没反应"）
   if st == 'title' then
     for i = 1, #titleCards do
@@ -2680,8 +2705,12 @@ function M.OnStart()
   music = tryLoadMusic()
   if core then
     local ok, s = pcall(function()
+      -- 【2026-10-14】新手教程：默认开启（C.tutorial = false 可跳过，排查问题时用）。
+      --   **只有这里传 tutorial** —— core_selftest / _rounds / _tap 等测试自己 newGame 时不传，
+      --   所以它们仍然从 title 开始，700+ 条既有断言不受影响（见实施文档 §5.3）。
+      local tutOn = (G_REAL.cfg == nil) or (G_REAL.cfg.tutorial ~= false)
       return core.newTitle({ difficulty = difficulty(), scripts = attacks, hp = 92,
-                             startRound = bootRound() })
+                             startRound = bootRound(), tutorial = tutOn })
     end)
     if ok and type(s) == 'table' then
       state = s
@@ -2703,8 +2732,7 @@ function M.OnStart()
   if bgOver then pcall(function() bgOver:SetAsFirstSibling() end) end
   if bgPanel then pcall(function() bgPanel:SetAsFirstSibling() end) end
   if flash then pcall(function() flash:SetAsLastSibling() end) end
-  -- 进入游戏：**只发一次**的开局信号（服务端据此起 120 秒计时器；重开/重选难度不再发）
-  G_REAL.sendStartSignal()
+  -- 【2026-10-14 用户口径】开局信号已删除：服务端不再依赖客户端发信号起计时器（服务器端已另行解决）。
   print(string.format('main start: build=%s device=%s touch=%s mode=%s pool=%d flash=%s cursor=%s',
     BUILD, deviceName, tostring(isTouch), mode, madeTotal, tostring(flash ~= nil), tostring(cursorArea ~= nil)))
 end
@@ -2742,24 +2770,9 @@ function G_REAL.sendSettleSignal(resultBool, why)
   end
 end
 
--- 进入战斗时广播开局信号（服务端收到 → 起 120 秒计时器）
-function G_REAL.sendStartSignal()
-  -- 【2026-10-09 用户口径】整个会话**只发一次**：脚本挂载进入时就发，之后重开/重选难度/换回合都不再发。
-  if G_REAL.startSignalSent then return end
-  G_REAL.startSignalSent = true
-  if (G_REAL.cfg.startSignal or '') == '' then return end     -- 留空 = 不发（用户已改用界面控件组触发）
-  if type(game.ServerSignal) ~= 'function' then return end
-  local name = G_REAL.cfg.startSignal or 'SansFightStart'
-  local ok, err = pcall(function()
-    local sig = game.ServerSignal(name)
-    sig:SendSignal()
-  end)
-  if ok then
-    print('main: 已发送开局信号 ' .. tostring(name) .. '（服务端可据此起计时器）')
-  else
-    print('main: 开局信号发送失败 :: ' .. tostring(err))
-  end
-end
+-- 【2026-10-14 用户口径】G_REAL.sendStartSignal 已整体删除（服务器端不再依赖开局信号）。
+--   保留这条注释是为了让后来的人知道「这里曾经有过一个开局信号」：
+--   如果哪天又要恢复，见 git log 里 BUILD=2026-10-14-invuln-alpha 之前的版本。
 
 local function requestSettlement()
   if not (state and state.settleRequested) then return end
@@ -2855,6 +2868,14 @@ function M.OnLevelUpdate(dt, fromUI)
     input.confirm, input.cancel = c, x
     -- 【2026-10-09 用户口径】ESC **不发任何信号**（时间未到自行退出 = 系统的"未完成"，不需要处理）。
     -- 标题页：core.update 在 title 态不处理输入，这里自己处理（左右选难度 + 确认开局），边沿触发防连滚
+    -- 【2026-10-14】新手教程二选一：左右选择 + 确认（复用同一对边沿变量，防连滚）
+    if state.state == 'tut_ask' then
+      local l, r = input.left, input.right
+      if l and not titlePrevL then pcall(core.tutAskMove, state, -1) end
+      if r and not titlePrevR then pcall(core.tutAskMove, state, 1) end
+      titlePrevL, titlePrevR = l, r
+      if c then pcall(core.tutChoose, state, state.tutAskIndex or 0) end
+    end
     if state.state == 'title' then
       local l, r = input.left, input.right
       if l and not titlePrevL then pcall(core.titleMove, state, -1) end

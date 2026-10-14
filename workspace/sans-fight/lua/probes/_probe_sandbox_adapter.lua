@@ -210,7 +210,8 @@ local function makeEnv(mode, cfgOverride, opts)
   E.root = rootCtrl
 
   package.loaded['default_import_file/workspace/sans-fight/lua/config'] =
-    cfgOverride or { updateCallback = 'level', templatesFirst = 'sim', legacyTemplateFallback = true, textMode = 'control' }
+    cfgOverride or { updateCallback = 'level', templatesFirst = 'sim', legacyTemplateFallback = true,
+                     textMode = 'control', tutorial = false }   -- 【2026-10-14】教程关掉：本探针测接轨层
   -- 离线台把 fitdata 置空（走参数化回退）；textart 也置成"没有 glyphs"的空表 →
   -- 让文字走原生文本框路径，这样本探针才能继续断言"文本框写入/置顶"这些控件层行为。
   package.loaded['default_import_file/workspace/sans-fight/lua/fitdata'] = {}

@@ -104,6 +104,10 @@ local function makeEnv(opts)
   end
 
   package.loaded['lua.main'] = nil          -- fresh module instance per platform
+-- 【2026-10-14】新手教程：本文件测的是标题页/战斗输入，不是入口流程 ——
+--   注入一份 tutorial=false 的配置把教程关掉，保持原有断言口径不变。
+--   （入口流程与教程本身由 core_selftest 的 tutorial 段 + lua/probes/_probe_tutorial.lua 覆盖。）
+package.loaded['default_import_file/workspace/sans-fight/lua/config'] = { tutorial = false }
   local main = require('lua' .. '.main')
   main.OnInit()
   main.OnStart()

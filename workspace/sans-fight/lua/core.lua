@@ -227,6 +227,34 @@ local DIFFS = {
 }
 local DIFF_ORDER = { 'easy', 'normal', 'hard', 'original' }
 
+-- ---------------------------------------------------------------- 新手教程
+-- 【2026-10-14 用户口径】在开始菜单（title）**之前**插入新手教程阶段：
+--   开局先给二选一（tut_ask：进入教程 / 直接开始），教程内依次 6 节，全部走完后回到 title。
+--   设计文档：docs/修改建议/Sans_Fight_新手教程阶段_调研与实施方案.md
+--   每节 = 「摆好框与灵魂」+「导演按节拍放内置骨头」+「一个完成条件」。
+--   刻意**不复用 CSV 攻击脚本**：教程只教单个机制，用内置生成器（spawnWhiteSlide / spawnBlue）
+--   更好控节奏，也不用动 gen-attacks 管线与「全脚本空跑」测试。
+local TUT_SURVIVE = 7            -- 「撑过 N 秒」类小节的标准时长
+local TUT = {
+  { key = 'redmove',    name = '红心移动',     bw = 375, bh = 140, goal = 'moved4',
+    hint = '方向键 / WASD 移动红心 —— 四个方向都走一走' },
+  { key = 'bone',       name = '骨头攻击',     bw = 375, bh = 140, goal = 'survive',
+    hint = '骨头会扫过来 —— 提前挪到空隙那边，别停在原地' },
+  { key = 'bluemove',   name = '蓝心移动',     bw = 375, bh = 140, goal = 'moved_lr',
+    hint = '蓝心会被重力往下拉：左右移动（跳跃键 / 上键是跳）' },
+  { key = 'bluejump',   name = '蓝心四向跳跃', bw = 200, bh = 200, goal = 'jumped4',
+    hint = '重力会转向 —— 按**与重力相反**的方向键起跳' },
+  { key = 'bluebone',   name = '蓝骨机制',     bw = 375, bh = 140, goal = 'survive',
+    hint = '蓝骨：它经过时**别按方向键**（动了才会受伤）' },
+  { key = 'orangebone', name = '橙骨机制',     bw = 375, bh = 140, goal = 'survive',
+    hint = '橙骨：反过来 —— 它经过时**必须一直动**（站着不动才会受伤）' },
+}
+local TUT_N = #TUT
+
+-- 战斗态判定：教程进行中复用 enemy 的物理 / 碰撞 / 绘制，只是不推进回合。
+--   单独写成函数而不是到处 `or` —— 以后再加状态时不会漏改（门闸清单见文档 §1.2）。
+local function inFight(g) return g.state == 'enemy' or g.state == 'tutorial' end
+
 local ACT_OPTIONS = {
   { id = 'inspect', name = '检查', hint = '看他的数据（结束回合）',   effect = 'end',
     result = '审判者　ATK 1　DEF 1 —— 他只有 1 点 HP，但他从不站着让你打。' },
@@ -1548,6 +1576,130 @@ function Game:retitle()
   self.state = 'title'
 end
 
+-- ---------------------------------------------------------------- 新手教程（推进）
+-- 流程：tut_ask（二选一）→ tutorial（6 节）→ title（开始菜单）
+function Game:tutLesson() return TUT[self.tutIdx or 1] end
+
+function Game:startTutorial()
+  self:log('tutorial_start')
+  self.tutHP = self.hp
+  self:enterLesson(1)
+end
+
+function Game:enterLesson(i)
+  if i < 1 then i = 1 end
+  if i > TUT_N then return self:tutDone() end
+  local L = TUT[i]
+  self:log('tut_lesson n=' .. i .. ' key=' .. L.key)
+  self.tutIdx = i
+  self.tut = { t = 0, hit = false, mv = {}, jd = {}, spawned = 0, drift = 0 }
+  self.state = 'tutorial'
+  self.tune = self.tune or (DIFFS[self.diffKey] or DIFFS.normal)
+  self.spd = 1
+  self.hp = self.tutHP or self.hp          -- 每节开头把 HP 恢复到入场值
+  self.kr, self.invuln, self.flash = 0, 0, 0
+  self.enemyT, self.enemyDur = 0, 1e9      -- 教程不按回合时长收尾（由导演推进）
+  -- 内置回合的那套记账字段（startEnemy 里会设）：教程里全部置成"永不触发"，
+  -- 免得内置生成器的工作变量是 nil → 每帧崩（踩过：spawnT / floorLock）。
+  self.spawnT, self.wallT, self.whiteT = 1e9, 1e9, 1e9
+  self.floorLock, self.wave = 0, 0
+  self.warn = 0.6 * (self.tune and self.tune.warn or 1)
+  self.warnWall = 0.75 * (self.tune and self.tune.warn or 1)
+  self.scriptUses = self.scriptUses or {}
+  self.box = { x = BOX_CX - L.bw / 2 - BOX_OFF_X, y = BOX_CY - L.bh / 2 - BOX_OFF_Y, w = L.bw, h = L.bh }
+  local blue = (L.key == 'bluemove' or L.key == 'bluejump')
+  self.soul.x = self.box.x + self.box.w / 2
+  self.soul.y = blue and (self.box.y + self.box.h - 40) or (self.box.y + self.box.h / 2)
+  self.soul.vx, self.soul.vy = 0, 0
+  self.soul.dir = 1
+  self.soul.mode = blue and 'blue' or 'red'
+  self.soul.slammed, self.soul.jumping, self.soul.grounded = false, false, false
+  self.soul.maxFall, self.soul.wall = nil, nil
+  self.prevX, self.prevY = self.soul.x, self.soul.y
+  self.world, self.sine = nil, {}
+  self.walls, self.platforms, self.wavesAlive = {}, {}, {}
+  self.tut.x0, self.tut.y0 = self.soul.x, self.soul.y
+end
+
+-- 【用户口径】教程结束 / 中途退出 → 一律回到开始菜单（title）
+function Game:tutDone()
+  self:log('tutorial_done')
+  self:retitle()
+end
+function Game:tutExit()
+  self:log('tutorial_exit')
+  self:retitle()
+end
+
+-- 教程导演：每帧由 Game:update 收尾处调用（教程态不换回合）
+function Game:tutUpdate(dt)
+  local T = self.tut
+  if not T or self.state ~= 'tutorial' then return end
+  local L = TUT[self.tutIdx] or TUT[1]
+  T.t = T.t + dt
+
+  -- ① 第 4 节：重力方向轮转（0 东 → 1 南 → 2 西 → 3 北），每 2.6s 换一个
+  if L.key == 'bluejump' then
+    T.drift = T.drift + dt
+    if T.drift >= 2.6 then
+      T.drift = 0
+      self.soul.dir = ((self.soul.dir or 1) + 1) % 4
+    end
+  end
+
+  -- ② 放弹幕（第 2/5/6 节）：第 1 根等 1.2s，之后每 2.4s 一根
+  if L.goal == 'survive' and T.t >= 1.2 and T.t >= 1.2 + 2.4 * T.spawned then
+    T.spawned = T.spawned + 1
+    if L.key == 'bone' then self:spawnWhiteSlide()
+    elseif L.key == 'bluebone' then self:spawnBlue(false, 'blue')
+    elseif L.key == 'orangebone' then self:spawnBlue(false, 'orange') end
+  end
+
+  -- ③ 被命中 → 本节重来
+  if T.hit then
+    self:log('tut_retry lesson=' .. tostring(self.tutIdx))
+    self:enterLesson(self.tutIdx)
+    return
+  end
+
+  -- ④ 完成判定
+  local done = false
+  if L.goal == 'moved4' then
+    local dx, dy = self.soul.x - T.x0, self.soul.y - T.y0
+    if dx >= 40 then T.mv.r = true end
+    if dx <= -40 then T.mv.l = true end
+    if dy >= 40 then T.mv.d = true end
+    if dy <= -40 then T.mv.u = true end
+    done = T.mv.l and T.mv.r and T.mv.u and T.mv.d
+  elseif L.goal == 'moved_lr' then
+    local dx = self.soul.x - T.x0
+    if dx >= 40 then T.mv.r = true end
+    if dx <= -40 then T.mv.l = true end
+    done = T.mv.l and T.mv.r
+  elseif L.goal == 'jumped4' then
+    done = T.jd[0] and T.jd[1] and T.jd[2] and T.jd[3]
+  else
+    done = T.t >= TUT_SURVIVE
+  end
+  if done then
+    self:log('tut_clear lesson=' .. tostring(self.tutIdx))
+    if self.tutIdx >= TUT_N then self:tutDone() else self:enterLesson(self.tutIdx + 1) end
+    return
+  end
+
+  -- ⑤ 兜底：单节最长 45s 自动放过（防卡死；正常玩家远用不到）
+  if T.t > 45 then
+    self:log('tut_timeout lesson=' .. tostring(self.tutIdx))
+    if self.tutIdx >= TUT_N then self:tutDone() else self:enterLesson(self.tutIdx + 1) end
+  end
+end
+
+function Game:tutChoose(i)
+  if self.state ~= 'tut_ask' then return end
+  self.tutAskIndex = (i == 1) and 1 or 0
+  if (i or 0) == 1 then self:retitle() else self:startTutorial() end
+end
+
 local function makeWorld(g, name)
   local csv = scriptOf(g.scripts, name)
   if not csv then return nil end
@@ -1784,7 +1936,7 @@ function Game:say(t) self.line = t; self.lineShown = 0; self.lineT = 0 end
 
 -- 玩家输入
 function Game:move(dx, dy)
-  if self.state ~= 'enemy' then return end
+  if not inFight(self) then return end
   self.soul.x = clamp(self.soul.x + dx, self.box.x + SOUL_CLAMP, self.box.x + self.box.w - SOUL_CLAMP)
   self.soul.y = clamp(self.soul.y + dy, self.box.y + SOUL_CLAMP, self.box.y + self.box.h - SOUL_CLAMP)
 end
@@ -1852,7 +2004,7 @@ function Game:endSlam()
 end
 
 function Game:jump()
-  if self.state ~= 'enemy' or self.soul.mode ~= 'blue' then return end
+  if not inFight(self) or self.soul.mode ~= 'blue' then return end
   if self.soul.wall then
     -- 【箭头模块】墙模式下「跳跃」= 朝**箭头方向的反方向**冲刺一段（拖到左边 → 向右）。
     -- 距离与普通蓝心跳跃一致：0.5 框高 / JUMP_RISE_T。
@@ -1879,6 +2031,8 @@ function Game:jump()
     self.soul.jumping = true
     self.soul.jumpCut = false        -- 本次跳跃还没被「松手」剪断
     self.soul.jumpHeldT = 0
+    -- 【2026-10-14】教程第 4 节：记一次「这个重力方向成功起跳」
+    if self.state == 'tutorial' and self.tut then self.tut.jd[self.soul.dir or 1] = true end
   end
 end
 function Game:press(k, down) self.keys[k] = down and true or false end
@@ -2089,7 +2243,7 @@ function Game:clampKR()
 end
 
 function Game:hurt(kind, karma, src)
-  if self.state ~= 'enemy' or self.invuln > 0 then return false end
+  if not inFight(self) or self.invuln > 0 then return false end
   self.hp = self.hp - 1
   self.krFloorLogged = false
   -- 参考：首次命中按对象的 Karma 加；同一攻击对象后续只加 2。
@@ -2105,6 +2259,14 @@ function Game:hurt(kind, karma, src)
   if kind == 'blue' then self:log('hit_blue hp=' .. self.hp .. ' kr=' .. self.kr)
   elseif kind == 'orange' then self:log('hit_orange hp=' .. self.hp .. ' kr=' .. self.kr)
   else self:log('hit hp=' .. self.hp .. ' kr=' .. self.kr) end
+  -- 【2026-10-14】教程内**不做伤害结算**：命中只让本节重来
+  --   （HP 保底 2 → 永不 result；KR 清零 → 不引入 KR 烧血；心的透明度闪烁照旧，反馈仍在）
+  if self.state == 'tutorial' then
+    if self.tut then self.tut.hit = true end
+    self.kr = 0
+    if self.hp < 2 then self.hp = 2 end
+    return true
+  end
   if self.hp <= 0 then self.hp = 0; self:finish('fail') end
   return true
 end
@@ -2318,10 +2480,10 @@ function Game:update(dt)
     return
   end
   if self.state == 'menu' or self.state == 'sub' then self:updateKR(dt); return end
-  if self.state ~= 'enemy' then return end
+  if not inFight(self) then return end
 
   self:updateKR(dt)
-  if self.state ~= 'enemy' then return end
+  if not inFight(self) then return end
 
   -- 灵魂移动
   local k = self.keys
@@ -2709,15 +2871,15 @@ function Game:update(dt)
     if w.ended then self.world = nil; self.sine = {} end
   end
 
-  -- 回合计时与生成
+  -- 回合计时与生成（【2026-10-14】教程态**不走内置生成器**：教程的节拍在 Game:tutUpdate 里）
   self.enemyT = self.enemyT + dt
-  self.spawnT = self.spawnT - dt
+  self.spawnT = (self.spawnT or 0) - dt
   if self.testHitsAt and #self.testHitsAt > 0 then
     self.hitT = (self.hitT or 0) + dt
     while #self.testHitsAt > 0 and self.hitT >= self.testHitsAt[1] do
       table.remove(self.testHitsAt, 1)
       self:hurt('hit')                       -- 不重置无敌帧：让测试走真实的 i-frame 判定
-      if self.state ~= 'enemy' then return end
+      if not inFight(self) then return end
     end
   end
   if self.floorLock > 0 then self.floorLock = self.floorLock - dt end
@@ -2732,7 +2894,7 @@ function Game:update(dt)
   -- （records/lua-port.md §已知差异），这一轮保持原样，避免改变最终回合节奏。
   -- 注意：这条守卫只关"内置生成器"，**不影响**本回合时长 —— enemyDur 仍由脚本时长决定。
   local scriptOwnsRound = (self.world ~= nil and self.world.script ~= nil) and not self.final
-  if self.spawnT <= 0 and not self.testNoSpawn and not scriptOwnsRound then
+  if self.spawnT <= 0 and not self.testNoSpawn and not scriptOwnsRound and self.state ~= 'tutorial' then
     if d.pattern == 'bone_floor' or d.pattern == 'mixed' or d.pattern == 'surprise' then
       if self.floorLock <= 0 then
         self:spawnFloor(d.p.peek); self.spawnT = self:it(d.p.interval)
@@ -2756,12 +2918,12 @@ function Game:update(dt)
   -- 这两个"旁路"生成器（白骨滑行 / 骨墙）吃的是同一个规则：脚本接管的回合里也让位。
   -- 今天对回合 0 是空操作（它的 pattern 是 surprise），但规则要一致，否则以后给别的回合挂脚本
   -- 又会漏出内置弹幕。
-  if d.pattern == 'blue_bone' and not scriptOwnsRound then
+  if d.pattern == 'blue_bone' and not scriptOwnsRound and self.state ~= 'tutorial' then
     self.whiteT = (self.whiteT or 0) - dt
     if self.whiteT <= 0 then self:spawnWhiteSlide(); self.whiteT = self:it(d.p.white) end
   end
-  if d.pattern == 'mixed' and not scriptOwnsRound then
-    self.wallT = self.wallT - dt
+  if d.pattern == 'mixed' and not scriptOwnsRound and self.state ~= 'tutorial' then
+    self.wallT = (self.wallT or 0) - dt
     if self.wallT <= 0 then self:spawnWall(4); self.wallT = self:it(d.p.wallInterval) end
   end
   -- 骨头更新（地板骨四段生命 / 蓝骨 / 滑行骨 / 攻击脚本骨头）
@@ -2894,7 +3056,7 @@ function Game:update(dt)
     else
     self._outsideLogged = false
     for _, bn in ipairs(w2.bones) do
-      if self.state ~= 'enemy' then break end
+      if not inFight(self) then break end
       if bn.lethal then
         if bn.stab or bn.arrowbone then
           local rc = w2:stabRect(bn)
@@ -2954,7 +3116,7 @@ function Game:update(dt)
       end
     end
     for _, W in ipairs(self.walls) do
-      if self.state ~= 'enemy' then break end
+      if not inFight(self) then break end
       if W.phase ~= 'warn' and not (W.phase == 'retract' and W.h < LETHAL_H) then
         for L = 0, W.lanes - 1 do
           if not (L >= W.gapStart and L < W.gapStart + W.gapW) then
@@ -2971,7 +3133,7 @@ function Game:update(dt)
     -- 正弦骨：**独立实体表**（w.sine，不在 w.bones 里），必须单独判定。
     -- 之前只判了 w.bones，于是正弦骨从来不打人（视觉有、判定没有）。
     for _, sn in ipairs(w2.sine) do
-      if self.state ~= 'enemy' then break end
+      if not inFight(self) then break end
       if sineHitTest(sn, SX, SY, SOUL_R) then self:hurt('hit', sn.karma or 6, sn) end
     end
     for _, B in ipairs(w2.blasters) do
@@ -3019,6 +3181,12 @@ function Game:update(dt)
   if self.soul.grounded then self.soul.groundT = 0 else self.soul.groundT = (self.soul.groundT or 99) + dt end
   self.prevX, self.prevY = self.soul.x, self.soul.y
   self.invuln = math.max(0, self.invuln - dt)
+
+  -- 【2026-10-14】新手教程：不换回合，交给教程导演推进（下一节 / 结束回开始菜单）
+  if self.state == 'tutorial' then
+    self:tutUpdate(dt)
+    return
+  end
 
   -- 【差距文档第二轮 G13】脚本调用 EndAttack 后**立即**收尾（留 0.2s 淡出），
   -- 不再傻等 enemyDur 走完（旧行为：终盘/骨刺关打完还要空等十几秒）。
@@ -3080,8 +3248,11 @@ function Game:applyInput(input)
     if e.down then self:subMove(1) end
     if e.confirm then self:subConfirm() end
     if e.cancel then self:subBack() end
-  elseif self.state == 'enemy' then
+  elseif inFight(self) then
     if e.confirm and self.soul.mode == 'blue' then self:jump() end
+    -- 【2026-10-14】教程态：取消键 = 退出教程回开始菜单（防卡死）。
+    --   注意**不能**占用 confirm —— 蓝心要靠它起跳（第 3/4 节）。
+    if self.state == 'tutorial' and e.cancel then self:tutExit() end
   end
 end
 
@@ -3250,6 +3421,20 @@ function M.render(g)
                  color = '#c9b26a', align = 'center' })
     return cmds
   end
+  if g.state == 'tut_ask' then
+    -- 【2026-10-14】新手教程二选一：与标题页同一套卡片（main.lua 的收集/点击/键盘共用）
+    push(cmds, { kind = 'hudText', text = '新 手 教 程', x = VW / 2, y = 100, size = 28, color = '#ffffff', align = 'center' })
+    push(cmds, { kind = 'hudText', text = '先花一分钟熟悉操作，再进正式战斗', x = VW / 2, y = 138, size = 14,
+                 color = '#c9c9c9', align = 'center' })
+    for i = 0, 1 do
+      local sel = (i == (g.tutAskIndex or 0))
+      push(cmds, { kind = 'menu', x = 32 + i * 145, y = 210, w = 130, h = 40,
+                   items = { (i == 0) and '进入教程' or '直接开始' }, index = 0, visible = true, selected = sel })
+    end
+    push(cmds, { kind = 'hudText', text = '← → 选择 · 空格/Enter 确认', x = VW / 2, y = 336, size = 13,
+                 color = '#c9b26a', align = 'center' })
+    return cmds
+  end
   if g.state == 'result' then
     -- 【2026-10-14 用户口径】删掉结束时的整屏白屏（原来每帧推 alpha=1 的全屏闪层）。
     local t = (g.result == 'victory') and '胜 利 结 算'
@@ -3297,7 +3482,7 @@ function M.render(g)
   -- 但渲染以前完全不看状态 → 回合结束后残留的骨墙 / 平台 / 骨头会一直挂在画面上
   -- （玩家实测："第一轮六回合结束后场地上实体没有删除"）。
   -- 主修复是 Game:endEnemy 里的清表；这里是双保险：漏清任何一个也不会再画出来。
-  local fieldOn = (g.state == 'enemy')
+  local fieldOn = inFight(g)
   -- 骨墙（原地升降 + 缺口）
   for _, W in ipairs(fieldOn and g.walls or {}) do
     push(cmds, { kind = 'wall', x = boxAbs.x, y = boxAbs.y, w = boxAbs.w, h = boxAbs.h,
@@ -3399,6 +3584,14 @@ function M.render(g)
   push(cmds, { kind = 'hudText', text = 'KR ' .. math.floor(g.kr + 0.5), x = 272, y = hudY, size = 12, color = '#c9a3ff', align = 'left' })
   push(cmds, { kind = 'hudText', text = 'ROUND ' .. (g.round + 1) .. ' / ' .. TOTAL_ROUNDS, x = VW - 150, y = hudY, size = 13, color = '#ffffff', align = 'right' })
   push(cmds, { kind = 'hudText', text = '难度 ' .. (g.tune and g.tune.label or '普通'), x = VW - 20, y = hudY + 1, size = 11, color = '#8a8a8a', align = 'right' })
+  -- 【2026-10-14】新手教程：指令条（画在战斗框上方，不挡 Sans / 骨头）
+  if g.state == 'tutorial' then
+    local L = TUT[g.tutIdx or 1] or TUT[1]
+    push(cmds, { kind = 'hudText', text = string.format('教程 %d / %d · %s', g.tutIdx or 1, TUT_N, L.name),
+                 x = VW / 2, y = 100, size = 17, color = '#ffd75e', align = 'center' })
+    push(cmds, { kind = 'hudText', text = L.hint, x = VW / 2, y = 126, size = 13,
+                 color = '#c9c9c9', align = 'center' })
+  end
   -- 【2026-10-13 用户口径】台词改画在 **Sans 头顶上方**（原版是头顶的 SpeechBubble），
   --   并且**空台词不画**（全面替换口径下多数时机不说话）。算式与 sans 命令的 y 同源。
   if g.line and g.line ~= '' then
@@ -3457,7 +3650,7 @@ end
 
 function M.hud(g)
   local phase = g.state
-  if g.state == 'enemy' then phase = 'enemy'
+  if inFight(g) then phase = 'enemy'
   elseif g.state == 'menu' then phase = g.interlude and 'interlude' or 'menu'
   elseif g.state == 'sub' then phase = 'sub_' .. tostring(g.sub)
   elseif g.state == 'attack' then phase = 'attack'
@@ -3552,7 +3745,11 @@ local function newGame(opts)
   g.sine = {}
   g.world = nil
   g.scriptName = nil
-  g.state = 'title'
+  -- 【2026-10-14】新手教程：**只由 opts 打开**（main.lua 传 C.tutorial），
+  --   测试一律不传 → 既有 700+ 条断言仍从 title 开始（见文档 §5.3）。
+  g.bootTutorial = opts.tutorial and true or false
+  g.tutAskIndex = 0
+  g.state = g.bootTutorial and 'tut_ask' or 'title'
   g:resetRun()
   return g
 end
@@ -3579,6 +3776,18 @@ function M.titleChoose(g, i)
 end
 
 function M.titleIndex(g) return g and g.titleIndex or 0 end
+
+-- 【2026-10-14】新手教程二选一的对外 API（i: 0 = 进入教程 / 1 = 直接开始）
+function M.tutAskMove(g, d)
+  if not g or g.state ~= 'tut_ask' then return end
+  g.tutAskIndex = ((((g.tutAskIndex or 0) + (d or 0)) % 2) + 2) % 2
+end
+function M.tutChoose(g, i) if g then g:tutChoose(i) end end
+function M.tutIndex(g) return g and g.tutIdx or 0 end
+function M.tutLessonKey(g)
+  local L = g and TUT[g.tutIdx or 1]
+  return L and L.key or nil
+end
 
 -- M.update(state, input, dt) -> cmds
 --   input = { left, right, up, down, confirm, cancel }
