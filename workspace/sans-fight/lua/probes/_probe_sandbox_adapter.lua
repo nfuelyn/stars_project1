@@ -273,8 +273,10 @@ eq('OnStart 之后拿到真机模板（模拟器索引全部被拒）', E.madeBy
 ok('模拟器索引在真机上返回 nil 且未污染主流程', E.unknownGuid > 0)
 ok('真机不做大批量预热（实例数远小于 2000）', #E.made < 200)
 eq('root.showCursor 打开', E.rootProps.showCursor, true)
-eq('root.disableKeyEventPassthrough 打开', E.rootProps.disableKeyEventPassthrough, true)
-eq('root.disableCursorEventPassthrough 打开', E.rootProps.disableCursorEventPassthrough, true)
+-- 【2026-10-17】口径修正：docs/device-setup.md 要求这两个「屏蔽穿透」必须是 **false**
+--   （屏蔽开着会收不到 WASD/确认键，也会把原生退出键的点按扣在 UI 层）。
+eq('root.disableKeyEventPassthrough 关闭（允许穿透）', E.rootProps.disableKeyEventPassthrough, false)
+eq('root.disableCursorEventPassthrough 关闭（允许穿透）', E.rootProps.disableCursorEventPassthrough, false)
 
 local wrapped, anchored, stretched = 0, 0, 0
 for _, c in ipairs(E.made) do

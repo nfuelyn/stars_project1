@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-17-exit-icon'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-exit-passthrough'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2319,7 +2319,10 @@ handleClick = function(px, py)
   local twx, twy = toWorld(px, py)
   -- 【2026-10-17 用户口径】左上角退出图标：1 分钟后出现，点它 = 发退出信号。
   --   判定用**世界坐标**，与绘制同源；触摸多给一圈容差（手指比鼠标粗）。
-  if G_REAL.exitIconShown() then
+  -- 【2026-10-17 用户口径】图标默认**只是位置提示**（C.exitIconClickSignal = false）：
+  --   点这个位置应当穿透到原生退出键，而不是被我们吞掉发信号。只有宿主版本拿不到原生键时，
+  --   才把 C.exitIconClickSignal 打开当兜底。
+  if G_REAL.cfg.exitIconClickSignal == true and G_REAL.exitIconShown() then
     local ex, ey, esz = G_REAL.exitIconRect()
     local pad = isTouch and 10 or 0
     if twx >= ex - pad and twx <= ex + esz + pad and twy >= ey - pad and twy <= ey + esz + pad then
@@ -2711,8 +2714,10 @@ function M.OnStart()
   -- 【真机】事件透传开关：不打开 key/cursor 透传，子控件的监听收不到事件；
   -- showCursor 必须开在**祖先容器**上（worker 的 cursorEventsEnabled 逐级往上找 kind=='container' 且 showCursor）。
   pcall(function() script:EnableUpdate(true) end)
-  pcall(function() root.disableKeyEventPassthrough = true end)
-  pcall(function() root.disableCursorEventPassthrough = true end)
+  -- 【2026-10-17】按 docs/device-setup.md：两个「屏蔽穿透」必须是 **false**（允许穿透）。
+  --   原来硬编码 true，会把编辑器的设置覆盖掉 → 原生退出键点不到、按键也可能收不到。
+  pcall(function() root.disableKeyEventPassthrough = G_REAL.cfg.blockKeyPassthrough == true end)
+  pcall(function() root.disableCursorEventPassthrough = G_REAL.cfg.blockCursorPassthrough == true end)
   pcall(function() root.showCursor = true end)
   -- 【官方文档要求】Root 必须覆盖整个画布：锚点 (0,0)-(1,1)、位置与尺寸差都为 0。
   -- 编辑器里没配的话，子控件的绝对坐标就会相对一个「小盒子」定位 —— 整幅画面缩在左下角。
@@ -2765,6 +2770,21 @@ function M.OnStart()
   cursorArea = take('cursor')
   pool.cursor = nil        -- 游标区不参与每帧显隐管理，始终铺满画布接收指针
   if cursorArea then cursorArea:SetVisible(true) end
+  -- 【2026-10-17 用户口径】全屏 cursorArea 会把千星原生退出键（左上角）的点按抢走。
+  --   这里在光标区**顶部让出一条带**（C.cursorTopInset 世界像素）：那条带里没有光标区，
+  --   点按会继续往下传 → 落到原生退出键上。左上角图标只是给玩家指位置。
+  do
+    local inset = G_REAL.cfg.cursorTopInset or 0
+    if inset > 0 and cursorArea ~= nil then
+      local padPx = inset * S
+      pcall(function() cursorArea:SetAnchorMin(0, 0) end)
+      pcall(function() cursorArea:SetAnchorMax(1, math.max(0, 1 - padPx / CH)) end)
+      pcall(function() cursorArea:SetPivot(0.5, 0.5) end)
+      pcall(function() cursorArea:SetSizeDelta(0, 0) end)
+      pcall(function() cursorArea:SetAnchoredPosition(0, 0) end)
+      print(string.format('main: 光标区顶部让出 %.0f 世界px → 原生退出键可点', inset))
+    end
+  end
   flash = spawn('rect')
   core = tryLoadCore()
   music = tryLoadMusic()
@@ -3157,6 +3177,7 @@ function M.state() return state end
 function M.mode() return mode end
 function M.pointer() return ptr, joy end
 function M.drawJoystick() return drawJoystick() end   -- 供截图前的静态检查
+function M.exitIconShown() return G_REAL.exitIconShown() end   -- 退出提示图标是否已出现（回归用）
 function M.box() return curBox, boxTarget end          -- 画出来的框 / 逻辑层目标框
 function M.toWorld(px, py) return toWorld(px, py) end   -- 画布 → 世界（回归用）
 function M.click(px, py) return handleClick(px, py) end -- 直接打点按链路（回归用）

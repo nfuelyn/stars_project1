@@ -1,91 +1,116 @@
-# 左上角「退出」图标：客户端行为 + 服务端节点图
+# 左上角「退出」：位置提示图标 + 事件穿透（手机 / PC）
 
-- **用户口径（2026-10-17）**：千星游玩时自带的那个退出键点不到；要**进入关卡 1 分钟后**在**同一位置**出现一个图标，点击**直接退出**；手机端与电脑端都要。
+- **用户口径（2026-10-17）**：千星游玩时自带的那个退出键点不到。要的是**点那个位置能穿过 Lua 绘制的界面、触发原生按钮**；
+  我们画的东西**只是位置提示**。
 - **工作区**：`D:\stars\workspace\sans-fight`
-- **结论**：客户端 Lua **没有**「退出关卡」API（`D:\miliastra-beyond-simulator` 全库检索 `ExitLevel/QuitLevel/结算关卡` 均无客户端入口）。
-  所以图标点击只能**发服务端信号**，由节点图「结算关卡」真正退出。
+- **结论**：不需要客户端发任何退出信号 —— 只要把**事件穿透**按文档打开、并让**光标检测区顶部让出一条带**，
+  原生退出键就能收到点按。图标纯粹是给玩家指位置。
 
 ---
 
-## 一、为什么原生退出键点不到
+## 一、为什么原生退出键点不到（两个原因，都修了）
 
-本项目为了收指针事件，铺了一层**全屏 `cursorArea`**（光标检测区域），并在 `M.OnStart` 里把根容器设成：
+### ① 穿透开关被硬编码成 true（与文档相反）
+
+`lua/main.lua` 的 `M.OnStart` 原来写死：
 
 ```lua
 root.disableKeyEventPassthrough = true
 root.disableCursorEventPassthrough = true
-root.showCursor = true
 ```
 
-⇒ 按键/光标事件**留在 UI 层**（脚本的子控件监听才收得到），同时也把千星原生的退出键盖住/抢走了点按。
-这就是"原生退出键没了"的根因（不是新引入的，是移植期就有的取舍）。
+而本项目自己的 `docs/device-setup.md` 明确要求这两个字段是 **false**：
 
-## 二、客户端行为（已实现）
+> `disableKeyEventPassthrough` | 默认 | **false** ← 开着收不到 WASD / 确认键
+> `disableCursorEventPassthrough` | 默认 | **false**
+
+脚本把编辑器的 `false` 覆盖成 `true` ⇒ 事件被扣在 UI 层 ⇒ 原生退出键收不到点按、按键也可能收不到。
+**现在改成按配置下发，默认 false。**
+
+### ② 全屏光标检测区把整个画面都吃掉了
+
+`cursorArea` 是一块**铺满画布**的光标检测区域，它会接收并消费指针事件。
+就算穿透打开了，只要光标区盖住左上角，原生按钮依然点不到。
+
+**修复**：给光标区**顶部让出一条带**（世界像素 `C.cursorTopInset = 48`）。
+这条带里没有光标区 → 点按继续往下传 → 落到原生退出键上。
+
+> 为什么让"一条带"而不是"一个小方块"：光标检测区是**矩形**控件，打不出洞。
+> 顶部这条带里没有任何可点元素（只有提示文字），让出来是安全的；可点 UI 全都在 y≈210 以下。
+
+---
+
+## 二、客户端行为
 
 | 项 | 值 |
 |---|---|
-| 出现时机 | 进入关卡（`OnStart` 之后）累计 **60 秒** |
-| 位置 | 世界坐标 `(8, 8)`、边长 `34`（640×480，左上角原点、Y 向下）→ 与原生退出键同角 |
-| 外观 | 半透明黑底 + 白色圆环 + 白色 × |
-| 点击 | 手机（触摸点按）与电脑（鼠标点击）**同一条点按链路**；触摸额外给 10px 容差 |
-| 动作 | 发服务端信号 **`SansFightExit`**（无参数） |
+| 图标出现 | 进入关卡（OnStart 后）累计 **60 秒** |
+| 位置 | 世界坐标 **(8, 8)**、边长 **34**（640×480，左上角原点、Y 向下） |
+| 外观 | 半透明黑底 + 白圆环 + 白色 × |
+| 作用 | **仅位置提示**，不拦截点按、不发信号 |
+| 点击该位置 | 穿透到千星原生退出键（由千星自己处理退出） |
 
 ### 配置（`lua/config.lua`）
 
 ```lua
-C.exitIcon = true                 -- false = 完全不显示
+C.exitIcon = true                 -- false = 不显示提示图标
 C.exitDelay = 60                  -- 多少秒后出现
-C.exitIconX, C.exitIconY = 8, 8   -- 世界坐标，对齐原生退出键
+C.exitIconX, C.exitIconY = 8, 8   -- 世界坐标：对齐原生退出键
 C.exitIconSize = 34
-C.exitSignal = 'SansFightExit'    -- 服务端信号名
+C.exitIconClickSignal = false     -- ★ 默认 false = 只做提示；true = 兜底发服务端信号
+
+C.blockKeyPassthrough = false     -- 必须 false（见 docs/device-setup.md）
+C.blockCursorPassthrough = false  -- 必须 false
+C.cursorTopInset = 48             -- 光标区顶部让出的世界像素；0 = 不让（旧行为）
 ```
 
-> 位置如果和原生键差几像素：直接改 `C.exitIconX / C.exitIconY / C.exitIconSize`（世界像素 = 画布像素 / S）。
+**如果位置没对上**：调 `C.exitIconX / C.exitIconY / C.exitIconSize`（世界像素 = 画布像素 / S），
+并同步调 `C.cursorTopInset`（要让出的带必须覆盖原生键）。
 
-## 三、服务端节点图（**必须加，否则点了不会退出**）
+---
 
-```text
-[客户端 Lua：左上角退出图标]
-        │  game.ServerSignal("SansFightExit")
-        ▼
-[服务端：收到服务器信号  SansFightExit]
-        │
-        ▼
-[结算关卡]        ← 官方「关卡结算」节点；执行后关卡结束
-```
+## 三、兜底方案（只在原生键仍然拿不到时用）
 
-要点：
-
-1. **信号名必须是 `SansFightExit`**（或在 `C.exitSignal` 里改成同名）。
-2. 这个信号**不带参数**（不是结算结果，只是"我要走了"）。
-3. `[结算关卡]` 放最后；如果前面还要写展示数据，先写再结算。
-4. **去重**：如果同一关卡里还有 `SansFightSettle` 的处理，两个信号互不冲突；
-   但建议在 `SansFightExit` 分支里也读一个 `SansSettled` 之类的去重变量，避免重复结算。
-
-### 备选：不想新增节点
-
-把配置改成：
+有些宿主版本可能不允许「穿透 + 子控件收事件」同时成立。这时把：
 
 ```lua
-C.exitSignal = 'SansFightSettle'
+C.exitIconClickSignal = true
+C.exitSignal = 'SansFightExit'     -- 或 'SansFightSettle'
 ```
 
-就会走**现有的结算信号**（客户端会自动带上 `result=true / hp / kr / round`）。
-代价：退出会被当成**胜利结算**，而不是"纯退出"。
+点图标就会**自己发服务端信号**：
+
+```text
+[客户端 Lua：左上角图标]
+      │ game.ServerSignal("SansFightExit")
+      ▼
+[服务端：收到服务器信号 SansFightExit]
+      ▼
+[结算关卡]        ← 执行后关卡结束
+```
+
+- `C.exitSignal = 'SansFightSettle'` 则复用**现有结算节点**（会自动带 result/hp/kr/round；代价：按胜利结算退出）。
+- 这条路径**默认关闭**（因为用户要的是穿透原生键，不是自己发信号）。
+
+---
 
 ## 四、回归
 
-- `lua/probes/_probe_touch_tutorial.lua` 追加 2 条（**触摸端**、真实事件回调）：
-  - 1 分钟前点左上角 → **不发**信号；
-  - 快进 ~63 秒后点左上角 → 发出 **`SansFightExit`**（日志：`main: 已发送退出信号 SansFightExit`）。
-- `verify-all --quick` → **14 / 14**（该探针 11 条）。
+- `lua/probes/_probe_touch_tutorial.lua`（**触摸端**、真实事件回调）现在断言：
+  1. `disableKeyEventPassthrough == false`、`disableCursorEventPassthrough == false`；
+  2. 光标区 `anchorMaxY < 1`（顶部确实让出了 48 世界像素 → 0.9）；
+  3. 1 分钟前图标不出现、之后出现；
+  4. **点图标不发任何信号**（穿透交给原生键）。
+- `lua/probes/_probe_sandbox_adapter.lua` 的两条断言从 `true` 改成 `false`（对齐 device-setup 文档）。
+- `verify-all --quick` → **14 / 14**。
 
 ## 五、技术来源
 
 | 内容 | 位置 |
 |---|---|
-| 客户端无退出 API（全库检索） | `D:\miliastra-beyond-simulator`（`ExitLevel/QuitLevel/结算关卡` 均无客户端项） |
-| 穿透开关（原生退出键被盖的原因） | `lua/main.lua` `M.OnStart`（`disableKeyEventPassthrough` / `disableCursorEventPassthrough` / `showCursor`） |
-| 图标绘制与点击判定 | `lua/main.lua` `G_REAL.drawExitIcon` / `handleClick` 开头 |
-| 信号发送 | `lua/main.lua` `G_REAL.requestExitKick` |
-| 现有结算信号（备选路径） | `lua/main.lua` `G_REAL.sendSettleSignal`；`docs/结算按钮_节点图与挂载映射.md` |
+| 穿透字段的正确取值（false） | `workspace/sans-fight/docs/device-setup.md`（"三个 false/true 必须逐项确认"那段） |
+| 原实现硬编码 true | `lua/main.lua` `M.OnStart` 的 `disableKeyEventPassthrough / disableCursorEventPassthrough` |
+| 光标区让位 | `lua/main.lua` `cursorArea = take('cursor')` 之后的 `C.cursorTopInset` 段 |
+| 提示图标 | `lua/main.lua` `G_REAL.drawExitIcon`（`drawJoystick` 之后调用） |
+| 兜底信号 | `lua/main.lua` `G_REAL.requestExitKick`（仅在 `C.exitIconClickSignal = true` 时挂钩） |
+| 客户端无退出 API | `D:\miliastra-beyond-simulator` 全库检索 `ExitLevel/QuitLevel/结算关卡` 均无客户端项 |

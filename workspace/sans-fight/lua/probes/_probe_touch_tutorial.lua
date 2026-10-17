@@ -12,22 +12,28 @@ package.loaded['default_import_file/workspace/sans-fight/lua/fitdata'] = {}
 package.loaded['default_import_file/workspace/sans-fight/lua/textart'] = { glyphs = {} }
 package.loaded['default_import_file/workspace/sans-fight/lua/config'] =
   { updateCallback = 'level', templatesFirst = 'sim', legacyTemplateFallback = true,
-    textMode = 'control', device = 'auto', tutorial = true }
+    textMode = 'control', device = 'auto', tutorial = true,
+    -- 【2026-10-17】用户口径：图标只是提示，靠"光标区顶部让出带"把点按穿透给原生退出键
+    exitIcon = true, exitDelay = 60, exitIconClickSignal = false, cursorTopInset = 48,
+    blockKeyPassthrough = false, blockCursorPassthrough = false }
 
 local key, cursor = {}, {}
 local nextId = 1
+local created = {}
 local function mkControl(kind)
   local c = { Id = nextId, kind = kind, visible = true, prefabIndex = 0 }
+  created[#created + 1] = c
   nextId = nextId + 1
   local store = {}
   return setmetatable(c, {
     __index = function(_, k)
       if k == 'AddKeyEventListener' then return function(_, n, fn) key[n] = fn end end
       if k == 'AddCursorEventListener' then return function(_, n, fn) cursor[n] = fn end end
+      if k == 'SetAnchorMax' then return function(_, x, y) store.anchorMaxX, store.anchorMaxY = x, y end end
+      if k == 'SetAnchorMin' then return function(_, x, y) store.anchorMinX, store.anchorMinY = x, y end end
       local m = { SetVisible = 1, SetActive = 1, SetImage = 1, SetSiblingIndex = 1, SetSizeDelta = 1,
                   SetAnchoredPosition = 1, SetLocalRotation = 1, GetChildren = 1, GetChild = 1,
-                  FindChild = 1, SetAsFirstSibling = 1, SetAsLastSibling = 1, SetAnchorMin = 1,
-                  SetAnchorMax = 1, SetPivot = 1 }
+                  FindChild = 1, SetAsFirstSibling = 1, SetAsLastSibling = 1, SetPivot = 1 }
       if m[k] then return function() end end
       return store[k]
     end,
@@ -41,7 +47,12 @@ local rootCtrl = mkControl('container')
 game = {
   GetUICanvasSize = function() return 1280, 720 end,
   GetClientUIControl = function(id) if id == 1 then return rootCtrl end return nil end,
-  InstantiateClientUIControl = function() return mkControl('inst') end,
+  InstantiateClientUIControl = function(idx)
+    local K = { [1073743001]='rect', [1073743002]='circle', [1073743004]='text', [1073743006]='ring',
+                [1073743007]='rot', [1073743008]='rtri', [1073743009]='cursor',
+                [1073743100]='baked', [1073743101]='bakedC', [1073743102]='bakedRoot' }
+    return mkControl(K[idx] or ('idx' .. tostring(idx)))
+  end,
   GetGlobalCustomVariableValue = function() error('none') end,
   PrintClientUITree = function() end,
   GetDevice = function() return { Name = 'Mobile', FullName = 'Enum.Device.Mobile', EnumType = 'Device' } end,
@@ -72,6 +83,17 @@ print = realPrint
 ok(main.isTouch(), '设备识别为触摸（Mobile）')
 local st = main.state()
 ok(st and st.state == 'tut_ask', '启动停在二选一（实际 ' .. tostring(st and st.state) .. '）')
+-- 【2026-10-17】事件穿透：按 docs/device-setup.md，两个「屏蔽穿透」必须是 false
+ok(rootCtrl.disableKeyEventPassthrough == false, 'disableKeyEventPassthrough == false（允许穿透）')
+ok(rootCtrl.disableCursorEventPassthrough == false, 'disableCursorEventPassthrough == false（允许穿透）')
+-- 光标检测区顶部让出一条带 → 原生退出键能收到点按
+do
+  local cur = nil
+  for _, c in ipairs(created) do if c.kind == 'cursor' then cur = c end end
+  ok(cur ~= nil, '光标检测区已创建')
+  ok(cur ~= nil and type(cur.anchorMaxY) == 'number' and cur.anchorMaxY < 0.99,
+     '光标区 anchorMaxY < 1（顶部让出 ' .. tostring(cur and cur.anchorMaxY) .. '）')
+end
 -- 先跑两帧：适配层用 pendingPhase 初始化"当前相位"，第一帧会清一次待确认项；
 -- 真实游玩时玩家不可能在第一帧就点，所以这里先稳定两帧再点（不是放宽断言）。
 frames(2)
@@ -106,17 +128,16 @@ frames(2)
 local _, joy2 = main.pointer()
 ok(joy2.active == false, '松手 → 摇杆关闭')
 
--- ===== 左上角退出图标（2026-10-17 用户口径）=====
---   进入关卡 1 分钟后出现；点它 = 发服务端信号（客户端没有退出 API）。
---   这里把 ServerSignal 换成记录器，验证"1 分钟前不发 / 之后点了就发"。
+-- ===== 左上角退出图标（2026-10-17 用户口径：**只做位置提示**）=====
+--   真正能被点的是千星原生退出键 —— 靠 C.cursorTopInset 让出的那条带穿透过去。
+--   图标本身**不发信号**（C.exitIconClickSignal 默认 false），点它不应该产生任何 server signal。
 local sent = {}
 game.ServerSignal = function(name) return { SendSignal = function() sent[#sent + 1] = name end } end
+ok(main.exitIconShown() == false, '1 分钟前图标还没出现')
+for _ = 1, 1900 do pcall(main.OnLevelUpdate, DT) end      -- 快进 ≈63s
+ok(main.exitIconShown() == true, '1 分钟后图标出现（位置提示）')
 fireCursor('CursorDown', 25, 25); fireCursor('CursorUp', 25, 25)
-ok(#sent == 0, '1 分钟前点左上角不会发退出信号（实际 ' .. #sent .. ' 条）')
--- 快进：DT=1/30 → 1900 帧 ≈ 63.3s（退出图标默认 60s 出现）
-for _ = 1, 1900 do pcall(main.OnLevelUpdate, DT) end
-fireCursor('CursorDown', 25, 25); fireCursor('CursorUp', 25, 25)
-ok(sent[1] == 'SansFightExit', '1 分钟后点左上角 → 发出 SansFightExit（实际 ' .. tostring(sent[1]) .. '）')
+ok(#sent == 0, '点图标**不发信号**（穿透交给原生退出键；实际 ' .. #sent .. ' 条）')
 
 print('')
 print(string.format('PASS %d / FAIL %d', pass, fail))

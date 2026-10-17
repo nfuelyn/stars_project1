@@ -39,12 +39,26 @@ C.tutorial = true
 --   ⚠ 客户端 Lua **没有**直接退出关卡的 API（知识库里也确认没有），
 --     必须由服务端节点图「收到 SansFightExit → 结算关卡」来真正退出。
 C.exitIcon = true                 -- false = 完全不显示
+-- 【2026-10-17 用户口径】图标**只是位置提示**：真正要能点的是千星自带的退出键。
+--   默认 false = 点这个位置**不发信号**（靠下面的穿透把点按交给原生按钮）。
+--   只有在原生键确实拿不到（宿主版本不同）时，才改成 true 走"发服务端信号"的兜底。
+C.exitIconClickSignal = false
 C.exitDelay = 60                  -- 进入关卡后多少秒出现（用户口径：1 分钟）
 C.exitIconX, C.exitIconY = 8, 8   -- 世界坐标（640×480，左上角原点、Y 向下）—— 对齐原生退出键位置
 C.exitIconSize = 34               -- 图标边长（世界像素，真机会乘 S）
 -- 服务端信号名。**不想新增节点**也可以：改成 'SansFightSettle' 复用现有结算节点
 --   （代价：会按「胜利结算」退出，而不是纯退出）。
 C.exitSignal = 'SansFightExit'
+
+-- 事件穿透（2026-10-17）：按 docs/device-setup.md 的口径，这两个「屏蔽穿透」必须是 **false**。
+--   原来 main.lua 在 OnStart 里硬编码成 true，会把编辑器的设置覆盖掉 ——
+--   后果就是"按键/光标穿透没了、原生退出键点不到"。
+--   true = 屏蔽穿透（事件扣在 UI 层）；false = 允许穿透（默认，文档要求）。
+C.blockKeyPassthrough = false
+C.blockCursorPassthrough = false
+-- 光标检测区**顶部让出的高度**（世界像素，640×480 口径）：这条带里的点按会穿透给原生 UI，
+--   千星自带退出键就在左上角这条带里。0 = 不让（旧行为）。
+C.cursorTopInset = 48
 
 -- 结算信号（服务端节点图用）
 --   ★ 开局信号（旧 C.startSignal = 'SansFightStart'）已于 2026-10-14 **删除**：
