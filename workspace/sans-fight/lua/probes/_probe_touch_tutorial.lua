@@ -106,6 +106,18 @@ frames(2)
 local _, joy2 = main.pointer()
 ok(joy2.active == false, '松手 → 摇杆关闭')
 
+-- ===== 左上角退出图标（2026-10-17 用户口径）=====
+--   进入关卡 1 分钟后出现；点它 = 发服务端信号（客户端没有退出 API）。
+--   这里把 ServerSignal 换成记录器，验证"1 分钟前不发 / 之后点了就发"。
+local sent = {}
+game.ServerSignal = function(name) return { SendSignal = function() sent[#sent + 1] = name end } end
+fireCursor('CursorDown', 25, 25); fireCursor('CursorUp', 25, 25)
+ok(#sent == 0, '1 分钟前点左上角不会发退出信号（实际 ' .. #sent .. ' 条）')
+-- 快进：DT=1/30 → 1900 帧 ≈ 63.3s（退出图标默认 60s 出现）
+for _ = 1, 1900 do pcall(main.OnLevelUpdate, DT) end
+fireCursor('CursorDown', 25, 25); fireCursor('CursorUp', 25, 25)
+ok(sent[1] == 'SansFightExit', '1 分钟后点左上角 → 发出 SansFightExit（实际 ' .. tostring(sent[1]) .. '）')
+
 print('')
 print(string.format('PASS %d / FAIL %d', pass, fail))
 if fail > 0 then os.exit(1) end

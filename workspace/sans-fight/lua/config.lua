@@ -32,6 +32,20 @@ C.textMode = 'art'
 --   这样 _rounds / _tap / _title / _input / core_selftest 等测试不受影响。
 C.tutorial = true
 
+-- 左上角「退出」图标（2026-10-17 用户口径）
+--   千星游玩时自带一个退出键；但本项目为了收指针事件铺了一层**全屏 cursorArea**，
+--   并把根容器的 key/cursor 穿透关掉了（见 M.OnStart）—— 于是原生退出键会被盖住、点不到。
+--   这里在**它的位置**画一个等效的 × 图标：进入关卡 N 秒后出现，点击 → 发服务端信号。
+--   ⚠ 客户端 Lua **没有**直接退出关卡的 API（知识库里也确认没有），
+--     必须由服务端节点图「收到 SansFightExit → 结算关卡」来真正退出。
+C.exitIcon = true                 -- false = 完全不显示
+C.exitDelay = 60                  -- 进入关卡后多少秒出现（用户口径：1 分钟）
+C.exitIconX, C.exitIconY = 8, 8   -- 世界坐标（640×480，左上角原点、Y 向下）—— 对齐原生退出键位置
+C.exitIconSize = 34               -- 图标边长（世界像素，真机会乘 S）
+-- 服务端信号名。**不想新增节点**也可以：改成 'SansFightSettle' 复用现有结算节点
+--   （代价：会按「胜利结算」退出，而不是纯退出）。
+C.exitSignal = 'SansFightExit'
+
 -- 结算信号（服务端节点图用）
 --   ★ 开局信号（旧 C.startSignal = 'SansFightStart'）已于 2026-10-14 **删除**：
 --     服务端改成自己解决计时，不再需要客户端在 OnStart 广播信号。

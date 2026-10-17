@@ -36,3 +36,4 @@
 - `Sans_Fight_Sans发言_原版替换与位置_修改文档.md`
 - `Sans_Fight_受击音效_实现研究与困难总结.md`
 - `Sans_Fight_新手教程阶段_调研与实施方案.md`
+- `Sans_Fight_左上角退出键_节点图与映射.md`

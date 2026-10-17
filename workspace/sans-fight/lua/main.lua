@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-17-touch-fix'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-exit-icon'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2292,11 +2292,41 @@ toWorld = function(px, py)
   return (px - OX) / S, H - (py - OY) / S
 end
 
+-- 左上角退出：点击 → 发服务端信号（客户端没有退出 API）。
+--   名字取 C.exitSignal；若填成 'SansFightSettle' 则复用现有结算节点（参数一并带上）。
+function G_REAL.requestExitKick()
+  local name = G_REAL.cfg.exitSignal
+  if name == nil or name == '' then name = 'SansFightExit' end
+  if name == 'SansFightSettle' then
+    if G_REAL.sendSettleSignal then G_REAL.sendSettleSignal(true, '（左上角退出键）') end
+    return
+  end
+  if type(game.ServerSignal) ~= 'function' then
+    print('main: 退出信号不可用（当前宿主没有 game.ServerSignal）')
+    return
+  end
+  local ok, err = pcall(function()
+    local sig = game.ServerSignal(name)
+    sig:SendSignal()
+  end)
+  if ok then print('main: 已发送退出信号 ' .. tostring(name)) else print('main: 退出信号发送失败 :: ' .. tostring(err)) end
+end
+
 -- 点按处理：同步执行（Web 端试玩 Worker 只在被轮询时推进，不能等下一帧）。
 -- 返回 true 表示这次点按已被界面消费。
 handleClick = function(px, py)
   if not core or not state then return false end
   local twx, twy = toWorld(px, py)
+  -- 【2026-10-17 用户口径】左上角退出图标：1 分钟后出现，点它 = 发退出信号。
+  --   判定用**世界坐标**，与绘制同源；触摸多给一圈容差（手指比鼠标粗）。
+  if G_REAL.exitIconShown() then
+    local ex, ey, esz = G_REAL.exitIconRect()
+    local pad = isTouch and 10 or 0
+    if twx >= ex - pad and twx <= ex + esz + pad and twy >= ey - pad and twy <= ey + esz + pad then
+      G_REAL.requestExitKick()
+      return true
+    end
+  end
   local st = state.state
   -- 【2026-10-14】新手教程二选一：与标题页共用卡片，只是动作换成 tutChoose（触摸同样二段确认）
   if st == 'tut_ask' then
@@ -2509,6 +2539,37 @@ local function drawJoystick()
     put(kc, g.knob.x, g.knob.y, g.knob.w, g.knob.h)
     tint(kc, ((math.floor(255 * math.min(1, alpha + 0.15))) << 24) | 0xFFFFFF)
   end
+end
+
+-- ---------------------------------------------------------------- 左上角退出图标（2026-10-17）
+-- 千星原生退出键被我们的全屏 cursorArea 盖住/抢走点按 → 这里在**同一位置**画一个等效图标。
+-- 客户端没有退出 API，所以点击只是**发服务端信号**（节点图「结算关卡」收尾）。
+function G_REAL.exitIconShown()
+  if G_REAL.cfg.exitIcon == false then return false end
+  return (G_REAL.exitT or 0) >= (G_REAL.cfg.exitDelay or 60)
+end
+function G_REAL.exitIconRect()
+  return G_REAL.cfg.exitIconX or 8, G_REAL.cfg.exitIconY or 8, G_REAL.cfg.exitIconSize or 34
+end
+
+function G_REAL.drawExitIcon()
+  if not G_REAL.exitIconShown() then return end
+  local x, y, sz = G_REAL.exitIconRect()
+  local cx, cy = x + sz / 2, y + sz / 2
+  -- 半透明底：亮背景（白框/白字）上也能看清
+  local bg = circle(x, y, sz, 0x88000000)
+  if bg then pcall(function() bg:SetAsLastSibling() end) end
+  local rc = take('ring')
+  if rc then
+    put(rc, wx(x), wyBottom(y + sz), sz * S, sz * S)
+    tint(rc, 0xE6FFFFFF)
+    pcall(function() rc:SetAsLastSibling() end)
+  end
+  local barT = math.max(2, sz * 0.09)
+  local a = rrect(cx, cy, sz * 0.52, barT, 45, C_WHITE)
+  if a then pcall(function() a:SetAsLastSibling() end) end
+  local b = rrect(cx, cy, sz * 0.52, barT, -45, C_WHITE)
+  if b then pcall(function() b:SetAsLastSibling() end) end
 end
 
 -- ---------------------------------------------------------------- 内置演示（core 缺失时）
@@ -2860,6 +2921,8 @@ end
 function M.OnLevelUpdate(dt, fromUI)
   frame = frame + 1
   if G_REAL.cfg.textProbe then return textProbeFrame() end
+  -- 【2026-10-17】左上角退出图标的计时：从进入关卡（OnStart 之后）开始累计。
+  G_REAL.exitT = (G_REAL.exitT or 0) + (dt or 0)
   local cmds
   if mode == 'core' and state then
     -- 相位一变，触摸端的「待确认选中」就作废（否则跨状态会把不相干的项当成已选中过）
@@ -2990,6 +3053,7 @@ function M.OnLevelUpdate(dt, fromUI)
     return
   end
   pcall(drawJoystick)          -- 摇杆画在最上层（仅触摸分支会真的画）
+  pcall(G_REAL.drawExitIcon)   -- 左上角退出图标（进入关卡 1 分钟后出现；手机/PC 都画）
   -- 移动诊断：任一方向输入生效且灵魂位置变化就记一条（限速 0.6s），键盘与摇杆都覆盖
   local moving = input.left or input.right or input.up or input.down
   if moving and absSoul then
