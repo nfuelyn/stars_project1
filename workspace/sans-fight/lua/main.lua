@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-17-exit-passthrough'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-joy-left'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -246,7 +246,9 @@ local function markPending(kind, index) pendingSel = { kind = kind, index = inde
 
 -- 虚拟摇杆（**只在触摸分支存在**）：基准点默认在左下角，按下左半屏时移到按下处
 local JOY_R, JOY_DEAD = 46, 9
-local JOY_HOME_X, JOY_HOME_Y = 84, 392      -- 世界坐标（默认位置）
+-- 【2026-10-17 用户口径】固定摇杆**左移一个半径**：84 - JOY_R(46) = 38。
+--   可用 C.joyHomeX / C.joyHomeY 覆盖（OnStart 里读；留 nil 就用这里的默认值）。
+local JOY_HOME_X, JOY_HOME_Y = 38, 392      -- 世界坐标（默认位置）
 local joy = { active = false, bx = JOY_HOME_X, by = JOY_HOME_Y, kx = 0, ky = 0, dx = 0, dy = 0, moved = false }
 
 -- 方向死区（**归一化**，摇杆向量 dx/dy ∈ [-1,1]）：四向判定的唯一阈值。
@@ -2724,6 +2726,9 @@ function M.OnStart()
   G_REAL.stretchFull(root)
   layout()
   isTouch = detectDevice()      -- 平台分流：只认 Mobile / MobileController，其余（含读不到）按 PC
+  -- 【2026-10-17】固定摇杆基准点可配（真机上按手感微调，不用改代码）
+  if type(G_REAL.cfg.joyHomeX) == 'number' then JOY_HOME_X = G_REAL.cfg.joyHomeX end
+  if type(G_REAL.cfg.joyHomeY) == 'number' then JOY_HOME_Y = G_REAL.cfg.joyHomeY end
   -- 纯黑背景板：**在所有控件之前**创建 → 兄弟序天然在最底层（新实例默认置顶，先建的在下面）。
   -- 模拟器试玩页/截图里的舞台底色是宿主画的渐变，真机底色也不可控 → 背景必须由 Lua 自己糊一层。
   --

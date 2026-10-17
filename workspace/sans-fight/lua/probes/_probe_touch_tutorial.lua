@@ -112,18 +112,18 @@ if card then
   ok(st.state == 'tutorial', '第二次点按 → 进入教程（实际 ' .. tostring(st.state) .. '）')
 end
 
--- 摇杆：在固定 HOME（世界 84,392）按下 → 应激活；向上拖 → 灵魂上移（第 1 节是红心，无重力）
+-- 摇杆：在固定 HOME（世界 38,392）按下 → 应激活；向上拖 → 灵魂上移（第 1 节是红心，无重力）
 local before = main.soul()
 ok(before ~= nil, '灵魂坐标已知')
-fireCursor('CursorDown', 84, 392)
+fireCursor('CursorDown', 38, 392)
 local _, joy = main.pointer()
 ok(joy.active == true, '教程里按下固定摇杆区 → 摇杆激活（修前为 false）')
-fireCursor('CursorDrag', 84, 340)
+fireCursor('CursorDrag', 38, 340)
 frames(20)
 local after = main.soul()
 ok(after and before and (before.y - after.y) > 3,
    string.format('向上拖 → 红心上移（%.1f → %.1f，修前完全不动）', before and before.y or -1, after and after.y or -1))
-fireCursor('CursorUp', 84, 340)
+fireCursor('CursorUp', 38, 340)
 frames(2)
 local _, joy2 = main.pointer()
 ok(joy2.active == false, '松手 → 摇杆关闭')

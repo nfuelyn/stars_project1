@@ -547,7 +547,7 @@ tk.stepSafe(3)
 
 -- 【2026-10-11 用户口径·固定摇杆】基准点**固定**在 HOME(84,392)（原神预设位）：按下点取 HOME，
 -- 之后手指相对 HOME 的偏移 = 摇杆向量（旧测试按"基准=按下点"写，已同步）。
-local JOY_HOME_X, JOY_HOME_Y = 84, 392
+local JOY_HOME_X, JOY_HOME_Y = 38, 392   -- 【2026-10-17】与 main.lua 同步：左移一个半径
 local function joyPush(env, dwx, dwy)
   env.up(JOY_HOME_X, JOY_HOME_Y); env.stepSafe(1)
   env.down(JOY_HOME_X, JOY_HOME_Y)
