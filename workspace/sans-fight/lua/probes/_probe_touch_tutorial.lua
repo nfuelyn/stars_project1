@@ -142,7 +142,14 @@ game.ServerSignal = function(name) return { SendSignal = function() sent[#sent +
 ok(main.exitIconShown() == false, '1 分钟前图标还没出现')
 for _ = 1, 1900 do pcall(main.OnLevelUpdate, DT) end      -- 快进 ≈63s
 ok(main.exitIconShown() == true, '1 分钟后图标出现（位置提示）')
-tapPx(36, 36)
+-- 【2026-10-17】必须画在**左上角**：put()/光标 y 是"从画布底部往上"，
+--   上半部的 y 应该 > CH/2（曾经把"从顶部往下"的 y 直接传进去 → 跑到左下角）。
+do
+  local ix, iy, isz = main.exitIconRect()
+  ok(iy > 0 and (iy + isz) > 360, string.format('图标在画布上半部（x=%.0f y=%.0f size=%.0f）', ix, iy, isz))
+  ok(ix < 200, string.format('图标在画布左侧（x=%.0f）', ix))
+end
+tapPx(36, 684)   -- 画布 1280x720，y 从下往上：36px 从上 = 684
 ok(#sent == 0, '点图标**不发信号**（穿透交给原生退出键；实际 ' .. #sent .. ' 条）')
 
 print('')

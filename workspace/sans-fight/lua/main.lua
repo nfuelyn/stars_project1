@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-17-icon-fix'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-icon-topleft'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2325,7 +2325,7 @@ handleClick = function(px, py)
   --   点这个位置应当穿透到原生退出键，而不是被我们吞掉发信号。只有宿主版本拿不到原生键时，
   --   才把 C.exitIconClickSignal 打开当兜底。
   if G_REAL.cfg.exitIconClickSignal == true and G_REAL.exitIconShown() then
-    local ex, ey, esz = G_REAL.exitIconRect()      -- 画布像素
+    local ex, ey, esz = G_REAL.exitIconRect()      -- x 从左 / y 从下（与光标事件同口径）
     local pad = isTouch and 12 or 0
     if px >= ex - pad and px <= ex + esz + pad and py >= ey - pad and py <= ey + esz + pad then
       G_REAL.requestExitKick()
@@ -2554,17 +2554,19 @@ function G_REAL.exitIconShown()
   return (G_REAL.exitT or 0) >= (G_REAL.cfg.exitDelay or 60)
 end
 function G_REAL.exitIconRect()
-  -- 【2026-10-17】返回**画布像素**（左上角 + 边长）。世界坐标会因 4:3 居中而偏移，不能用。
+  -- 配置口径：画布像素、从左边缘/上边缘量（好理解）。
+  -- 返回口径：x 从左、y **从画布底部往上**（= put() 与光标事件 py 的口径）。
+  --   ⚠ 2026-10-17 踩过：直接把"从顶部往下"的 y 传给 put() → 图标跑到**左下角**。
   local sz = G_REAL.cfg.exitIconSize or 40
   local cx = G_REAL.cfg.exitIconCx or 36
-  local cy = G_REAL.cfg.exitIconCy or 36
-  return cx - sz / 2, cy - sz / 2, sz
+  local cyTop = G_REAL.cfg.exitIconCy or 36
+  return cx - sz / 2, CH - ((cyTop - sz / 2) + sz), sz
 end
 
 function G_REAL.drawExitIcon()
   if not G_REAL.exitIconShown() then return end
-  local x, y, sz = G_REAL.exitIconRect()          -- 画布像素（左上角 + 边长）
-  local cx, cy = x + sz / 2, y + sz / 2
+  local x, y, sz = G_REAL.exitIconRect()          -- x 从左、y 从下（画布像素）
+  local cx, cy = x + sz / 2, y + sz / 2           -- 中心（从下往上口径）
   -- 半透明底 + 白环：put() 直接吃画布像素（circle() 是世界坐标，别用）
   local bg = take('circle')
   if bg then
@@ -2577,7 +2579,7 @@ function G_REAL.drawExitIcon()
     pcall(function() rc:SetAsLastSibling() end)
   end
   -- × 两根：rrect 吃**世界坐标 + 世界尺寸**，这里从画布像素换算
-  local wcx, wcy = (cx - OX) / S, H - (cy - OY) / S
+  local wcx, wcy = (cx - OX) / S, H - (cy - OY) / S   -- 世界坐标（y 向下）
   local barL, barT = (sz * 0.55) / S, math.max(1, (sz * 0.10) / S)
   local a = rrect(wcx, wcy, barL, barT, 45, C_WHITE)
   if a then pcall(function() a:SetAsLastSibling() end) end
@@ -3191,6 +3193,7 @@ function M.mode() return mode end
 function M.pointer() return ptr, joy end
 function M.drawJoystick() return drawJoystick() end   -- 供截图前的静态检查
 function M.exitIconShown() return G_REAL.exitIconShown() end   -- 退出提示图标是否已出现（回归用）
+function M.exitIconRect() return G_REAL.exitIconRect() end     -- 图标矩形（x 从左 / y 从下，回归用）
 function M.box() return curBox, boxTarget end          -- 画出来的框 / 逻辑层目标框
 function M.toWorld(px, py) return toWorld(px, py) end   -- 画布 → 世界（回归用）
 function M.click(px, py) return handleClick(px, py) end -- 直接打点按链路（回归用）
