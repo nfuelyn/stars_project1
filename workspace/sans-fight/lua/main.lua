@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-14-tutorial-fix2'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-touch-fix'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2209,10 +2209,14 @@ local function bindPointer()
       ptr.downX, ptr.downY, ptr.moved = x, y, false
       if isTouch then
         -- 触摸分支：左半屏按下 = 虚拟摇杆（不必精确点中圆）；点在菜单/面板/攻击条上则交给 UI。
-        -- 只在**敌方阶段**起摇杆：其它状态 core 根本不读方向输入（菜单/子面板/攻击条/结局），
+        -- 只在**会读方向输入的状态**起摇杆：敌人回合 + 教程（2026-10-17 修）。
+        --   ⚠ 教程复用 enemy 的物理/碰撞，但状态名是 'tutorial' —— 原来这里只写 'enemy'，
+        --     导致手机端**教程里摇杆根本起不来**（表现为"固定摇杆拖不动 / 触摸像没穿透进来"）。
+        -- 其它状态（菜单/子面板/攻击条/结局）仍不起摇杆：core 不读方向输入，
         -- 起了只会把点按吞掉（实测：攻击条阶段点左半屏本来该结算，却因为摇杆消费了 CursorUp 而没反应）。
         local twx, twy = toWorld(x, y)
-        if state and state.state == 'enemy' and inJoyZone(twx, twy) and not uiHit(twx, twy) then
+        local canJoy = state and (state.state == 'enemy' or state.state == 'tutorial')
+        if canJoy and inJoyZone(twx, twy) and not uiHit(twx, twy) then
           joy.active = true
           -- 【2026-10-11 用户口径·固定摇杆】基准点**固定**在 HOME（原神预设位），不再跟随按下点
           joy.bx, joy.by = JOY_HOME_X, JOY_HOME_Y
@@ -2457,7 +2461,7 @@ end
 -- 每帧把摇杆向量翻译成方向输入。
 -- 只有触摸分支会走到（PC 分支 joy.active 永远是 false，键盘输入直接由 AddKeyEventListener 写 input）。
 -- 四向判定统一走 joyDirs（带死区 DEAD，对角 = 两位同时置位，见文件上方常量注释）；
--- 摇杆**只在敌方阶段会 active**（CursorDown 里判 state.state == 'enemy'），
+-- 摇杆**只在会读方向输入的状态才 active**（CursorDown 里判 enemy / tutorial），
 -- 所以菜单/子面板/攻击条/结局阶段既不会起摇杆、也不会吞掉点按。
 local function applyPointer()
   if not core or not state then return false end
