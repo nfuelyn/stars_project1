@@ -60,8 +60,23 @@ function newestSpill() {
   return hits[0];
 }
 
-const spill = argOf('--spill', newestSpill());
-const dump = JSON.parse(fs.readFileSync(spill, 'utf8'));
+// [2026-10-17] fallback: editor spill lives in TEMP and gets cleaned.
+//   If missing, reuse the previous save's assets.client (root + layoutSchemaVersion).
+let spill = argOf('--spill', newestSpill());
+let dump;
+if (spill && fs.existsSync(spill)) {
+  dump = JSON.parse(fs.readFileSync(spill, 'utf8'));
+} else if (fs.existsSync(OUT)) {
+  const prev = JSON.parse(fs.readFileSync(OUT, 'utf8'));
+  const cl = prev.assets && prev.assets.client;
+  if (!cl || !cl.root) { console.error('[build-save] no spill and no assets.client.root in previous save'); process.exit(1); }
+  dump = { root: cl.root, layoutSchemaVersion: cl.layoutSchemaVersion };
+  spill = OUT + ' (fallback: previous assets.client)';
+  console.log('[build-save] no editor spill -> fallback to previous assets.client');
+} else {
+  console.error('[build-save] no editor spill and no previous save');
+  process.exit(1);
+}
 if (!dump.root) throw new Error(`快照里没有 root：${spill}`);
 
 const PLATFORMS = ['KEYBOARD', 'TOUCHSCREEN', 'CONTROLLER_CONSOLE', 'CONTROLLER_MOBILE'];

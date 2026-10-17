@@ -19,7 +19,7 @@ local M = {}
 
 -- 构建标记：每次改动本层就换一个，日志里一眼能看出试玩跑的是不是最新代码
 -- （踩过：改了 main.lua、重建存档、重新 load，但试玩 Worker 仍在跑上一版，白查半天）
-local BUILD = '2026-10-17-joy-left'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
+local BUILD = '2026-10-17-icon-fix'   -- 心形重画/按钮框恢复(帧末置顶)/stopAttack幂等/确认键去抖/lifecycle+变量探针   -- 等距选项UI / 三项结局(含重选难度) / 橙骨 / 开局信号 / ESC请求结算 / result=Bool
 
 -- 【2026-10-13 用户口径】选项上那颗灵魂（心）相对按钮中线的**下移量**（px）：
 --   选中标记原版贴在按钮内左侧 16px、垂直居中；这里整体下移几像素，视觉上更贴文字基线。
@@ -2325,9 +2325,9 @@ handleClick = function(px, py)
   --   点这个位置应当穿透到原生退出键，而不是被我们吞掉发信号。只有宿主版本拿不到原生键时，
   --   才把 C.exitIconClickSignal 打开当兜底。
   if G_REAL.cfg.exitIconClickSignal == true and G_REAL.exitIconShown() then
-    local ex, ey, esz = G_REAL.exitIconRect()
-    local pad = isTouch and 10 or 0
-    if twx >= ex - pad and twx <= ex + esz + pad and twy >= ey - pad and twy <= ey + esz + pad then
+    local ex, ey, esz = G_REAL.exitIconRect()      -- 画布像素
+    local pad = isTouch and 12 or 0
+    if px >= ex - pad and px <= ex + esz + pad and py >= ey - pad and py <= ey + esz + pad then
       G_REAL.requestExitKick()
       return true
     end
@@ -2554,26 +2554,34 @@ function G_REAL.exitIconShown()
   return (G_REAL.exitT or 0) >= (G_REAL.cfg.exitDelay or 60)
 end
 function G_REAL.exitIconRect()
-  return G_REAL.cfg.exitIconX or 8, G_REAL.cfg.exitIconY or 8, G_REAL.cfg.exitIconSize or 34
+  -- 【2026-10-17】返回**画布像素**（左上角 + 边长）。世界坐标会因 4:3 居中而偏移，不能用。
+  local sz = G_REAL.cfg.exitIconSize or 40
+  local cx = G_REAL.cfg.exitIconCx or 36
+  local cy = G_REAL.cfg.exitIconCy or 36
+  return cx - sz / 2, cy - sz / 2, sz
 end
 
 function G_REAL.drawExitIcon()
   if not G_REAL.exitIconShown() then return end
-  local x, y, sz = G_REAL.exitIconRect()
+  local x, y, sz = G_REAL.exitIconRect()          -- 画布像素（左上角 + 边长）
   local cx, cy = x + sz / 2, y + sz / 2
-  -- 半透明底：亮背景（白框/白字）上也能看清
-  local bg = circle(x, y, sz, 0x88000000)
-  if bg then pcall(function() bg:SetAsLastSibling() end) end
+  -- 半透明底 + 白环：put() 直接吃画布像素（circle() 是世界坐标，别用）
+  local bg = take('circle')
+  if bg then
+    put(bg, x, y, sz, sz); tint(bg, 0x99000000)
+    pcall(function() bg:SetAsLastSibling() end)
+  end
   local rc = take('ring')
   if rc then
-    put(rc, wx(x), wyBottom(y + sz), sz * S, sz * S)
-    tint(rc, 0xE6FFFFFF)
+    put(rc, x, y, sz, sz); tint(rc, 0xE6FFFFFF)
     pcall(function() rc:SetAsLastSibling() end)
   end
-  local barT = math.max(2, sz * 0.09)
-  local a = rrect(cx, cy, sz * 0.52, barT, 45, C_WHITE)
+  -- × 两根：rrect 吃**世界坐标 + 世界尺寸**，这里从画布像素换算
+  local wcx, wcy = (cx - OX) / S, H - (cy - OY) / S
+  local barL, barT = (sz * 0.55) / S, math.max(1, (sz * 0.10) / S)
+  local a = rrect(wcx, wcy, barL, barT, 45, C_WHITE)
   if a then pcall(function() a:SetAsLastSibling() end) end
-  local b = rrect(cx, cy, sz * 0.52, barT, -45, C_WHITE)
+  local b = rrect(wcx, wcy, barL, barT, -45, C_WHITE)
   if b then pcall(function() b:SetAsLastSibling() end) end
 end
 

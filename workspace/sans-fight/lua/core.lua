@@ -243,11 +243,11 @@ local TUT = {
   { key = 'bluemove',   name = '蓝心移动',     bw = 375, bh = 140, goal = 'moved_lr',
     hint = '蓝心会被重力往下拉：左右移动（跳跃键 / 上键是跳）' },
   { key = 'bluejump',   name = '蓝心四向跳跃', bw = 200, bh = 200, goal = 'jumped4',
-    hint = '重力会转向 —— 按**与重力相反**的方向键起跳' },
+    hint = '重力会转向 —— 按与重力相反的方向键起跳' },
   { key = 'bluebone',   name = '蓝骨机制',     bw = 375, bh = 140, goal = 'survive',
-    hint = '蓝骨：它经过时**别按方向键**（动了才会受伤）' },
+    hint = '蓝骨：它经过时别按方向键（动了才会受伤）' },
   { key = 'orangebone', name = '橙骨机制',     bw = 375, bh = 140, goal = 'survive',
-    hint = '橙骨：反过来 —— 它经过时**必须一直动**（站着不动才会受伤）' },
+    hint = '橙骨：反过来 —— 它经过时必须一直动（站着不动才会受伤）' },
 }
 local TUT_N = #TUT
 

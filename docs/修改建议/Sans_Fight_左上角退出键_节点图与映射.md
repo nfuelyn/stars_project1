@@ -45,8 +45,8 @@ root.disableCursorEventPassthrough = true
 | 项 | 值 |
 |---|---|
 | 图标出现 | 进入关卡（OnStart 后）累计 **60 秒** |
-| 位置 | 世界坐标 **(8, 8)**、边长 **34**（640×480，左上角原点、Y 向下） |
-| 外观 | 半透明黑底 + 白圆环 + 白色 × |
+| 位置 | **画布像素**：圆心 **(36, 36)**、直径 **40**（1600×900 基准，左上角原点） |
+| 外观 | 半透明黑底 + 白圆环 + 白色 ×（直径 40 画布像素） |
 | 作用 | **仅位置提示**，不拦截点按、不发信号 |
 | 点击该位置 | 穿透到千星原生退出键（由千星自己处理退出） |
 
@@ -55,8 +55,8 @@ root.disableCursorEventPassthrough = true
 ```lua
 C.exitIcon = true                 -- false = 不显示提示图标
 C.exitDelay = 60                  -- 多少秒后出现
-C.exitIconX, C.exitIconY = 8, 8   -- 世界坐标：对齐原生退出键
-C.exitIconSize = 34
+C.exitIconCx, C.exitIconCy = 36, 36   -- ★ 画布像素（1600×900 基准，左上角原点）
+C.exitIconSize = 40                   -- 直径（画布像素）
 C.exitIconClickSignal = false     -- ★ 默认 false = 只做提示；true = 兜底发服务端信号
 
 C.blockKeyPassthrough = false     -- 必须 false（见 docs/device-setup.md）
@@ -64,8 +64,11 @@ C.blockCursorPassthrough = false  -- 必须 false
 C.cursorTopInset = 48             -- 光标区顶部让出的世界像素；0 = 不让（旧行为）
 ```
 
-**如果位置没对上**：调 `C.exitIconX / C.exitIconY / C.exitIconSize`（世界像素 = 画布像素 / S），
+**如果位置没对上**：调 `C.exitIconCx / C.exitIconCy / C.exitIconSize`（**画布像素**，1600×900 基准），
 并同步调 `C.cursorTopInset`（要让出的带必须覆盖原生键）。
+
+> ⚠ 不要用世界坐标：世界 640×480 是**等比居中**的，左右各有 200px 黑边 —— 世界 (0,0) 其实在画布 x=200，
+> 用世界坐标会把图标推到画面里（真机实测过"位置不对"）。
 
 ---
 

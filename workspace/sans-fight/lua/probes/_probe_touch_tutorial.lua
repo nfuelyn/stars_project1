@@ -70,6 +70,12 @@ local function fireCursor(name, wx, wy)
   if fn then fn({ x = OX + wx * S, y = OY + (480 - wy) * S }) end
 end
 local function tap(wx, wy) fireCursor('CursorDown', wx, wy); fireCursor('CursorUp', wx, wy) end
+-- 【2026-10-17】退出图标现在用**画布像素**定位，所以这里直接喂画布坐标
+local function tapPx(cx, cy)
+  local f1, f2 = cursor.CursorDown, cursor.CursorUp
+  if f1 then f1({ x = cx, y = cy }) end
+  if f2 then f2({ x = cx, y = cy }) end
+end
 
 local pass, fail = 0, 0
 local function ok(c, m)
@@ -136,7 +142,7 @@ game.ServerSignal = function(name) return { SendSignal = function() sent[#sent +
 ok(main.exitIconShown() == false, '1 分钟前图标还没出现')
 for _ = 1, 1900 do pcall(main.OnLevelUpdate, DT) end      -- 快进 ≈63s
 ok(main.exitIconShown() == true, '1 分钟后图标出现（位置提示）')
-fireCursor('CursorDown', 25, 25); fireCursor('CursorUp', 25, 25)
+tapPx(36, 36)
 ok(#sent == 0, '点图标**不发信号**（穿透交给原生退出键；实际 ' .. #sent .. ' 条）')
 
 print('')
